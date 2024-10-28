@@ -1,5 +1,8 @@
 package net.quackiemackie.pathoscraft;
 
+import net.minecraft.world.item.CreativeModeTabs;
+import net.quackiemackie.pathoscraft.block.ModBlocks;
+import net.quackiemackie.pathoscraft.item.ModItems;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -27,6 +30,9 @@ public class PathosCraft {
 
         NeoForge.EVENT_BUS.register(this);
 
+        ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
+
         modEventBus.addListener(this::addCreative);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -36,6 +42,15 @@ public class PathosCraft {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+            event.accept(ModBlocks.SADNESS_ORE);
+            event.accept(ModBlocks.SADNESS_BLOCK);
+        }
+
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(ModItems.RAW_SADNESS);
+            event.accept(ModItems.SADNESS_INGOT);
+        }
     }
 
     @SubscribeEvent
