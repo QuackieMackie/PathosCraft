@@ -3,5 +3,9 @@
   "item.pathoscraft.sadness_ingot": "Sadness Ingot",
 
   "block.pathoscraft.sadness_block": "Block of Sadness",
-  "block.pathoscraft.sadness_ore": "Sadness Ore"
+  "block.pathoscraft.sadness_ore": "Sadness Ore",
+  "block.pathoscraft.deepslate_sadness_ore": "Deepslate Sadness Ore",
+
+  "creative_tab.pathoscraft.blocks": "Building Blocks",
+  "creative_tab.pathoscraft.ingredients": "Ingredients"
 }
