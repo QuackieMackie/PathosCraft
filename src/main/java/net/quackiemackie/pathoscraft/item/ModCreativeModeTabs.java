@@ -21,7 +21,9 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("creative_tab.pathoscraft.blocks"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.SADNESS_ORE.get());
+                        output.accept(ModBlocks.SUNNY_ORE.get());
                         output.accept(ModBlocks.DEEPSLATE_SADNESS_ORE.get());
+                        output.accept(ModBlocks.DEEPSLATE_SUNNY_ORE.get());
                         output.accept(ModBlocks.SADNESS_BLOCK.get());
                     })
                     .build());
@@ -32,7 +34,9 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("creative_tab.pathoscraft.ingredients"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.RAW_SADNESS.get());
+                        output.accept(ModItems.RAW_SUNNY.get());
                         output.accept(ModItems.SADNESS_INGOT.get());
+                        output.accept(ModItems.SUNNY_INGOT.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_blocks_creative_tab"))
                     .build());

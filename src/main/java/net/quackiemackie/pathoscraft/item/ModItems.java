@@ -16,6 +16,12 @@ public class ModItems {
     public static final DeferredItem<Item> SADNESS_INGOT = ITEMS.register("sadness_ingot", () ->
             new Item(new Item.Properties()));
 
+    public static final DeferredItem<Item> RAW_SUNNY = ITEMS.register("raw_sunny", () ->
+            new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> SUNNY_INGOT = ITEMS.register("sunny_ingot", () ->
+            new Item(new Item.Properties()));
+
     public static void register(IEventBus modEventBus){
         ITEMS.register(modEventBus);
     }

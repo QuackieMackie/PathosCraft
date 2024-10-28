@@ -2,7 +2,11 @@
   "replace": false,
   "values": [
     "pathoscraft:sadness_block",
+
     "pathoscraft:sadness_ore",
-    "pathoscraft:deepslate_sadness_ore"
+    "pathoscraft:sunny_ore",
+
+    "pathoscraft:deepslate_sadness_ore",
+    "pathoscraft:deepslate_sunny_ore"
   ]
 }
