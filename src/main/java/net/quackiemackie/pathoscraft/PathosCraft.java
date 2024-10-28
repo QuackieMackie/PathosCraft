@@ -2,6 +2,7 @@ package net.quackiemackie.pathoscraft;
 
 import net.minecraft.world.item.CreativeModeTabs;
 import net.quackiemackie.pathoscraft.block.ModBlocks;
+import net.quackiemackie.pathoscraft.item.ModCreativeModeTabs;
 import net.quackiemackie.pathoscraft.item.ModItems;
 import org.slf4j.Logger;
 
@@ -29,6 +30,8 @@ public class PathosCraft {
         modEventBus.addListener(this::commonSetup);
 
         NeoForge.EVENT_BUS.register(this);
+
+        ModCreativeModeTabs.register(modEventBus);
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
