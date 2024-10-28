@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.25,
+  "group": "sunny_ingot",
+  "ingredient": {
+    "item": "pathoscraft:raw_sunny"
+  },
+  "result": {
+    "count": 1,
+    "id": "pathoscraft:sunny_ingot"
+  }
+}

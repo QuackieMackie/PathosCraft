@@ -45,15 +45,10 @@ public class PathosCraft {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(ModBlocks.SADNESS_ORE);
-            event.accept(ModBlocks.SADNESS_BLOCK);
-        }
-
-        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(ModItems.RAW_SADNESS);
-            event.accept(ModItems.SADNESS_INGOT);
-        }
+//        An Example of how it's used for future me.
+//        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+//            event.accept(ModBlocks.SADNESS_ORE);
+//        }
     }
 
     @SubscribeEvent
