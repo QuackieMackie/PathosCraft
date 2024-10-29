@@ -5,6 +5,8 @@
   "item.pathoscraft.raw_sunny": "Raw Sunny",
   "item.pathoscraft.sunny_ingot": "Sunny Ingot",
 
+  "item.pathoscraft.jump_wand": "Jump Wand",
+
   "block.pathoscraft.sadness_block": "Block of Sadness",
   "block.pathoscraft.sadness_ore": "Sadness Ore",
   "block.pathoscraft.deepslate_sadness_ore": "Deepslate Sadness Ore",
@@ -13,5 +15,6 @@
   "block.pathoscraft.deepslate_sunny_ore": "Deepslate Sunny Ore",
 
   "creative_tab.pathoscraft.blocks": "Building Blocks",
-  "creative_tab.pathoscraft.ingredients": "Ingredients"
+  "creative_tab.pathoscraft.ingredients": "Ingredients",
+  "creative_tab.pathoscraft.tools": "Tools"
 }
