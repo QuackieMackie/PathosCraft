@@ -5,6 +5,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(PathosCraft.MOD_ID);
@@ -21,6 +22,10 @@ public class ModItems {
 
     public static final DeferredItem<Item> SUNNY_INGOT = ITEMS.register("sunny_ingot", () ->
             new Item(new Item.Properties()));
+
+    //Tools
+    public static final DeferredItem<Item> JUMP_WAND = ITEMS.register("jump_wand", () ->
+            new JumpWand(new Item.Properties().durability(100)));
 
     public static void register(IEventBus modEventBus){
         ITEMS.register(modEventBus);

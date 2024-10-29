@@ -3,6 +3,7 @@ package net.quackiemackie.pathoscraft.item;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
@@ -39,6 +40,16 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.SUNNY_INGOT.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_blocks_creative_tab"))
+                    .build());
+
+    public static final Supplier<CreativeModeTab> PATHOSCRAFT_TOOLS_TAB = CREATIVE_MODE_TAB.register("pathoscraft_tools_creative_tab", () ->
+            CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(ModItems.SUNNY_INGOT.get()))
+                    .title(Component.translatable("creative_tab.pathoscraft.tools"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(ModItems.JUMP_WAND.get());
+                    })
+                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_ingredients_creative_tab"))
                     .build());
 
     public static void register(IEventBus modEventBus) {
