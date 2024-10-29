@@ -26,6 +26,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.DEEPSLATE_SADNESS_ORE.get());
                         output.accept(ModBlocks.DEEPSLATE_SUNNY_ORE.get());
                         output.accept(ModBlocks.SADNESS_BLOCK.get());
+                        output.accept(ModBlocks.REPAIR_BLOCK.get());
                     })
                     .build());
 
@@ -44,7 +45,7 @@ public class ModCreativeModeTabs {
 
     public static final Supplier<CreativeModeTab> PATHOSCRAFT_TOOLS_TAB = CREATIVE_MODE_TAB.register("pathoscraft_tools_creative_tab", () ->
             CreativeModeTab.builder()
-                    .icon(() -> new ItemStack(ModItems.SUNNY_INGOT.get()))
+                    .icon(() -> new ItemStack(ModItems.JUMP_WAND.get()))
                     .title(Component.translatable("creative_tab.pathoscraft.tools"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.JUMP_WAND.get());

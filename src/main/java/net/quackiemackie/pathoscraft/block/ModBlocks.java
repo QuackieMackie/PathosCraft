@@ -10,6 +10,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.block.advanced.RepairBlock;
 import net.quackiemackie.pathoscraft.item.ModItems;
 
 import java.util.function.Supplier;
@@ -46,6 +47,12 @@ public class ModBlocks {
                     .strength(1f)
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.STONE)));
+
+    public static final DeferredBlock<Block> REPAIR_BLOCK = registerBlock("repair_block", () ->
+            new RepairBlock(BlockBehaviour.Properties.of()
+                    .strength(2f)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.AMETHYST_CLUSTER)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
