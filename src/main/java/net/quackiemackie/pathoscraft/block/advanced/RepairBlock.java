@@ -2,6 +2,7 @@ package net.quackiemackie.pathoscraft.block.advanced;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -9,12 +10,16 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.quackiemackie.pathoscraft.item.ModItems;
+
+import java.util.List;
 
 public class RepairBlock extends Block {
 
@@ -62,5 +67,11 @@ public class RepairBlock extends Block {
 
             super.stepOn(level, pos, state, entity);
         }
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.translatable("block.pathoscraft.repair_block.tooltip"));
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }
