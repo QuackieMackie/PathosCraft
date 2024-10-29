@@ -25,6 +25,17 @@ public class RepairBlock extends Block {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         level.playSound(player, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1f, 1f);
+
+        if (!level.isClientSide) {
+            if (player.getMainHandItem().getItem() == ModItems.JUMP_WAND.get() && player.getMainHandItem().getDamageValue() > 0) {
+                ItemStack itemStack = player.getMainHandItem();
+                itemStack.setDamageValue(0);
+
+                level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 1f, 1f);
+                ((ServerLevel) level).sendParticles(ParticleTypes.HEART, pos.getX(), pos.getY() + 1, pos.getZ(), 10, 0.5, 0.5, 0.5, 0.2);
+            }
+        }
+
         return InteractionResult.SUCCESS;
     }
 
@@ -34,6 +45,7 @@ public class RepairBlock extends Block {
         if (entity instanceof Player) {
             level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1f, 1f);
         }
+
         if (!level.isClientSide) {
             if (entity instanceof ItemEntity itemEntity) {
                 if (itemEntity.getItem().getItem() == ModItems.JUMP_WAND.get() && itemEntity.getItem().getDamageValue() > 0) {

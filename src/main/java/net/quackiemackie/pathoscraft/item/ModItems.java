@@ -6,6 +6,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
+import net.quackiemackie.pathoscraft.item.advanced.ManaPotion;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(PathosCraft.MOD_ID);
@@ -26,6 +27,13 @@ public class ModItems {
     //Tools
     public static final DeferredItem<Item> JUMP_WAND = ITEMS.register("jump_wand", () ->
             new JumpWand(new Item.Properties().durability(100)));
+
+    //Edible / Drinkable
+    public static final DeferredItem<Item> MANA_HERB = ITEMS.register("mana_herb", () ->
+            new Item(new Item.Properties().food(ModFoodProperties.MANA_HERB)));
+
+    public static final DeferredItem<Item> MANA_POTION = ITEMS.register("mana_potion", () ->
+            new ManaPotion(new Item.Properties().food(ModFoodProperties.MANA_POTION)));
 
     public static void register(IEventBus modEventBus){
         ITEMS.register(modEventBus);
