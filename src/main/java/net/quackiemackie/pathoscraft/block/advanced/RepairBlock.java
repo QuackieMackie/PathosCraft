@@ -18,6 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.quackiemackie.pathoscraft.item.ModItems;
+import net.quackiemackie.pathoscraft.util.ModTags;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -28,11 +30,11 @@ public class RepairBlock extends Block {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
         level.playSound(player, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1f, 1f);
 
         if (!level.isClientSide) {
-            if (player.getMainHandItem().getItem() == ModItems.JUMP_WAND.get() && player.getMainHandItem().getDamageValue() > 0) {
+            if (isValidItem(player.getMainHandItem()) && player.getMainHandItem().getDamageValue() > 0) {
                 ItemStack itemStack = player.getMainHandItem();
                 itemStack.setDamageValue(0);
 
@@ -45,7 +47,7 @@ public class RepairBlock extends Block {
     }
 
     @Override
-    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+    public void stepOn(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Entity entity) {
 
         if (entity instanceof Player) {
             level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1f, 1f);
@@ -53,7 +55,7 @@ public class RepairBlock extends Block {
 
         if (!level.isClientSide) {
             if (entity instanceof ItemEntity itemEntity) {
-                if (itemEntity.getItem().getItem() == ModItems.JUMP_WAND.get() && itemEntity.getItem().getDamageValue() > 0) {
+                if (isValidItem(itemEntity.getItem()) && itemEntity.getItem().getDamageValue() > 0) {
                     ItemStack itemStack = itemEntity.getItem();
                     itemStack.setDamageValue(0);
 
@@ -69,8 +71,12 @@ public class RepairBlock extends Block {
         }
     }
 
+    private boolean isValidItem(ItemStack itemStack){
+        return itemStack.is(ModTags.Items.REPAIRABLE_BLOCK_ITEMS);
+    }
+
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         tooltipComponents.add(Component.translatable("block.pathoscraft.repair_block.tooltip"));
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }

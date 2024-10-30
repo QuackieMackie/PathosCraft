@@ -16,6 +16,18 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
+//TODO:
+// I want this class to eventually be changed and improved (when I have more experience)
+// The goal is to have the player use the one to enter an astral form.
+// The astral form would leave the body behind.
+// (It would be possible to still damage (Taking damage would snap the player out of the astral form))
+// The player would be limited in the distance it would be able to travel from the players body.
+// When the player leaves x distance from the body an overlay would be applied and their vision would look kind of static around the edges.
+// If they got to far after being warned they would snap back to their body and be heavily damaged.
+// The wand would let them jump to locations their astral body discovers.
+// Similar to spectator mode they'd be able to fly and phase through walls.
+
+
 public class JumpWand extends Item {
 
     public JumpWand(Properties properties) {
@@ -43,9 +55,7 @@ public class JumpWand extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-
         tooltipComponents.add(Component.translatable("item.pathoscraft.jump_wand.tooltip"));
-
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }
