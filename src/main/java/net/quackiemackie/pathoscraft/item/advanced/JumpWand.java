@@ -52,10 +52,4 @@ public class JumpWand extends Item {
         }
         return super.useOn(context);
     }
-
-    @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("item.pathoscraft.jump_wand.tooltip"));
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-    }
 }

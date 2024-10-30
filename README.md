@@ -1,25 +1,25 @@
-
-Installation information
+PathosCraft Mod
 =======
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+Welcome to the PathosCraft mod, a passion project being developed for Minecraft version 1.21.1 using NeoForge.
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+## Project Overview
+PathosCraft is meant to completely transform the vanilla experience by adding new layers of gameplay.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+### Future Features
+These are a few things I plan on adding into this mod.
+- **Magic Items**: Ranging from new resources, all the way to gameplay changing weapons
+- **Unique Abilities**: Magical abilities that offer new combat tactics, exploration methods, and utility options.
+- **Quests**: Quest chains that unlock abilities or items.
+- **Lore**: Lore behind the world. I want to bring the game to life by creating a story. The world you created isn't just a world, I want it to feel like a home.
+- **Extra Dimensions**: New realms!
+  - **Central City**: A realm that houses a massive city, home to many NPCs that can be interacted with and who offer quests and rewards.
+  - **Dungeons**: Dark dungeons that offer exciting rewards but intense challenges.
+  - **And many more...**
+- **Villages and NPCs**: NPCs, each with their own stories and quests.
+- **Currency System**: In-game currency to trade and interact with NPCs and unique vendors.
+- **Entities**: New and quirky monsters or friends who can keep you company on your journey or hinder it.
+- **Bosses**: Challenging bosses that force you to bring your full might to battle it.
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
-
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+I'm using this project to teach myself Java, and because I was curious how far I can take this vision.
+\- QuackieMackie

@@ -23,16 +23,7 @@
 
   "item.pathoscraft.jump_wand.tooltip": "Click the ground to teleport to that block!",
   "item.pathoscraft.mana_potion.tooltip": "Drinking this gives you regeneration II for 5 seconds!",
-  "item.pathoscraft.raw_sadness.tooltip": "Raw Sadness, a byproduct of the sadness ore.",
   "item.pathoscraft.mana_herb.tooltip": "Harvested in the open world, this herb when eaten has a chance to heal you.\nIt's also pretty good for cooking with...",
-  "item.pathoscraft.raw_sunny.tooltip": "Raw Sunny, a byproduct of the sadness ore.",
-  "item.pathoscraft.sadness_ingot.tooltip": "Forged in flames, raw sadness is bent into a usable form.",
-  "item.pathoscraft.sunny_ingot.tooltip": "Forged in flames, raw sunny is bent into a usable form.",
 
-  "block.pathoscraft.repair_block.tooltip": "Repair your jump wand by:\n- §cDropping your jump wand on the block!\n§r- §cClicking the repair block with your jump wand!",
-  "block.pathoscraft.deepslate_sunny_ore.tooltip": "Deep underground the sunny ore resides...",
-  "block.pathoscraft.sunny_ore.tooltip": "Underground the sunny ore resides...",
-  "block.pathoscraft.deepslate_sadness_ore.tooltip": "Deep underground the sadness ore resides...",
-  "block.pathoscraft.sadness_ore.tooltip": "Underground the sadness ore resides...",
-  "block.pathoscraft.sadness_block.tooltip": "Crafted from nine sadness ingots."
+  "block.pathoscraft.repair_block.tooltip": "Repair your jump wand by:\n- §cDropping your jump wand on the block!\n§r- §cClicking the repair block with your jump wand!"
 }

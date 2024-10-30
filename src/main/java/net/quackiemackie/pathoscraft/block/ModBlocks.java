@@ -28,61 +28,31 @@ public class ModBlocks {
             new Block(BlockBehaviour.Properties.of()
                     .strength(1f)
                     .requiresCorrectToolForDrops()
-                    .sound(SoundType.STONE)) {
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-                    tooltipComponents.add(Component.translatable("block.pathoscraft.sadness_block.tooltip"));
-                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-                }
-            });
+                    .sound(SoundType.STONE)));
 
     public static final DeferredBlock<Block> SADNESS_ORE = registerBlock("sadness_ore", () ->
             new DropExperienceBlock(UniformInt.of(2, 4), BlockBehaviour.Properties.of()
                     .strength(1f)
                     .requiresCorrectToolForDrops()
-                    .sound(SoundType.STONE)) {
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-                    tooltipComponents.add(Component.translatable("block.pathoscraft.sadness_ore.tooltip"));
-                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-                }
-            });
+                    .sound(SoundType.STONE)));
 
     public static final DeferredBlock<Block> DEEPSLATE_SADNESS_ORE = registerBlock("deepslate_sadness_ore", () ->
             new DropExperienceBlock(UniformInt.of(3, 4), BlockBehaviour.Properties.of()
                     .strength(1f)
                     .requiresCorrectToolForDrops()
-                    .sound(SoundType.STONE)) {
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-                    tooltipComponents.add(Component.translatable("block.pathoscraft.deepslate_sadness_ore.tooltip"));
-                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-                }
-            });
+                    .sound(SoundType.STONE)));
 
     public static final DeferredBlock<Block> SUNNY_ORE = registerBlock("sunny_ore", () ->
             new DropExperienceBlock(UniformInt.of(2, 4), BlockBehaviour.Properties.of()
                     .strength(1f)
                     .requiresCorrectToolForDrops()
-                    .sound(SoundType.STONE)) {
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-                    tooltipComponents.add(Component.translatable("block.pathoscraft.sunny_ore.tooltip"));
-                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-                }
-            });
+                    .sound(SoundType.STONE)));
 
     public static final DeferredBlock<Block> DEEPSLATE_SUNNY_ORE = registerBlock("deepslate_sunny_ore", () ->
             new DropExperienceBlock(UniformInt.of(3, 4), BlockBehaviour.Properties.of()
                     .strength(1f)
                     .requiresCorrectToolForDrops()
-                    .sound(SoundType.STONE)) {
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-                    tooltipComponents.add(Component.translatable("block.pathoscraft.deepslate_sunny_ore.tooltip"));
-                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-                }
-            });
+                    .sound(SoundType.STONE)));
 
     public static final DeferredBlock<Block> REPAIR_BLOCK = registerBlock("repair_block", () ->
             new RepairBlock(BlockBehaviour.Properties.of()
