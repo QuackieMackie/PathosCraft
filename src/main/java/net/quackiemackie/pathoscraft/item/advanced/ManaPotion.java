@@ -32,10 +32,4 @@ public class ManaPotion extends Item {
         }
         return stack;
     }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("item.pathoscraft.mana_potion.tooltip"));
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-    }
 }
