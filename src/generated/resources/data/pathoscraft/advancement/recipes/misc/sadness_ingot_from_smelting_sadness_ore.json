@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sadness_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "pathoscraft:sadness_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "pathoscraft:sadness_ingot_from_smelting_sadness_ore"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sadness_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "pathoscraft:sadness_ingot_from_smelting_sadness_ore"
+    ]
+  }
+}

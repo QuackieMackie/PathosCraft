@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_raw_sunny": {
+      "conditions": {
+        "items": [
+          {
+            "items": "pathoscraft:raw_sunny"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "pathoscraft:sunny_ingot_from_blasting_raw_sunny"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_raw_sunny"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "pathoscraft:sunny_ingot_from_blasting_raw_sunny"
+    ]
+  }
+}

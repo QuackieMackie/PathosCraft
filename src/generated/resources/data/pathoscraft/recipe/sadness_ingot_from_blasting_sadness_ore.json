@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.4,
+  "group": "sadness_ingot",
+  "ingredient": {
+    "item": "pathoscraft:sadness_ore"
+  },
+  "result": {
+    "count": 1,
+    "id": "pathoscraft:sadness_ingot"
+  }
+}

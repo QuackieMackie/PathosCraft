@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_raw_sadness": {
+      "conditions": {
+        "items": [
+          {
+            "items": "pathoscraft:raw_sadness"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "pathoscraft:sadness_ingot_from_smelting_raw_sadness"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_raw_sadness"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "pathoscraft:sadness_ingot_from_smelting_raw_sadness"
+    ]
+  }
+}
