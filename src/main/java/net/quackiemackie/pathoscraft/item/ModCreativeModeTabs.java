@@ -48,6 +48,7 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("creative_tab.pathoscraft.tools"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.JUMP_WAND.get());
+                        output.accept(ModItems.ARROW_TEST.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_ingredients_creative_tab"))
                     .build());

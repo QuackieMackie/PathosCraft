@@ -1,6 +1,5 @@
 package net.quackiemackie.pathoscraft;
 
-import net.minecraft.world.item.CreativeModeTabs;
 import net.quackiemackie.pathoscraft.block.ModBlocks;
 import net.quackiemackie.pathoscraft.item.ModCreativeModeTabs;
 import net.quackiemackie.pathoscraft.item.ModItems;
