@@ -41,15 +41,7 @@ public class RepairBlock extends Block {
         if (!level.isClientSide()) {
             if (player.isShiftKeyDown()) {
                 level.setBlockAndUpdate(pos, state.setValue(CLICKED, !currentState));
-
-                if (player instanceof ServerPlayer serverPlayer) {
-                    if (currentState) {
-                        serverPlayer.sendSystemMessage(Component.literal("Repair Block has been set to active!"));
-                    } else {
-                        serverPlayer.sendSystemMessage(Component.literal("Repair Block has been set to inactive!"));
-                    }
-                }
-            } else if (!currentState && isValidItem(player.getMainHandItem()) && player.getMainHandItem().getDamageValue() > 0) {
+            } else if (currentState && isValidItem(player.getMainHandItem()) && player.getMainHandItem().getDamageValue() > 0) {
                 ItemStack itemStack = player.getMainHandItem();
                 itemStack.setDamageValue(0);
 
@@ -63,15 +55,10 @@ public class RepairBlock extends Block {
 
     @Override
     public void stepOn(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Entity entity) {
-
-        if (entity instanceof Player) {
-            level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1f, 1f);
-        }
-
         if (!level.isClientSide) {
             boolean currentState = state.getValue(CLICKED);
             if (entity instanceof ItemEntity itemEntity) {
-                if (!currentState && isValidItem(itemEntity.getItem()) && itemEntity.getItem().getDamageValue() > 0) {
+                if (currentState && isValidItem(itemEntity.getItem()) && itemEntity.getItem().getDamageValue() > 0) {
                     ItemStack itemStack = itemEntity.getItem();
                     itemStack.setDamageValue(0);
 
