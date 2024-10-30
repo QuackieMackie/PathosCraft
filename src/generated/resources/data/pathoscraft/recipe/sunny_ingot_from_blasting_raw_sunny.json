@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.4,
+  "group": "sunny_ingot",
+  "ingredient": {
+    "item": "pathoscraft:raw_sunny"
+  },
+  "result": {
+    "count": 1,
+    "id": "pathoscraft:sunny_ingot"
+  }
+}
