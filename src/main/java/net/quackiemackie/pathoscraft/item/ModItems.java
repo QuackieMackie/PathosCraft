@@ -9,6 +9,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.component.ModDataComponents;
 import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
 import net.quackiemackie.pathoscraft.item.advanced.ManaPotion;
 import org.jetbrains.annotations.NotNull;
@@ -34,13 +35,7 @@ public class ModItems {
 
     //Tools
     public static final DeferredItem<Item> JUMP_WAND = ITEMS.register("jump_wand", () ->
-            new JumpWand(new Item.Properties().durability(100)) {
-                @Override
-                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-                    tooltipComponents.add(Component.translatable("item.pathoscraft.jump_wand.tooltip"));
-                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-                }
-            });
+            new JumpWand(new Item.Properties().durability(100)));
 
     // This was just to see if I can make it work. I didn't plan on using it yet.
     public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () ->

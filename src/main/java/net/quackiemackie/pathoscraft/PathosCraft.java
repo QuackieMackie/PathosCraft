@@ -1,6 +1,7 @@
 package net.quackiemackie.pathoscraft;
 
 import net.quackiemackie.pathoscraft.block.ModBlocks;
+import net.quackiemackie.pathoscraft.component.ModDataComponents;
 import net.quackiemackie.pathoscraft.item.ModCreativeModeTabs;
 import net.quackiemackie.pathoscraft.item.ModItems;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class PathosCraft {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+
+        ModDataComponents.register(modEventBus);
 
         modEventBus.addListener(this::addCreative);
 
