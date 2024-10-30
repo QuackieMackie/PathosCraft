@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "clicked=false": {
+      "model": "pathoscraft:block/repair_block_inactive"
+    },
+    "clicked=true": {
+      "model": "pathoscraft:block/repair_block_active"
+    }
+  }
+}

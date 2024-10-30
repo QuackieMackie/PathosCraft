@@ -1,15 +1,10 @@
 package net.quackiemackie.pathoscraft.block;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -17,9 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.block.advanced.RepairBlock;
 import net.quackiemackie.pathoscraft.item.ModItems;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class ModBlocks {
