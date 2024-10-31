@@ -6,6 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.item.advanced.AnimatedItem;
 import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
 import net.quackiemackie.pathoscraft.item.advanced.ManaPotion;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +54,6 @@ public class ModItems {
             new HoeItem(ModToolTiers.SADNESS, new Item.Properties()
                     .attributes(HoeItem.createAttributes(ModToolTiers.SADNESS, 5, -1.4F))));
 
-
     // This was just to see if I can make it work. I didn't plan on using it yet.
     public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () ->
             new ArrowItem(new Item.Properties().stacksTo(16)));
@@ -77,6 +77,9 @@ public class ModItems {
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }
             });
+
+    public static final DeferredItem<Item> ANIMATED_ITEM = ITEMS.register("animated_item", () ->
+            new AnimatedItem(new Item.Properties()));
 
     public static void register(IEventBus modEventBus){
         ITEMS.register(modEventBus);
