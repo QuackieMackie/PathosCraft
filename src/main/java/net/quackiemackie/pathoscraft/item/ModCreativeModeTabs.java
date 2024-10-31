@@ -54,6 +54,8 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.SADNESS_AXE.get());
                         output.accept(ModItems.SADNESS_SHOVEL.get());
                         output.accept(ModItems.SADNESS_HOE.get());
+
+                        output.accept(ModItems.ANIMATED_ITEM.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_ingredients_creative_tab"))
                     .build());
