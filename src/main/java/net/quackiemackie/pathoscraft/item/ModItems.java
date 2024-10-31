@@ -1,15 +1,11 @@
 package net.quackiemackie.pathoscraft.item;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ArrowItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.component.ModDataComponents;
 import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
 import net.quackiemackie.pathoscraft.item.advanced.ManaPotion;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +32,27 @@ public class ModItems {
     //Tools
     public static final DeferredItem<Item> JUMP_WAND = ITEMS.register("jump_wand", () ->
             new JumpWand(new Item.Properties().durability(100)));
+
+    public static final DeferredItem<SwordItem> SADNESS_SWORD = ITEMS.register("sadness_sword", () ->
+            new SwordItem(ModToolTiers.SADNESS, new Item.Properties()
+                    .attributes(SwordItem.createAttributes(ModToolTiers.SADNESS, 5, -1.4F))));
+
+    public static final DeferredItem<PickaxeItem> SADNESS_PICKAXE = ITEMS.register("sadness_pickaxe", () ->
+            new PickaxeItem(ModToolTiers.SADNESS, new Item.Properties()
+                    .attributes(PickaxeItem.createAttributes(ModToolTiers.SADNESS, 5, -1.4F))));
+
+    public static final DeferredItem<AxeItem> SADNESS_AXE = ITEMS.register("sadness_axe", () ->
+            new AxeItem(ModToolTiers.SADNESS, new Item.Properties()
+                    .attributes(AxeItem.createAttributes(ModToolTiers.SADNESS, 5, -1.4F))));
+
+    public static final DeferredItem<ShovelItem> SADNESS_SHOVEL = ITEMS.register("sadness_shovel", () ->
+            new ShovelItem(ModToolTiers.SADNESS, new Item.Properties()
+                    .attributes(ShovelItem.createAttributes(ModToolTiers.SADNESS, 5, -1.4F))));
+
+    public static final DeferredItem<HoeItem> SADNESS_HOE = ITEMS.register("sadness_hoe", () ->
+            new HoeItem(ModToolTiers.SADNESS, new Item.Properties()
+                    .attributes(HoeItem.createAttributes(ModToolTiers.SADNESS, 5, -1.4F))));
+
 
     // This was just to see if I can make it work. I didn't plan on using it yet.
     public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () ->

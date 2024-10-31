@@ -8,6 +8,13 @@
   "item.pathoscraft.mana_potion": "Mana Potion",
   "item.pathoscraft.arrow_test": "Test Arrow",
 
+  "item.pathoscraft.sadness_sword": "Sadness Sword",
+  "item.pathoscraft.sadness_pickaxe": "Sadness Pickaxe",
+  "item.pathoscraft.sadness_axe": "Sadness Axe",
+  "item.pathoscraft.sadness_shovel": "Sadness Shovel",
+  "item.pathoscraft.sadness_hoe": "Sadness Hoe",
+
+
   "block.pathoscraft.sadness_block": "Block of Sadness",
   "block.pathoscraft.sadness_ore": "Sadness Ore",
   "block.pathoscraft.deepslate_sadness_ore": "Deepslate Sadness Ore",
