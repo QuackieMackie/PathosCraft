@@ -14,7 +14,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        basicItem(ModItems.JUMP_WAND.get());
         basicItem(ModItems.RAW_SADNESS.get());
         basicItem(ModItems.RAW_SUNNY.get());
         basicItem(ModItems.SADNESS_INGOT.get());
@@ -22,5 +21,13 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.MANA_HERB.get());
         basicItem(ModItems.MANA_POTION.get());
         basicItem(ModItems.ARROW_TEST.get());
+
+        handheldItem(ModItems.JUMP_WAND.get());
+        handheldItem(ModItems.SADNESS_SWORD.get());
+        handheldItem(ModItems.SADNESS_PICKAXE.get());
+        handheldItem(ModItems.SADNESS_AXE.get());
+        handheldItem(ModItems.SADNESS_SHOVEL.get());
+        handheldItem(ModItems.SADNESS_HOE.get());
+
     }
 }

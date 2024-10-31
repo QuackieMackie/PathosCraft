@@ -3,6 +3,7 @@ package net.quackiemackie.pathoscraft.datagen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.quackiemackie.pathoscraft.PathosCraft;
@@ -22,5 +23,16 @@ public class ModItemTagProvider extends ItemTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         tag(ModTags.Items.REPAIRABLE_BLOCK_ITEMS)
                 .add(ModItems.JUMP_WAND.get());
+
+        tag(ItemTags.SWORDS)
+                .add(ModItems.SADNESS_SWORD.get());
+        tag(ItemTags.PICKAXES)
+                .add(ModItems.SADNESS_PICKAXE.get());
+        tag(ItemTags.AXES)
+                .add(ModItems.SADNESS_AXE.get());
+        tag(ItemTags.SHOVELS)
+                .add(ModItems.SADNESS_SHOVEL.get());
+        tag(ItemTags.HOES)
+                .add(ModItems.SADNESS_HOE.get());
     }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "pathoscraft:item/jump_wand"
+    "layer0": "pathoscraft:item/sadness_pickaxe"
   }
 }
