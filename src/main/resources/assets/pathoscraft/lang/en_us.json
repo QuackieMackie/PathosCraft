@@ -33,5 +33,9 @@
   "item.pathoscraft.mana_potion.tooltip": "Drinking this gives you regeneration II for 5 seconds!",
   "item.pathoscraft.mana_herb.tooltip": "Harvested in the open world, this herb when eaten has a chance to heal you.\nIt's also pretty good for cooking with...",
 
-  "block.pathoscraft.repair_block.tooltip": "Repair your jump wand by:\n- §cDropping your jump wand on the block!\n§r- §cClicking the repair block with your jump wand!"
+  "block.pathoscraft.repair_block.tooltip": "Repair your jump wand by:\n- §cDropping your jump wand on the block!\n§r- §cClicking the repair block with your jump wand!",
+
+  "keybinding.pathoscraft.category": "PathosCraft Key binds",
+  "keybinding.pathoscraft.astral_form_exit": "Exit Astral Form",
+  "keybinding.pathoscraft.clear_persistent_data": "Clear Persistent data"
 }

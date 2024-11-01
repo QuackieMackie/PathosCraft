@@ -1,9 +1,12 @@
 package net.quackiemackie.pathoscraft;
 
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.quackiemackie.pathoscraft.attachments.ModAttachments;
 import net.quackiemackie.pathoscraft.block.ModBlocks;
 import net.quackiemackie.pathoscraft.component.ModDataComponents;
 import net.quackiemackie.pathoscraft.item.ModCreativeModeTabs;
 import net.quackiemackie.pathoscraft.item.ModItems;
+import net.quackiemackie.pathoscraft.util.Keybinding;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -29,14 +32,16 @@ public class PathosCraft {
     public PathosCraft(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
 
-        NeoForge.EVENT_BUS.register(this);
-
         ModCreativeModeTabs.register(modEventBus);
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
 
+        ModAttachments.register(modEventBus);
+
         ModDataComponents.register(modEventBus);
+
+        NeoForge.EVENT_BUS.register(this);
 
         modEventBus.addListener(this::addCreative);
 
@@ -62,6 +67,11 @@ public class PathosCraft {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
+        }
+
+        @SubscribeEvent
+        public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+            Keybinding.registerBindings(event);
         }
     }
 }

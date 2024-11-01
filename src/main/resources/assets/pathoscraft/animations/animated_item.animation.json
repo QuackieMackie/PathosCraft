@@ -3,12 +3,43 @@
 	"animations": {
 		"idle": {
 			"loop": true,
-			"animation_length": 3,
+			"animation_length": 5,
 			"bones": {
 				"innercube": {
+					"relative_to": {
+						"rotation": "entity"
+					},
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0],
+							"easing": "linear"
+						},
+						"2.48": {
+							"vector": [180, -90, 180],
+							"easing": "easeInOutCirc"
+						},
+						"5.0": {
+							"vector": [360, 180, 360],
+							"easing": "easeInOutCirc"
+						}
+					},
 					"position": {
-						"vector": [0, "math.sin(query.anim_time*120)", 0],
+						"vector": [0, "math.sin(query.anim_time*125)", 0],
 						"easing": "linear"
+					},
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1],
+							"easing": "linear"
+						},
+						"2.48": {
+							"vector": [2, 2, 2],
+							"easing": "linear"
+						},
+						"5.0": {
+							"vector": [1, 1, 1],
+							"easing": "linear"
+						}
 					}
 				}
 			}
