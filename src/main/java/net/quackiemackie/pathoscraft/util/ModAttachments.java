@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.attachments;
+package net.quackiemackie.pathoscraft.util;
 
 import com.mojang.serialization.Codec;
 import net.neoforged.bus.api.IEventBus;

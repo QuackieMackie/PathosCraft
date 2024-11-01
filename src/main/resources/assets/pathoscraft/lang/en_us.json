@@ -37,5 +37,6 @@
 
   "keybinding.pathoscraft.category": "PathosCraft Key binds",
   "keybinding.pathoscraft.astral_form_exit": "Exit Astral Form",
-  "keybinding.pathoscraft.clear_persistent_data": "Clear Persistent data"
+
+  "abilities.pathoscraft.astral_form_exit": "Press %s to exit Astral Form"
 }

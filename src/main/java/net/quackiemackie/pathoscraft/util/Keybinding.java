@@ -19,19 +19,10 @@ public class Keybinding {
             "keybinding.pathoscraft.category"
     );
 
-    public static final KeyMapping CLEAR_PERSISTENT_DATA = new KeyMapping(
-            "keybinding.pathoscraft.clear_persistent_data",
-            InputConstants.Type.KEYSYM,
-            InputConstants.KEY_J,
-            "keybinding.pathoscraft.category"
-    );
-
     public static final Supplier<KeyMapping> PATHOSCRAFT_KEYMAPPING = () -> ASTRAL_FORM_EXIT;
-    public static final Supplier<KeyMapping> CLEAR_PERSISTENT_DATA_MAPPING = () -> CLEAR_PERSISTENT_DATA;
 
     @SubscribeEvent
     public static void registerBindings(RegisterKeyMappingsEvent event) {
         event.register(PATHOSCRAFT_KEYMAPPING.get());
-        event.register(CLEAR_PERSISTENT_DATA_MAPPING.get());
     }
 }
