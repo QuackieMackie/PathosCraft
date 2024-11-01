@@ -8,6 +8,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.quackiemackie.pathoscraft.PathosCraft;
 
+/**
+ * Handles the registration and management of mod tags for the PathosCraft mod.
+ */
 public class ModTags {
 
     public static class Blocks {

@@ -18,23 +18,8 @@ import net.quackiemackie.pathoscraft.util.ModDataComponents;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 
 import java.util.List;
-import java.util.logging.Logger;
-
-//TODO:
-// I want this class to eventually be changed and improved (when I have more experience)
-// The goal is to have the player use the one to enter an astral form.
-// The astral form would leave the body behind.
-// (It would be possible to still damage (Taking damage would snap the player out of the astral form))
-// The player would be limited in the distance it would be able to travel from the players body.
-// When the player leaves x distance from the body an overlay would be applied and their vision would look kind of static around the edges.
-// If they got to far after being warned they would snap back to their body and be heavily damaged.
-// The wand would let them jump to locations their astral body discovers.
-// Similar to spectator mode they'd be able to fly and phase through walls.
-
 
 public class JumpWand extends Item {
-
-    private static final Logger logger = Logger.getLogger("PathosCraft");
 
     public JumpWand(Properties properties) {
         super(properties);

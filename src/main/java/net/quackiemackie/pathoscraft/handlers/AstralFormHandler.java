@@ -2,19 +2,15 @@ package net.quackiemackie.pathoscraft.handlers;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
-import net.quackiemackie.pathoscraft.PathosCraft;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.quackiemackie.pathoscraft.network.payload.AstralFormStatus;
 import net.quackiemackie.pathoscraft.util.ModAttachments;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 
-import java.util.logging.Logger;
-
 public class AstralFormHandler {
-
-    private static final Logger logger = Logger.getLogger(PathosCraft.MOD_ID);
 
     /**
      * The player enters Astral Form, switching the gameplay mode and storing the original position.
@@ -24,14 +20,10 @@ public class AstralFormHandler {
     public static void enterAstralForm(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
 
-        logger.info("Player " + player.getName().getString() + " entered Astral Form");
-
         BlockPos originalPos = player.blockPosition();
         player.getPersistentData().putInt("astral_form_original_x", originalPos.getX());
         player.getPersistentData().putInt("astral_form_original_y", originalPos.getY());
         player.getPersistentData().putInt("astral_form_original_z", originalPos.getZ());
-
-        player.sendSystemMessage(Component.literal("Astral Form has been entered.\nLeft body at Position: X: " + originalPos.getX() + " Y: " + originalPos.getY() + " Z: " + originalPos.getZ()));
 
         serverPlayer.setGameMode(GameType.SPECTATOR);
 
@@ -51,9 +43,7 @@ public class AstralFormHandler {
                 player.getPersistentData().getInt("astral_form_original_y"),
                 player.getPersistentData().getInt("astral_form_original_z")
         );
-        player.sendSystemMessage(Component.literal("Astral Form has been left.\nReturning to body at Position: X: " + originalPos.getX() + " Y: " + originalPos.getY() + " Z: " + originalPos.getZ()));
-
-        serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.literal("")));
+        player.teleportTo(originalPos.getX(), originalPos.getY(), originalPos.getZ());
 
         serverPlayer.setGameMode(GameType.SURVIVAL);
 
@@ -72,7 +62,10 @@ public class AstralFormHandler {
      */
     public static void setInAstralForm(Player player, boolean inAstralForm) {
         ((IAttachmentHolder) player).setData(ModAttachments.IN_ASTRAL_FORM.get(), inAstralForm);
-        logger.info("Set in_astral_form for player " + player.getName().getString() + " to " + inAstralForm);
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new AstralFormStatus(inAstralForm));
+        }
     }
 
     /**
