@@ -1,9 +1,9 @@
 package net.quackiemackie.pathoscraft;
 
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.quackiemackie.pathoscraft.attachments.ModAttachments;
+import net.quackiemackie.pathoscraft.util.ModAttachments;
 import net.quackiemackie.pathoscraft.block.ModBlocks;
-import net.quackiemackie.pathoscraft.component.ModDataComponents;
+import net.quackiemackie.pathoscraft.util.ModDataComponents;
 import net.quackiemackie.pathoscraft.item.ModCreativeModeTabs;
 import net.quackiemackie.pathoscraft.item.ModItems;
 import net.quackiemackie.pathoscraft.util.Keybinding;

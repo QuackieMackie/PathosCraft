@@ -7,7 +7,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.attachments.ModAttachments;
+import net.quackiemackie.pathoscraft.util.ModAttachments;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 
 import java.util.logging.Logger;

@@ -13,8 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.quackiemackie.pathoscraft.attachments.ModAttachments;
-import net.quackiemackie.pathoscraft.component.ModDataComponents;
+import net.quackiemackie.pathoscraft.util.ModAttachments;
+import net.quackiemackie.pathoscraft.util.ModDataComponents;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 
 import java.util.List;

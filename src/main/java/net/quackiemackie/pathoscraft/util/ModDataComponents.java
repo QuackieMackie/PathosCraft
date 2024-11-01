@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.component;
+package net.quackiemackie.pathoscraft.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
