@@ -9,6 +9,9 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 
 import java.util.function.Supplier;
 
+/**
+ * Handles the registration and management of mod attachments for the PathosCraft mod.
+ */
 public class ModAttachments {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(
             NeoForgeRegistries.ATTACHMENT_TYPES, PathosCraft.MOD_ID);

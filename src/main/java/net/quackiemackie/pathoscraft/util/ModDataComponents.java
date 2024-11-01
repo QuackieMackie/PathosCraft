@@ -10,6 +10,9 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 
 import java.util.function.UnaryOperator;
 
+/**
+ * Handles the registration and management of mod data components for the PathosCraft mod.
+ */
 public class ModDataComponents {
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, PathosCraft.MOD_ID);
 

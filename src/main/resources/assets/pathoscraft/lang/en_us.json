@@ -38,5 +38,7 @@
   "keybinding.pathoscraft.category": "PathosCraft Key binds",
   "keybinding.pathoscraft.astral_form_exit": "Exit Astral Form",
 
-  "abilities.pathoscraft.astral_form_exit": "Press %s to exit Astral Form"
+  "abilities.pathoscraft.astral_form_exit": "Press %s to exit Astral Form",
+  "networking.pathoscraft.client.failed": "Client network error:",
+  "networking.pathoscraft.server.failed": "Server network error:"
 }
