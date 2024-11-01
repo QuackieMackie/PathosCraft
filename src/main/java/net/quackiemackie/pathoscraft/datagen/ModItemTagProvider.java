@@ -22,7 +22,8 @@ public class ModItemTagProvider extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(ModTags.Items.REPAIRABLE_BLOCK_ITEMS)
-                .add(ModItems.JUMP_WAND.get());
+                .add(ModItems.JUMP_WAND.get())
+                .add(ModItems.ASTRAL_LANTERN.get());
 
         tag(ItemTags.SWORDS)
                 .add(ModItems.SADNESS_SWORD.get());

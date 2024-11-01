@@ -7,6 +7,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.item.advanced.AnimatedItem;
+import net.quackiemackie.pathoscraft.item.advanced.AstralLantern;
 import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
 import net.quackiemackie.pathoscraft.item.advanced.ManaPotion;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +58,9 @@ public class ModItems {
     // This was just to see if I can make it work. I didn't plan on using it yet.
     public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () ->
             new ArrowItem(new Item.Properties().stacksTo(16)));
+
+    public static final DeferredItem<Item> ASTRAL_LANTERN = ITEMS.register("astral_lantern", () ->
+            new AstralLantern(new Item.Properties().durability(25)));
 
 
     //Edible / Drinkable

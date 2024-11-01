@@ -56,6 +56,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.SADNESS_HOE.get());
 
                         output.accept(ModItems.ANIMATED_ITEM.get());
+                        output.accept(ModItems.ASTRAL_LANTERN.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_ingredients_creative_tab"))
                     .build());
