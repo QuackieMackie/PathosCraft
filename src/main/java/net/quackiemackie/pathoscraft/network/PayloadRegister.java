@@ -15,7 +15,7 @@ public class PayloadRegister {
      */
     @SubscribeEvent
     public static void register(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar("1").executesOn(HandlerThread.NETWORK);
+        final PayloadRegistrar registrar = event.registrar("2").executesOn(HandlerThread.NETWORK);
 
         registrar.playBidirectional(
                 AstralFormStatus.TYPE,
