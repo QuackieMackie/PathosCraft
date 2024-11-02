@@ -1,7 +1,10 @@
 package net.quackiemackie.pathoscraft;
 
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.quackiemackie.pathoscraft.entity.ModEntities;
+import net.quackiemackie.pathoscraft.entity.client.AstralFormRenderer;
+import net.quackiemackie.pathoscraft.event.EntityEvents;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
 import net.quackiemackie.pathoscraft.util.ModAttachments;
 import net.quackiemackie.pathoscraft.block.ModBlocks;
@@ -35,9 +38,15 @@ public class PathosCraft {
         modEventBus.addListener(this::commonSetup);
 
         ModCreativeModeTabs.register(modEventBus);
+
         ModItems.register(modEventBus);
+
         ModBlocks.register(modEventBus);
+
+        ModEntities.register(modEventBus);
+
         ModAttachments.register(modEventBus);
+
         ModDataComponents.register(modEventBus);
 
         modEventBus.addListener(PayloadRegister::register);
@@ -66,7 +75,11 @@ public class PathosCraft {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+        }
 
+        @SubscribeEvent
+        public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerEntityRenderer(ModEntities.ASTRAL_FORM.get(), AstralFormRenderer::new);
         }
 
         @SubscribeEvent
