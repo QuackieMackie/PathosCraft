@@ -20,7 +20,7 @@ public class PlayerEvents {
         Player player = event.getEntity();
 
         if (!player.level().isClientSide() && player.getData(ModAttachments.IN_ASTRAL_FORM.get())) {
-            AstralFormHandler.checkDistanceAndSnapback(player, 20.0);
+            AstralFormHandler.checkDistanceAndSnapback(player, 10.0, 30.0);
         }
     }
 

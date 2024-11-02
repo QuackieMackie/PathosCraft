@@ -12,6 +12,8 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 
 public class AstralFormHandler {
 
+    public static boolean isInWarningDistance = false;
+
     /**
      * The player enters Astral Form, switching the gameplay mode and storing the original position.
      *
@@ -62,6 +64,7 @@ public class AstralFormHandler {
      */
     public static void setInAstralForm(Player player, boolean inAstralForm) {
         ((IAttachmentHolder) player).setData(ModAttachments.IN_ASTRAL_FORM.get(), inAstralForm);
+        isInWarningDistance = false;
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new AstralFormStatus(inAstralForm));
@@ -74,7 +77,7 @@ public class AstralFormHandler {
      * @param player      The player in astral form.
      * @param maxDistance The maximum allowable distance from the original position.
      */
-    public static void checkDistanceAndSnapback(Player player, double maxDistance) {
+    public static void checkDistanceAndSnapback(Player player, double warningDistance, double maxDistance) {
         ((IAttachmentHolder) player).getExistingData(ModAttachments.IN_ASTRAL_FORM.get()).ifPresent(inAstralForm -> {
             if (inAstralForm) {
                 double startX = player.getPersistentData().getInt("astral_form_original_x");
@@ -87,12 +90,19 @@ public class AstralFormHandler {
 
                 double distance = Math.sqrt(Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2) + Math.pow(currentZ - startZ, 2));
 
+                isInWarningDistance = (distance > warningDistance && distance <= maxDistance);
+
                 if (distance > maxDistance) {
                     player.teleportTo(startX, startY, startZ);
                     player.sendSystemMessage(Component.literal("You have gotten too far from your body!\nYou have been snapped back to reality leaving the astral plane."));
                     leaveAstralForm(player);
+                    isInWarningDistance = false;
                 }
             }
         });
+    }
+
+    public static boolean shouldShowAstralWarningOverlay() {
+        return isInWarningDistance;
     }
 }
