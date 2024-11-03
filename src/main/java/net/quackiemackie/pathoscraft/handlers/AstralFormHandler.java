@@ -16,7 +16,6 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import java.util.UUID;
 
 public class AstralFormHandler {
-
     public static boolean isInWarningDistance = false;
 
     /**
@@ -139,7 +138,25 @@ public class AstralFormHandler {
         if (entity != null) {
             entity.moveTo(x, y, z, yaw, pitch);
             serverLevel.addFreshEntity(entity);
+
+            entity.getPersistentData().putUUID("astral_form_player_id", player.getUUID());
             player.getPersistentData().putUUID("astral_form_entity_id", entity.getUUID());
+        }
+    }
+
+    /**
+     * Handles the death of an AstralFormEntity by triggering a custom message and exiting astral form.
+     *
+     * @param astralFormEntity The AstralFormEntity that died.
+     */
+    public static void handleAstralFormEntityDeath(AstralFormEntity astralFormEntity) {
+        UUID playerUUID = astralFormEntity.getPersistentData().getUUID("astral_form_player_id");
+        Player player = astralFormEntity.level().getPlayerByUUID(playerUUID);
+
+        if (player != null) {
+            player.sendSystemMessage(Component.literal("Your astral form has perished! Returning to your physical body."));
+            removeAstralFormEntity(player);
+            leaveAstralForm(player);
         }
     }
 
