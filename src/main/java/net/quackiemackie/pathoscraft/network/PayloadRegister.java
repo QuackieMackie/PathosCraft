@@ -9,7 +9,6 @@ import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormStatus;
 
 public class PayloadRegister {
-
     /**
      * Handles the registration and management of payloads for the PathosCraft mod.
      */

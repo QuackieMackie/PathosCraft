@@ -1,14 +1,19 @@
 package net.quackiemackie.pathoscraft.handlers;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.quackiemackie.pathoscraft.entity.ModEntities;
+import net.quackiemackie.pathoscraft.entity.advanced.AstralFormEntity;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormStatus;
 import net.quackiemackie.pathoscraft.util.ModAttachments;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+
+import java.util.UUID;
 
 public class AstralFormHandler {
 
@@ -22,10 +27,13 @@ public class AstralFormHandler {
     public static void enterAstralForm(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
 
-        BlockPos originalPos = player.blockPosition();
-        player.getPersistentData().putInt("astral_form_original_x", originalPos.getX());
-        player.getPersistentData().putInt("astral_form_original_y", originalPos.getY());
-        player.getPersistentData().putInt("astral_form_original_z", originalPos.getZ());
+        player.getPersistentData().putDouble("astral_form_original_x", player.getX());
+        player.getPersistentData().putDouble("astral_form_original_y", player.getY());
+        player.getPersistentData().putDouble("astral_form_original_z", player.getZ());
+        player.getPersistentData().putFloat("astral_form_original_yaw", player.getYRot());
+        player.getPersistentData().putFloat("astral_form_original_pitch", player.getXRot());
+
+        summonAstralForm(player);
 
         serverPlayer.setGameMode(GameType.SPECTATOR);
 
@@ -40,20 +48,30 @@ public class AstralFormHandler {
     public static void leaveAstralForm(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
 
-        BlockPos originalPos = new BlockPos(
-                player.getPersistentData().getInt("astral_form_original_x"),
-                player.getPersistentData().getInt("astral_form_original_y"),
-                player.getPersistentData().getInt("astral_form_original_z")
-        );
-        player.teleportTo(originalPos.getX(), originalPos.getY(), originalPos.getZ());
+        double originalX = player.getPersistentData().getDouble("astral_form_original_x");
+        double originalY = player.getPersistentData().getDouble("astral_form_original_y");
+        double originalZ = player.getPersistentData().getDouble("astral_form_original_z");
+        float originalYaw = player.getPersistentData().getFloat("astral_form_original_yaw");
+        float originalPitch = player.getPersistentData().getFloat("astral_form_original_pitch");
+
+        removeAstralFormEntity(player);
+
+        player.teleportTo(originalX, originalY, originalZ);
+        player.setYRot(originalYaw);
+        player.setXRot(originalPitch);
 
         serverPlayer.setGameMode(GameType.SURVIVAL);
 
         player.getPersistentData().remove("astral_form_original_x");
         player.getPersistentData().remove("astral_form_original_y");
         player.getPersistentData().remove("astral_form_original_z");
+        player.getPersistentData().remove("astral_form_original_yaw");
+        player.getPersistentData().remove("astral_form_original_pitch");
+        player.getPersistentData().remove("astral_form_entity_id");
 
         setInAstralForm(player, false);
+
+        player.displayClientMessage(Component.literal(" "), true);
     }
 
     /**
@@ -80,9 +98,9 @@ public class AstralFormHandler {
     public static void checkDistanceAndSnapback(Player player, double warningDistance, double maxDistance) {
         ((IAttachmentHolder) player).getExistingData(ModAttachments.IN_ASTRAL_FORM.get()).ifPresent(inAstralForm -> {
             if (inAstralForm) {
-                double startX = player.getPersistentData().getInt("astral_form_original_x");
-                double startY = player.getPersistentData().getInt("astral_form_original_y");
-                double startZ = player.getPersistentData().getInt("astral_form_original_z");
+                double startX = player.getPersistentData().getDouble("astral_form_original_x");
+                double startY = player.getPersistentData().getDouble("astral_form_original_y");
+                double startZ = player.getPersistentData().getDouble("astral_form_original_z");
 
                 double currentX = player.getX();
                 double currentY = player.getY();
@@ -100,6 +118,45 @@ public class AstralFormHandler {
                 }
             }
         });
+    }
+
+    /**
+     * Summons an AstralFormEntity near the given player.
+     *
+     * @param player The player near which the entity is to be summoned.
+     */
+    private static void summonAstralForm(Player player) {
+        if (player.level().isClientSide) return;
+
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        double x = player.getX();
+        double y = player.getY();
+        double z = player.getZ();
+        float yaw = player.getYRot();
+        float pitch = player.getXRot();
+
+        AstralFormEntity entity = ModEntities.ASTRAL_FORM.get().create(serverLevel);
+        if (entity != null) {
+            entity.moveTo(x, y, z, yaw, pitch);
+            serverLevel.addFreshEntity(entity);
+            player.getPersistentData().putUUID("astral_form_entity_id", entity.getUUID());
+        }
+    }
+
+    /**
+     * Removes the AstralFormEntity associated with the player.
+     *
+     * @param player The player associated with the AstralFormEntity.
+     */
+    private static void removeAstralFormEntity(Player player) {
+        if (!(player.level() instanceof ServerLevel serverLevel)) return;
+
+        UUID entityId = player.getPersistentData().getUUID("astral_form_entity_id");
+
+        Entity entity = serverLevel.getEntity(entityId);
+        if (entity instanceof AstralFormEntity) {
+            entity.remove(Entity.RemovalReason.KILLED);
+        }
     }
 
     public static boolean shouldShowAstralWarningOverlay() {
