@@ -13,7 +13,7 @@ public class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, PathosCraft.MOD_ID);
 
     public static final DeferredHolder<EntityType<?>, EntityType<AstralFormEntity>> ASTRAL_FORM = ENTITY_TYPES.register("astral_form", () ->
-            EntityType.Builder.<AstralFormEntity>of(AstralFormEntity::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(AstralFormEntity::new, MobCategory.AMBIENT)
                 .sized(1f, 2.0f)
                 .build("astral_form")
     );

@@ -5,6 +5,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.quackiemackie.pathoscraft.entity.ModEntities;
 import net.quackiemackie.pathoscraft.entity.client.AstralFormRenderer;
 import net.quackiemackie.pathoscraft.event.EntityEvents;
+import net.quackiemackie.pathoscraft.event.GeneralEntityEvents;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
 import net.quackiemackie.pathoscraft.util.ModAttachments;
 import net.quackiemackie.pathoscraft.block.ModBlocks;
@@ -38,22 +39,17 @@ public class PathosCraft {
         modEventBus.addListener(this::commonSetup);
 
         ModCreativeModeTabs.register(modEventBus);
-
         ModItems.register(modEventBus);
-
         ModBlocks.register(modEventBus);
-
         ModEntities.register(modEventBus);
-
         ModAttachments.register(modEventBus);
-
         ModDataComponents.register(modEventBus);
-
         modEventBus.addListener(PayloadRegister::register);
+        modEventBus.addListener(this::addCreative);
 
         NeoForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(GeneralEntityEvents.class);
 
-        modEventBus.addListener(this::addCreative);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 

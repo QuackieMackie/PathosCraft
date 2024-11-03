@@ -25,7 +25,7 @@ import software.bernie.geckolib.util.RenderUtil;
 import java.util.function.Consumer;
 
 public class AstralLantern extends Item implements GeoItem {
-    private AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
+    private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
 
     public AstralLantern(Properties properties) {
         super(properties);

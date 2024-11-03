@@ -13,7 +13,7 @@ import software.bernie.geckolib.util.RenderUtil;
 import java.util.function.Consumer;
 
 public class AnimatedItem extends Item implements GeoItem {
-    private AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
+    private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
 
     public AnimatedItem(Properties properties) {
         super(properties);

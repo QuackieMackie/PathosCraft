@@ -16,3 +16,4 @@ public class EntityEvents {
         event.put(ASTRAL_FORM.get(), AstralFormEntity.createAttributes().build());
     }
 }
+
