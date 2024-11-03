@@ -60,7 +60,7 @@ public class ModItems {
             new ArrowItem(new Item.Properties().stacksTo(16)));
 
     public static final DeferredItem<Item> ASTRAL_LANTERN = ITEMS.register("astral_lantern", () ->
-            new AstralLantern(new Item.Properties().durability(25)));
+            new AstralLantern(new Item.Properties().durability(25).stacksTo(1)));
 
 
     //Edible / Drinkable

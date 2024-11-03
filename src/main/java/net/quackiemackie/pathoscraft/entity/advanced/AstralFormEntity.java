@@ -24,7 +24,7 @@ public class AstralFormEntity extends Animal implements GeoEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Animal.createLivingAttributes()
-                .add(Attributes.MAX_HEALTH, 20.0D)
+                .add(Attributes.MAX_HEALTH,  0.5D)
                 .add(Attributes.FOLLOW_RANGE, 1.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
