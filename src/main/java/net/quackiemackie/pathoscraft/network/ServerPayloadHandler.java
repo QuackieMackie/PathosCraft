@@ -6,7 +6,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
-import net.quackiemackie.pathoscraft.util.ModAttachments;
+import net.quackiemackie.pathoscraft.registers.ModAttachments;
 
 public class ServerPayloadHandler {
 

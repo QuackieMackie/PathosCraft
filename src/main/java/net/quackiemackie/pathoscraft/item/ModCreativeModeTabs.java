@@ -6,6 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.block.ModBlocks;
@@ -72,7 +74,12 @@ public class ModCreativeModeTabs {
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_tools_creative_tab"))
                     .build());
 
+    @SubscribeEvent
+    public static void addCreative(BuildCreativeModeTabContentsEvent event) {
+    }
+
     public static void register(IEventBus modEventBus) {
         CREATIVE_MODE_TAB.register(modEventBus);
+        modEventBus.addListener(ModCreativeModeTabs::addCreative);
     }
 }
