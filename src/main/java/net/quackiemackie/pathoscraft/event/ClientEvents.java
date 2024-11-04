@@ -13,8 +13,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
-import net.quackiemackie.pathoscraft.util.Keybinding;
-import net.quackiemackie.pathoscraft.util.ModAttachments;
+import net.quackiemackie.pathoscraft.registers.ModKeybinding;
+import net.quackiemackie.pathoscraft.registers.ModAttachments;
 import net.quackiemackie.pathoscraft.util.ModClientRenders;
 
 @EventBusSubscriber(modid = PathosCraft.MOD_ID)
@@ -27,11 +27,11 @@ public class ClientEvents {
 
         // Astral Form Keybind logic and action bar
         if (player instanceof IAttachmentHolder holder && holder.getData(ModAttachments.IN_ASTRAL_FORM.get())) {
-            String exitKeyMessage = Keybinding.ASTRAL_FORM_EXIT.getTranslatedKeyMessage().getString();
+            String exitKeyMessage = ModKeybinding.ASTRAL_FORM_EXIT.getTranslatedKeyMessage().getString();
             Component actionBarMessage = Component.translatable("abilities.pathoscraft.astral_form_exit", exitKeyMessage);
             player.displayClientMessage(actionBarMessage, true);
 
-            if (Keybinding.ASTRAL_FORM_EXIT.consumeClick()) {
+            if (ModKeybinding.ASTRAL_FORM_EXIT.consumeClick()) {
                 PacketDistributor.sendToServer(new AstralFormKeyPressPayload());
             }
         }
@@ -42,10 +42,12 @@ public class ClientEvents {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
 
-        if (AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && holder.getData(ModAttachments.IN_ASTRAL_FORM.get()) ) {
+        if (AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && holder.getData(ModAttachments.IN_ASTRAL_FORM.get())) {
             DeltaTracker deltaTracker = event.getPartialTick();
             float partialTicks = deltaTracker.getGameTimeDeltaPartialTick(Minecraft.getInstance().isPaused());
-            ModClientRenders.render(event.getGuiGraphics(), partialTicks);
+            ModClientRenders.renderAstralWarningOverlay(event.getGuiGraphics(), partialTicks);
+        } else if (!AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && !holder.getData(ModAttachments.IN_ASTRAL_FORM.get()) && ModClientRenders.astralFormRenderStartTime == 0){
+            ModClientRenders.resetStartTime();
         }
     }
 }

@@ -41,5 +41,6 @@
 
   "abilities.pathoscraft.astral_form_exit": "Press %s to exit Astral Form",
   "networking.pathoscraft.client.failed": "Client network error:",
-  "networking.pathoscraft.server.failed": "Server network error:"
+  "networking.pathoscraft.server.failed": "Server network error:",
+  "abilities.pathoscraft.astral_form_name": "'s Physical body"
 }

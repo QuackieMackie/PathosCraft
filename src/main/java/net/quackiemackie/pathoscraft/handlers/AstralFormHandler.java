@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.entity.ModEntities;
 import net.quackiemackie.pathoscraft.entity.advanced.AstralFormEntity;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormStatus;
-import net.quackiemackie.pathoscraft.util.ModAttachments;
+import net.quackiemackie.pathoscraft.registers.ModAttachments;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 
 import java.util.UUID;
@@ -141,6 +141,10 @@ public class AstralFormHandler {
 
             entity.getPersistentData().putUUID("astral_form_player_id", player.getUUID());
             player.getPersistentData().putUUID("astral_form_entity_id", entity.getUUID());
+
+            Component entityName = Component.literal(player.getDisplayName().getString()).append(Component.translatable("abilities.pathoscraft.astral_form_name"));
+            entity.setCustomName(entityName);
+            entity.setCustomNameVisible(true);
         }
     }
 

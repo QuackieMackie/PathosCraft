@@ -8,14 +8,19 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 
 public class ModClientRenders {
     private static final ResourceLocation WARNING_OVERLAY_TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/gui/astral_warning_overlay.png");
+    public static long astralFormRenderStartTime = 0;
 
-    public static void render(GuiGraphics guiGraphics, float partialTicks) {
+    public static void renderAstralWarningOverlay(GuiGraphics guiGraphics, float partialTicks) {
+        long elapsedTime = System.currentTimeMillis() - astralFormRenderStartTime;
+        float secondsElapsed = elapsedTime / 1000.0f;
+        float opacity = Math.min(1.0f, secondsElapsed * 0.05f);
+
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, WARNING_OVERLAY_TEXTURE);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.5F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
 
         Minecraft mc = Minecraft.getInstance();
         int width = mc.getWindow().getGuiScaledWidth();
@@ -25,5 +30,9 @@ public class ModClientRenders {
         RenderSystem.disableBlend();
         RenderSystem.depthMask(true);
         RenderSystem.enableDepthTest();
+    }
+
+    public static void resetStartTime() {
+        astralFormRenderStartTime = System.currentTimeMillis();
     }
 }
