@@ -6,6 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.block.ModBlocks;
 import net.quackiemackie.pathoscraft.item.advanced.AnimatedItem;
 import net.quackiemackie.pathoscraft.item.advanced.AstralLantern;
 import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
@@ -55,10 +56,6 @@ public class ModItems {
             new HoeItem(ModToolTiers.SADNESS, new Item.Properties()
                     .attributes(HoeItem.createAttributes(ModToolTiers.SADNESS, 5, -1.4F))));
 
-    // This was just to see if I can make it work. I didn't plan on using it yet.
-    public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () ->
-            new ArrowItem(new Item.Properties().stacksTo(16)));
-
     public static final DeferredItem<Item> ASTRAL_LANTERN = ITEMS.register("astral_lantern", () ->
             new AstralLantern(new Item.Properties().durability(25).stacksTo(1)));
 
@@ -72,6 +69,13 @@ public class ModItems {
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }
             });
+
+    //Tests
+    public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () ->
+            new ArrowItem(new Item.Properties().stacksTo(16)));
+
+    public static final DeferredItem<Item> SEED_TEST = ITEMS.register("seed_test", () ->
+            new ItemNameBlockItem(ModBlocks.SEED_TEST_BLOCK.get(), new Item.Properties().stacksTo(5)));
 
     public static final DeferredItem<Item> MANA_POTION = ITEMS.register("mana_potion", () ->
             new ManaPotion(new Item.Properties().food(ModFoodProperties.MANA_POTION)) {
