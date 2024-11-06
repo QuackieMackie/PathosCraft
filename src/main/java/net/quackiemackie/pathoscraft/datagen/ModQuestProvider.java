@@ -43,13 +43,13 @@ public class ModQuestProvider implements DataProvider {
         List<Quest> quests = new ArrayList<>();
 
         quests.add(new Quest(1, "Test Quest", "Description for test quest.", 1,
-                List.of(new QuestObjective("gather", "minecraft:dirt", 10)),
+                List.of(new QuestObjective("collect", "minecraft:dirt", 10)),
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
         quests.add(new Quest(2, "Test Quest 2", "Description for test quest 2.", 1,
-                List.of(new QuestObjective("gather", "minecraft:stone", 10),
-                        new QuestObjective("gather", "minecraft:dirt", 5)),
+                List.of(new QuestObjective("kill", "minecraft:zombie", 10),
+                        new QuestObjective("collect", "pathoscraft:raw_sadness", 5)),
                 List.of(new QuestReward("give", "minecraft:gold_ingot", 1))
         ));
 

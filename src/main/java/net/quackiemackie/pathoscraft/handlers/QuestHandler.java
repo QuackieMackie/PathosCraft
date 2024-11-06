@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.quest;
+package net.quackiemackie.pathoscraft.handlers;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.quest.Quest;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,13 +27,10 @@ public class QuestHandler {
     public void loadQuests(ResourceManager resourceManager) {
         ResourceLocation questFolder = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "quest");
 
-        // Updated listResources usage
         Map<ResourceLocation, Resource> resources = resourceManager.listResources(questFolder.getPath(), path -> path.getPath().endsWith(".json"));
 
-        // Clear existing quests to reload them.
         quests.clear();
 
-        // Iterate over each JSON file and parse the quests.
         for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
             ResourceLocation resourceLocation = entry.getKey();
             Resource resource = entry.getValue();
