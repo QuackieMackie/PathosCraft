@@ -28,8 +28,8 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.DEEPSLATE_SUNNY_ORE.get());
                         output.accept(ModBlocks.SADNESS_BLOCK.get());
                         output.accept(ModBlocks.REPAIR_BLOCK.get());
-                        output.accept(ModBlocks.SEED_TEST_BLOCK.get());
-                        output.accept(ModItems.SEED_TEST.get());
+//                        output.accept(ModBlocks.SEED_TEST_BLOCK.get());
+//                        output.accept(ModItems.SEED_TEST.get());
                     })
                     .build());
 

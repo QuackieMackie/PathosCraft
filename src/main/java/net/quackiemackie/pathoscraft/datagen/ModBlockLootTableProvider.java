@@ -22,7 +22,6 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         dropSelf(ModBlocks.REPAIR_BLOCK.get());
         dropSelf(ModBlocks.SADNESS_BLOCK.get());
-
         add(ModBlocks.DEEPSLATE_SADNESS_ORE.get(), block -> createOreDrop(ModBlocks.DEEPSLATE_SADNESS_ORE.get(), ModItems.RAW_SADNESS.get()));
         add(ModBlocks.SADNESS_ORE.get(), block -> createOreDrop(ModBlocks.SADNESS_ORE.get(), ModItems.RAW_SADNESS.get()));
         add(ModBlocks.DEEPSLATE_SUNNY_ORE.get(), block -> createOreDrop(ModBlocks.DEEPSLATE_SUNNY_ORE.get(), ModItems.RAW_SUNNY.get()));

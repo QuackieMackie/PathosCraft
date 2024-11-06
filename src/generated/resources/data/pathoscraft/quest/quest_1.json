@@ -1,0 +1,20 @@
+{
+  "id": 1,
+  "quest_description": "Description for test quest.",
+  "quest_name": "Test Quest",
+  "quest_objectives": [
+    {
+      "action": "gather",
+      "quantity": 10,
+      "target": "minecraft:dirt"
+    }
+  ],
+  "quest_rewards": [
+    {
+      "action": "give",
+      "item": "minecraft:diamond",
+      "quantity": 1
+    }
+  ],
+  "quest_type": 1
+}

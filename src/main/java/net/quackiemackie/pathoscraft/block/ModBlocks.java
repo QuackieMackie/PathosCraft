@@ -58,14 +58,14 @@ public class ModBlocks {
                     .sound(SoundType.AMETHYST_CLUSTER)));
 
     //Tests
-    public static final DeferredBlock<Block> SEED_TEST_BLOCK = registerBlock("seed_test_block", () ->
-            new CropBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.PLANT)
-                    .noCollission()
-                    .randomTicks()
-                    .instabreak()
-                    .sound(SoundType.CROP)
-                    .pushReaction(PushReaction.DESTROY)));
+//    public static final DeferredBlock<Block> SEED_TEST_BLOCK = registerBlock("seed_test_block", () ->
+//            new CropBlock(BlockBehaviour.Properties.of()
+//                    .mapColor(MapColor.PLANT)
+//                    .noCollission()
+//                    .randomTicks()
+//                    .instabreak()
+//                    .sound(SoundType.CROP)
+//                    .pushReaction(PushReaction.DESTROY)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

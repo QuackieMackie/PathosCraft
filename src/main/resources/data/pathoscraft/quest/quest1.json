@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "questName": "Gather Dirt",
-  "questDescription": "This is a test quest, used to see if my system works.",
-  "type": 1,
-  "questObjectives": ["gather;minecraft:dirt;10"],
-  "questRewards": ["give;minecraft:diamond;1"]
-}

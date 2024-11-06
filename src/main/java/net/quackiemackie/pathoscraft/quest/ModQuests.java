@@ -1,30 +1,46 @@
 package net.quackiemackie.pathoscraft.quest;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.registers.RegisterRegistry;
 
-import java.util.List;
-import java.util.function.Supplier;
+import java.util.logging.Logger;
 
+/**
+ * ModQuests class handles the registration of custom quests within the PathosCraft mod.
+ *
+ * <p>This class is responsible for setting up a custom registry for quests defined as JSON files
+ * in the data pack directory. It subscribes to the <code>DataPackRegistryEvent.NewRegistry</code>
+ * event to register the custom quest registry, allowing the game to load quest data from the specified path.</p>
+ *
+ * <p>The quests data is expected to be stored in <code>data/mod_id/quest/</code></p>
+ *
+ * <p>This class is annotated with <code>@EventBusSubscriber</code> to automatically register event handlers
+ * on the mod-specific event bus.</p>
+ */
+@EventBusSubscriber(modid = PathosCraft.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModQuests {
+    public static final ResourceKey<Registry<Quest>> QUEST_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "quest"));
 
-    public static final DeferredRegister<Quest> QUESTS = DeferredRegister.create(RegisterRegistry.QUEST_REGISTRY_KEY, PathosCraft.MOD_ID);
-
-    public static final Supplier<Quest> TEST_QUEST = QUESTS.register("test_quest", () -> new Quest(
-            1,
-            "Test Name",
-            "A test quest.",
-            1,
-            List.of(
-                    new QuestObjective("gather", "minecraft:dirt", 10)
-            ),
-            List.of(
-                    new QuestReward("give", "minecraft:diamond", 1)
-            )));
-
-    public static void register(IEventBus modEventBus){
-        QUESTS.register(modEventBus);
+    /**
+     * Event handler for the DataPackRegistryEvent.NewRegistry event.
+     *
+     * <p>This method registers the quest registry and its codecs. It ensures that quest data will be loaded
+     * from the specified JSON files within the mod's data pack directory.</p>
+     *
+     * @param event the event instance representing the new data pack registry.
+     */
+    @SubscribeEvent
+    public static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        try {
+            event.dataPackRegistry(QUEST_REGISTRY_KEY, Quest.CODEC, Quest.CODEC);
+            Logger.getLogger(PathosCraft.MOD_ID).info("Quest registry key & data pack registered.");
+        } catch (Exception e) {
+            Logger.getLogger(PathosCraft.MOD_ID).info("Failed to register quest registry key & data pack: " + e.getMessage());
+        }
     }
 }
