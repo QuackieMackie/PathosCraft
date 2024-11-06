@@ -1,15 +1,16 @@
 package net.quackiemackie.pathoscraft.item.advanced;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.item.client.AnimatedItemRenderer;
-import net.quackiemackie.pathoscraft.quest.ModQuests;
 import net.quackiemackie.pathoscraft.quest.Quest;
+import net.quackiemackie.pathoscraft.quest.QuestHandler;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -18,6 +19,7 @@ import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.RenderUtil;
 
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 public class AnimatedItem extends Item implements GeoItem {
     private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
@@ -61,29 +63,27 @@ public class AnimatedItem extends Item implements GeoItem {
         return RenderUtil.getCurrentTick();
     }
 
-//    @Override
-//    public InteractionResult useOn(UseOnContext context){
-//        Level level = context.getLevel();
-//
-//
-//        if (!level.isClientSide) {
-//            ServerLevel serverLevel = (ServerLevel) level;
-//            MinecraftServer server = serverLevel.getServer();
-//
-//            int questId = 1;
-//            Quest quest = ModQuests.getQuestById(server, questId);
-//
-//            if (quest != null) {
-//                System.out.println("Quest Id: " + quest.getId());
-//                System.out.println("Quest Name: " + quest.getQuestName());
-//                System.out.println("Quest Description: " + quest.getQuestDescription());
-//                System.out.println("Quest questType: " + quest.getQuestType());
-//                System.out.println("Quest questObjective: " + quest.getQuestObjectives());
-//                System.out.println("Quest questRewards: " + quest.getQuestRewards());
-//            } else {
-//                System.out.println("Quest with ID " + questId + " not found!");
-//            }
-//        }
-//        return super.useOn(context);
-//    }
+    @Override
+    public InteractionResult useOn(UseOnContext context){
+        Player player = context.getPlayer();
+        Level world = context.getLevel();
+
+        if (!world.isClientSide && player != null) {
+            QuestHandler questHandler = PathosCraft.getQuestHandler();
+            if (questHandler != null) {
+                for (Quest quest : questHandler.getQuests()) {
+                    String questInfo = "Quest ID: " + quest.getId()
+                            + ", Name: " + quest.getQuestName()
+                            + ", Description: " + quest.getQuestDescription();
+
+                    player.sendSystemMessage(Component.literal(questInfo));
+                    Logger.getLogger(PathosCraft.MOD_ID).info(questInfo);
+                }
+            } else {
+                player.sendSystemMessage(Component.literal("QuestHandler is not available"));
+            }
+        }
+
+        return super.useOn(context);
+    }
 }

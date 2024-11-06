@@ -74,8 +74,8 @@ public class ModItems {
     public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () ->
             new ArrowItem(new Item.Properties().stacksTo(16)));
 
-    public static final DeferredItem<Item> SEED_TEST = ITEMS.register("seed_test", () ->
-            new ItemNameBlockItem(ModBlocks.SEED_TEST_BLOCK.get(), new Item.Properties().stacksTo(5)));
+//    public static final DeferredItem<Item> SEED_TEST = ITEMS.register("seed_test", () ->
+//            new ItemNameBlockItem(ModBlocks.SEED_TEST_BLOCK.get(), new Item.Properties().stacksTo(5)));
 
     public static final DeferredItem<Item> MANA_POTION = ITEMS.register("mana_potion", () ->
             new ManaPotion(new Item.Properties().food(ModFoodProperties.MANA_POTION)) {

@@ -9,11 +9,11 @@ public class Quest {
 
     public static final Codec<Quest> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("id").forGetter(Quest::getId),
-            Codec.STRING.fieldOf("questName").forGetter(Quest::getQuestName),
-            Codec.STRING.fieldOf("questDescription").forGetter(Quest::getQuestDescription),
-            Codec.INT.fieldOf("type").forGetter(Quest::getQuestType),
-            QuestObjective.CODEC.listOf().fieldOf("questObjectives").forGetter(Quest::getQuestObjectives),
-            QuestReward.CODEC.listOf().fieldOf("questRewards").forGetter(Quest::getQuestRewards)
+            Codec.STRING.fieldOf("quest_name").forGetter(Quest::getQuestName),
+            Codec.STRING.fieldOf("quest_description").forGetter(Quest::getQuestDescription),
+            Codec.INT.fieldOf("quest_type").forGetter(Quest::getQuestType),
+            QuestObjective.CODEC.listOf().fieldOf("quest_objectives").forGetter(Quest::getQuestObjectives),
+            QuestReward.CODEC.listOf().fieldOf("quest_rewards").forGetter(Quest::getQuestRewards)
     ).apply(instance, Quest::new));
 
     private final int id;

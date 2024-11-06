@@ -1,0 +1,25 @@
+{
+  "id": 2,
+  "quest_description": "Description for test quest 2.",
+  "quest_name": "Test Quest 2",
+  "quest_objectives": [
+    {
+      "action": "gather",
+      "quantity": 10,
+      "target": "minecraft:stone"
+    },
+    {
+      "action": "gather",
+      "quantity": 5,
+      "target": "minecraft:dirt"
+    }
+  ],
+  "quest_rewards": [
+    {
+      "action": "give",
+      "item": "minecraft:gold_ingot",
+      "quantity": 1
+    }
+  ],
+  "quest_type": 1
+}
