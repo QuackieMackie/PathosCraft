@@ -4,7 +4,7 @@
   "quest_name": "Test Quest",
   "quest_objectives": [
     {
-      "action": "gather",
+      "action": "collect",
       "quantity": 10,
       "target": "minecraft:dirt"
     }

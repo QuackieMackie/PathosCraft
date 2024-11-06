@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.item.client.AnimatedItemRenderer;
 import net.quackiemackie.pathoscraft.quest.Quest;
-import net.quackiemackie.pathoscraft.quest.QuestHandler;
+import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -79,6 +79,14 @@ public class AnimatedItem extends Item implements GeoItem {
                     player.sendSystemMessage(Component.literal(questInfo));
                     Logger.getLogger(PathosCraft.MOD_ID).info(questInfo);
                 }
+
+                Quest questId = questHandler.getQuestById(1);
+                String questInfo = "Quest ID: " + questId.getId()
+                        + ", Name: " + questId.getQuestName()
+                        + ", Description: " + questId.getQuestDescription()
+                        + ", Objective: " + questId.getQuestObjectives()
+                        + ", Reward: " + questId.getQuestRewards();
+                Logger.getLogger(PathosCraft.MOD_ID).info(questInfo);
             } else {
                 player.sendSystemMessage(Component.literal("QuestHandler is not available"));
             }

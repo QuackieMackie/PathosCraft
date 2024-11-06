@@ -1,16 +1,14 @@
 package net.quackiemackie.pathoscraft;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.quackiemackie.pathoscraft.entity.ModEntities;
 import net.quackiemackie.pathoscraft.entity.client.AstralFormRenderer;
 import net.quackiemackie.pathoscraft.event.GeneralEntityEvents;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
-import net.quackiemackie.pathoscraft.quest.QuestHandler;
+import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.registers.ModAttachments;
 import net.quackiemackie.pathoscraft.block.ModBlocks;
 import net.quackiemackie.pathoscraft.registers.ModDataComponents;

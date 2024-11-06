@@ -4,14 +4,14 @@
   "quest_name": "Test Quest 2",
   "quest_objectives": [
     {
-      "action": "gather",
+      "action": "kill",
       "quantity": 10,
-      "target": "minecraft:stone"
+      "target": "minecraft:zombie"
     },
     {
-      "action": "gather",
+      "action": "collect",
       "quantity": 5,
-      "target": "minecraft:dirt"
+      "target": "pathoscraft:raw_sadness"
     }
   ],
   "quest_rewards": [

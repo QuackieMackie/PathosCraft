@@ -6,7 +6,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.block.ModBlocks;
 import net.quackiemackie.pathoscraft.item.advanced.AnimatedItem;
 import net.quackiemackie.pathoscraft.item.advanced.AstralLantern;
 import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
