@@ -29,5 +29,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         handheldItem(ModItems.SADNESS_SHOVEL.get());
         handheldItem(ModItems.SADNESS_HOE.get());
 
+        handheldItem(ModItems.QUEST_BOOK.get());
     }
 }

@@ -9,6 +9,7 @@
       "target": "minecraft:dirt"
     }
   ],
+  "quest_preceding": 0,
   "quest_rewards": [
     {
       "action": "give",

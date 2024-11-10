@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class QuestHandler {
-    private final List<Quest> quests = new ArrayList<>();
+    private static final List<Quest> quests = new ArrayList<>();
 
     /**
      * Loads quests from the JSON files in the specified directory.
@@ -52,7 +52,7 @@ public class QuestHandler {
      *
      * @return the list of loaded quests.
      */
-    public List<Quest> getQuests() {
+    public static List<Quest> getQuests() {
         return quests;
     }
 
@@ -62,7 +62,7 @@ public class QuestHandler {
      * @param questId the ID of the quest to find.
      * @return the quest with the specified ID, or null if not found.
      */
-    public Quest getQuestById(int questId) {
+    public static Quest getQuestById(int questId) {
         return quests.stream()
                 .filter(quest -> quest.getId() == questId)
                 .findFirst()

@@ -6,10 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.item.advanced.AnimatedItem;
-import net.quackiemackie.pathoscraft.item.advanced.AstralLantern;
-import net.quackiemackie.pathoscraft.item.advanced.JumpWand;
-import net.quackiemackie.pathoscraft.item.advanced.ManaPotion;
+import net.quackiemackie.pathoscraft.item.advanced.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -87,6 +84,10 @@ public class ModItems {
 
     public static final DeferredItem<Item> ANIMATED_ITEM = ITEMS.register("animated_item", () ->
             new AnimatedItem(new Item.Properties()));
+
+    // Special
+    public static final DeferredItem<Item> QUEST_BOOK = ITEMS.register("quest_book", () ->
+            new QuestBook(new Item.Properties()));
 
     public static void register(IEventBus modEventBus){
         ITEMS.register(modEventBus);

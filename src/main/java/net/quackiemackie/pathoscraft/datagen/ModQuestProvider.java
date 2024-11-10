@@ -23,6 +23,7 @@ public class ModQuestProvider implements DataProvider {
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .serializeNulls()
             .create();
 
     public ModQuestProvider(PackOutput output) {
@@ -36,18 +37,18 @@ public class ModQuestProvider implements DataProvider {
 
     @Override
     public String getName() {
-        return "PathosCraft Data pack";
+        return "PathosCraft Quests";
     }
 
     private CompletableFuture<?> generateQuests(CachedOutput cache, Path outputFolder) {
         List<Quest> quests = new ArrayList<>();
 
-        quests.add(new Quest(1, "Test Quest", "Description for test quest.", 1,
+        quests.add(new Quest(1, "Test Quest", "Description for test quest.", 1, 0,
                 List.of(new QuestObjective("collect", "minecraft:dirt", 10)),
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
-        quests.add(new Quest(2, "Test Quest 2", "Description for test quest 2.", 1,
+        quests.add(new Quest(2, "Test Quest 2", "Description for test quest 2.", 1, 1,
                 List.of(new QuestObjective("kill", "minecraft:zombie", 10),
                         new QuestObjective("collect", "pathoscraft:raw_sadness", 5)),
                 List.of(new QuestReward("give", "minecraft:gold_ingot", 1))

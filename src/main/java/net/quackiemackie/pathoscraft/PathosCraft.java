@@ -6,7 +6,9 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.quackiemackie.pathoscraft.entity.ModEntities;
 import net.quackiemackie.pathoscraft.entity.client.AstralFormRenderer;
+import net.quackiemackie.pathoscraft.entity.client.SpiderMountRenderer;
 import net.quackiemackie.pathoscraft.event.GeneralEntityEvents;
+import net.quackiemackie.pathoscraft.gui.ModMenu;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
 import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.registers.ModAttachments;
@@ -35,8 +37,7 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 public class PathosCraft {
 
     //TODO:
-    // - When quests are in place, they quest name and description need to be translatable.
-    // - Add an option to create quest chains, which would reference the quest IDs of preceding quests.
+    // - When quests are in place, the quest name and description need to be translatable.
 
 
     public static final String MOD_ID = "pathoscraft";
@@ -55,6 +56,7 @@ public class PathosCraft {
         ModEntities.register(modEventBus);
         ModAttachments.register(modEventBus);
         ModDataComponents.register(modEventBus);
+        ModMenu.MENUS.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -77,6 +79,7 @@ public class PathosCraft {
         @SubscribeEvent
         public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(ModEntities.ASTRAL_FORM.get(), AstralFormRenderer::new);
+            event.registerEntityRenderer(ModEntities.SPIDER_MOUNT.get(), SpiderMountRenderer::new);
         }
 
         @SubscribeEvent
