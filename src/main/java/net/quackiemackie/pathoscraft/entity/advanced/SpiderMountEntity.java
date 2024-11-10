@@ -5,12 +5,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +25,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.quackiemackie.pathoscraft.util.ModTags;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -35,22 +39,22 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
 
     private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(SpiderMountEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(SpiderMountEntity.class, EntityDataSerializers.BYTE);
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     // Animations
     private final RawAnimation walkAnimation = RawAnimation.begin().thenLoop("animation.spider_mount.walk");
     private final RawAnimation eatAnimation = RawAnimation.begin().thenPlay("animation.spider_mount.eat");
-    private final RawAnimation crouchAnimation = RawAnimation.begin().thenPlay("animation.spider_mount.crouch");
-    private final RawAnimation jumpAnimation = RawAnimation.begin().thenPlay("animation.spider_mount.walk");
 
     private boolean isEating = false;
-    private float eatAnim;
-    private float eatAnimO;
+    private float eatAnim = 0.0F;
+    private float eatAnimO = 0.0F;
 
     public SpiderMountEntity(EntityType<? extends SpiderMountEntity> entityType, Level level) {
         super(entityType, level);
@@ -59,10 +63,12 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
     // Goal Registration
     @Override
     protected void registerGoals() {
+        Predicate<ItemStack> temptationItems = (stack) -> stack.is(ModTags.EntityFood.SPIDER_MOUNT_FOOD);
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8D));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1.0D, temptationItems, false));
+        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(5, new RandomStrollGoal(this, 0.8D));
     }
 
     // Attribute Registration
@@ -70,9 +76,8 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
         return Animal.createLivingAttributes()
                 .add(Attributes.MAX_HEALTH, 50.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.JUMP_STRENGTH, 0.5D)
-                .add(Attributes.FOLLOW_RANGE, 32.0D)
-                .add(Attributes.ATTACK_DAMAGE, 10.0D);
+                .add(Attributes.JUMP_STRENGTH, 0.7D)
+                .add(Attributes.FOLLOW_RANGE, 32.0D);
     }
 
     // Synched Data
@@ -80,6 +85,32 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(OWNER_UUID, Optional.empty());
+        builder.define(DATA_FLAGS_ID, (byte)0);
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level level) {
+        return new WallClimberNavigation(this, level);
+    }
+
+    public boolean isClimbing() {
+        return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
+    }
+
+    public void setClimbing(boolean climbing) {
+        byte b0 = this.entityData.get(DATA_FLAGS_ID);
+        if (climbing) {
+            b0 = (byte)(b0 | 1);
+        } else {
+            b0 = (byte)(b0 & -2);
+        }
+
+        this.entityData.set(DATA_FLAGS_ID, b0);
+    }
+
+    @Override
+    public boolean onClimbable() {
+        return this.isClimbing();
     }
 
     // Interaction Handling
@@ -91,11 +122,11 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
             if (!player.getAbilities().instabuild) {
                 itemStack.shrink(1);
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
-        if (!this.level().isClientSide && !player.isShiftKeyDown()) {
+        if (!this.level().isClientSide() && !player.isShiftKeyDown()) {
             this.doPlayerRide(player);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
         return InteractionResult.PASS;
     }
@@ -124,7 +155,7 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         AnimationController<SpiderMountEntity> moveController = new AnimationController<>(this, "moveController", 5, this::movePredicate);
-        AnimationController<SpiderMountEntity> eatController = new AnimationController<>(this, "eatController", 5, this::eatPredicate);
+        AnimationController<SpiderMountEntity> eatController = new AnimationController<>(this, "eatController", 2, this::eatPredicate);
 
         controllers.add(moveController);
         controllers.add(eatController);
@@ -156,7 +187,7 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
         super.tick();
 
         this.eatAnimO = this.eatAnim;
-        if (this.isEating()) {
+        if (this.isEating) {
             this.eatAnim += (1.0F - this.eatAnim) * 0.4F + 0.05F;
             if (this.eatAnim > 1.0F) {
                 this.eatAnim = 1.0F;
@@ -167,6 +198,10 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
             if (this.eatAnim < 0.0F) {
                 this.eatAnim = 0.0F;
             }
+        }
+
+        if (!this.level().isClientSide) {
+            this.setClimbing(this.horizontalCollision);
         }
     }
 
@@ -197,6 +232,12 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
 
             if (this.onGround()) {
                 this.setIsJumping(false);
+            }
+
+            this.setClimbing(this.horizontalCollision);
+
+            if (this.isClimbing()) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0.0, 0.2, 0.0));
             }
         }
     }
@@ -245,6 +286,7 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
 
     @Override
     public void handleStopJump() {
+        this.setIsJumping(false);
     }
 
     @Override
@@ -270,31 +312,28 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
         double d0 = this.getX() + direction.x;
         double d1 = this.getBoundingBox().minY;
         double d2 = this.getZ() + direction.z;
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+        BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 
         for (Pose pose : passenger.getDismountPoses()) {
-            blockpos$mutableblockpos.set(d0, d1, d2);
+            blockPos.set(d0, d1, d2);
             double d3 = this.getBoundingBox().maxY + 0.75;
 
             do {
-                double d4 = this.level().getBlockFloorHeight(blockpos$mutableblockpos);
-                if (blockpos$mutableblockpos.getY() + d4 > d3) {
+                double d4 = this.level().getBlockFloorHeight(blockPos);
+                if (blockPos.getY() + d4 > d3) {
                     break;
                 }
-
                 if (DismountHelper.isBlockFloorValid(d4)) {
                     AABB aabb = passenger.getLocalBoundsForPose(pose);
-                    Vec3 vec3 = new Vec3(d0, blockpos$mutableblockpos.getY() + d4, d2);
+                    Vec3 vec3 = new Vec3(d0, blockPos.getY() + d4, d2);
                     if (DismountHelper.canDismountTo(this.level(), passenger, aabb.move(vec3))) {
                         passenger.setPose(pose);
                         return vec3;
                     }
                 }
-
-                blockpos$mutableblockpos.move(Direction.UP);
-            } while (blockpos$mutableblockpos.getY() < d3);
+                blockPos.move(Direction.UP);
+            } while (blockPos.getY() < d3);
         }
-
         return null;
     }
 
@@ -303,15 +342,15 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
         Vec3 vec3 = getCollisionHorizontalEscapeVector(
                 this.getBbWidth(), livingEntity.getBbWidth(), this.getYRot() + (livingEntity.getMainArm() == HumanoidArm.RIGHT ? 90.0F : -90.0F)
         );
-        Vec3 vec31 = this.getDismountLocationInDirection(vec3, livingEntity);
-        if (vec31 != null) {
-            return vec31;
+        Vec3 vec3Direction = this.getDismountLocationInDirection(vec3, livingEntity);
+        if (vec3Direction != null) {
+            return vec3Direction;
         } else {
-            Vec3 vec32 = getCollisionHorizontalEscapeVector(
+            vec3 = getCollisionHorizontalEscapeVector(
                     this.getBbWidth(), livingEntity.getBbWidth(), this.getYRot() + (livingEntity.getMainArm() == HumanoidArm.LEFT ? 90.0F : -90.0F)
             );
-            Vec3 vec33 = this.getDismountLocationInDirection(vec32, livingEntity);
-            return vec33 != null ? vec33 : this.position();
+            vec3Direction = this.getDismountLocationInDirection(vec3, livingEntity);
+            return vec3Direction != null ? vec3Direction : this.position();
         }
     }
 }

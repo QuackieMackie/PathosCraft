@@ -1,9 +1,12 @@
 package net.quackiemackie.pathoscraft.datagen;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.quackiemackie.pathoscraft.PathosCraft;
@@ -35,5 +38,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 .add(ModItems.SADNESS_SHOVEL.get());
         tag(ItemTags.HOES)
                 .add(ModItems.SADNESS_HOE.get());
+
+        tag(ModTags.EntityFood.SPIDER_MOUNT_FOOD)
+                .add(Items.CHICKEN, Items.PORKCHOP, Items.BEEF, Items.MUTTON, Items.RABBIT)
+                .add(Items.COOKED_CHICKEN, Items.COOKED_PORKCHOP, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT);
     }
 }

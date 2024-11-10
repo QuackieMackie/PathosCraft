@@ -29,4 +29,12 @@ public class ModTags {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, name));
         }
     }
+
+    public static class EntityFood {
+        public static final TagKey<Item> SPIDER_MOUNT_FOOD = createTag("spider_mount_food");
+
+        private static TagKey<Item> createTag(String name) {
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, name));
+        }
+    }
 }

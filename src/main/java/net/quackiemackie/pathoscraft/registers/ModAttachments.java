@@ -9,6 +9,9 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 
 import java.util.function.Supplier;
 
+// Use the player data attachment to store completed quests to the player.
+// SavedData is for offline player information, online players this will be fine.
+
 /**
  * Handles the registration and management of mod attachments for the PathosCraft mod.
  */
@@ -18,6 +21,10 @@ public class ModAttachments {
 
     public static final Supplier<AttachmentType<Boolean>> IN_ASTRAL_FORM = ATTACHMENT_TYPES.register(
             "in_astral_form", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).build()
+    );
+
+    public static final Supplier<AttachmentType<String>> COMPLETED_QUESTS = ATTACHMENT_TYPES.register(
+            "completed_quests", () -> AttachmentType.builder(() -> "").serialize(Codec.STRING).build()
     );
 
     public static void register(IEventBus modEventBus) {
