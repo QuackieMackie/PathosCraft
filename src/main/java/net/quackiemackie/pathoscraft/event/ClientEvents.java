@@ -13,9 +13,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
-import net.quackiemackie.pathoscraft.registers.ModKeybinding;
-import net.quackiemackie.pathoscraft.registers.ModAttachments;
-import net.quackiemackie.pathoscraft.util.ModClientRenders;
+import net.quackiemackie.pathoscraft.registers.PathosKeybinding;
+import net.quackiemackie.pathoscraft.registers.PathosAttachments;
+import net.quackiemackie.pathoscraft.registers.PathosClientRenders;
 
 @EventBusSubscriber(modid = PathosCraft.MOD_ID)
 public class ClientEvents {
@@ -26,12 +26,12 @@ public class ClientEvents {
         Player player = minecraft.player;
 
         // Astral Form Keybind logic and action bar
-        if (player instanceof IAttachmentHolder holder && holder.getData(ModAttachments.IN_ASTRAL_FORM.get())) {
-            String exitKeyMessage = ModKeybinding.ASTRAL_FORM_EXIT.getTranslatedKeyMessage().getString();
+        if (player instanceof IAttachmentHolder holder && holder.getData(PathosAttachments.IN_ASTRAL_FORM.get())) {
+            String exitKeyMessage = PathosKeybinding.ASTRAL_FORM_EXIT.getTranslatedKeyMessage().getString();
             Component actionBarMessage = Component.translatable("abilities.pathoscraft.astral_form_exit", exitKeyMessage);
             player.displayClientMessage(actionBarMessage, true);
 
-            if (ModKeybinding.ASTRAL_FORM_EXIT.consumeClick()) {
+            if (PathosKeybinding.ASTRAL_FORM_EXIT.consumeClick()) {
                 PacketDistributor.sendToServer(new AstralFormKeyPressPayload());
             }
         }
@@ -42,12 +42,12 @@ public class ClientEvents {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
 
-        if (AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && holder.getData(ModAttachments.IN_ASTRAL_FORM.get())) {
+        if (AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && holder.getData(PathosAttachments.IN_ASTRAL_FORM.get())) {
             DeltaTracker deltaTracker = event.getPartialTick();
             float partialTicks = deltaTracker.getGameTimeDeltaPartialTick(Minecraft.getInstance().isPaused());
-            ModClientRenders.renderAstralWarningOverlay(event.getGuiGraphics(), partialTicks);
-        } else if (!AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && !holder.getData(ModAttachments.IN_ASTRAL_FORM.get()) && ModClientRenders.astralFormRenderStartTime == 0){
-            ModClientRenders.resetStartTime();
+            PathosClientRenders.renderAstralWarningOverlay(event.getGuiGraphics(), partialTicks);
+        } else if (!AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && !holder.getData(PathosAttachments.IN_ASTRAL_FORM.get()) && PathosClientRenders.astralFormRenderStartTime == 0){
+            PathosClientRenders.resetStartTime();
         }
     }
 }

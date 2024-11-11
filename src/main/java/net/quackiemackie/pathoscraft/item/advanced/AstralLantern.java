@@ -12,9 +12,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
-import net.quackiemackie.pathoscraft.item.client.AstralLanternRenderer;
-import net.quackiemackie.pathoscraft.registers.ModAttachments;
-import net.quackiemackie.pathoscraft.registers.ModDataComponents;
+import net.quackiemackie.pathoscraft.item.renderer.AstralLanternRenderer;
+import net.quackiemackie.pathoscraft.registers.PathosAttachments;
+import net.quackiemackie.pathoscraft.registers.PathosDataComponents;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -71,7 +71,7 @@ public class AstralLantern extends Item implements GeoItem {
         Level level = context.getLevel();
         Player player = context.getPlayer();
 
-        if (!level.isClientSide && !player.getData(ModAttachments.IN_ASTRAL_FORM)) {
+        if (!level.isClientSide && !player.getData(PathosAttachments.IN_ASTRAL_FORM)) {
             AstralFormHandler.enterAstralForm(player);
 
             context.getItemInHand().hurtAndBreak(1, ((ServerLevel) level), context.getPlayer(), item ->
@@ -80,7 +80,7 @@ public class AstralLantern extends Item implements GeoItem {
             level.playSound(null, context.getClickedPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
             ((ServerLevel) level).sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY(), player.getZ(), 50, 0.5, 0.5, 0.5, 0.2);
 
-            context.getItemInHand().set(ModDataComponents.COORDINATES, context.getClickedPos());
+            context.getItemInHand().set(PathosDataComponents.COORDINATES, context.getClickedPos());
         }
 
         return super.useOn(context);

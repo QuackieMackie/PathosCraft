@@ -7,11 +7,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.quackiemackie.pathoscraft.entity.ModEntities;
-import net.quackiemackie.pathoscraft.entity.advanced.AstralFormEntity;
+import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormStatus;
-import net.quackiemackie.pathoscraft.registers.ModAttachments;
+import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.quackiemackie.pathoscraft.entity.PathosEntities;
 
 import java.util.UUID;
 
@@ -80,7 +80,7 @@ public class AstralFormHandler {
      * @param inAstralForm  The status of astral form to set.
      */
     public static void setInAstralForm(Player player, boolean inAstralForm) {
-        ((IAttachmentHolder) player).setData(ModAttachments.IN_ASTRAL_FORM.get(), inAstralForm);
+        ((IAttachmentHolder) player).setData(PathosAttachments.IN_ASTRAL_FORM.get(), inAstralForm);
         isInWarningDistance = false;
 
         if (player instanceof ServerPlayer serverPlayer) {
@@ -95,7 +95,7 @@ public class AstralFormHandler {
      * @param maxDistance The maximum allowable distance from the original position.
      */
     public static void checkDistanceAndSnapback(Player player, double warningDistance, double maxDistance) {
-        ((IAttachmentHolder) player).getExistingData(ModAttachments.IN_ASTRAL_FORM.get()).ifPresent(inAstralForm -> {
+        ((IAttachmentHolder) player).getExistingData(PathosAttachments.IN_ASTRAL_FORM.get()).ifPresent(inAstralForm -> {
             if (inAstralForm) {
                 double startX = player.getPersistentData().getDouble("astral_form_original_x");
                 double startY = player.getPersistentData().getDouble("astral_form_original_y");
@@ -134,7 +134,7 @@ public class AstralFormHandler {
         float yaw = player.getYRot();
         float pitch = player.getXRot();
 
-        AstralFormEntity entity = ModEntities.ASTRAL_FORM.get().create(serverLevel);
+        AstralFormEntity entity = PathosEntities.ASTRAL_FORM.get().create(serverLevel);
         if (entity != null) {
             entity.moveTo(x, y, z, yaw, pitch);
             serverLevel.addFreshEntity(entity);

@@ -4,19 +4,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.quackiemackie.pathoscraft.entity.ModEntities;
-import net.quackiemackie.pathoscraft.entity.client.AstralFormRenderer;
-import net.quackiemackie.pathoscraft.entity.client.SpiderMountRenderer;
+import net.quackiemackie.pathoscraft.entity.PathosEntities;
+import net.quackiemackie.pathoscraft.entity.renderer.AstralFormRenderer;
+import net.quackiemackie.pathoscraft.entity.renderer.SpiderMountRenderer;
 import net.quackiemackie.pathoscraft.event.GeneralEntityEvents;
-import net.quackiemackie.pathoscraft.gui.ModMenu;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
 import net.quackiemackie.pathoscraft.handlers.QuestHandler;
-import net.quackiemackie.pathoscraft.registers.ModAttachments;
-import net.quackiemackie.pathoscraft.block.ModBlocks;
-import net.quackiemackie.pathoscraft.registers.ModDataComponents;
-import net.quackiemackie.pathoscraft.item.ModCreativeModeTabs;
-import net.quackiemackie.pathoscraft.item.ModItems;
-import net.quackiemackie.pathoscraft.registers.ModKeybinding;
+import net.quackiemackie.pathoscraft.registers.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -41,7 +35,7 @@ public class PathosCraft {
 
 
     public static final String MOD_ID = "pathoscraft";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     private static final QuestHandler QUEST_HANDLER = new QuestHandler();
 
     public PathosCraft(IEventBus modEventBus, ModContainer modContainer) {
@@ -50,13 +44,7 @@ public class PathosCraft {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         modEventBus.addListener(PayloadRegister::register);
         NeoForge.EVENT_BUS.register(GeneralEntityEvents.class);
-        ModItems.register(modEventBus);
-        ModCreativeModeTabs.register(modEventBus);
-        ModBlocks.register(modEventBus);
-        ModEntities.register(modEventBus);
-        ModAttachments.register(modEventBus);
-        ModDataComponents.register(modEventBus);
-        ModMenu.MENUS.register(modEventBus);
+        PathosRegisters.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -67,7 +55,6 @@ public class PathosCraft {
         MinecraftServer server = event.getServer();
         ResourceManager resourceManager = server.getResourceManager();
         QUEST_HANDLER.loadQuests(resourceManager);
-        LOGGER.info("Quests loaded: " + QUEST_HANDLER.getQuests().size());
     }
 
     @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -77,14 +64,14 @@ public class PathosCraft {
         }
 
         @SubscribeEvent
-        public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(ModEntities.ASTRAL_FORM.get(), AstralFormRenderer::new);
-            event.registerEntityRenderer(ModEntities.SPIDER_MOUNT.get(), SpiderMountRenderer::new);
+        public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+            event.register(PathosKeybinding.PATHOSCRAFT_KEYMAPPING.get());
         }
 
         @SubscribeEvent
-        public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
-            ModKeybinding.registerBindings(event);
+        public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerEntityRenderer(PathosEntities.ASTRAL_FORM.get(), AstralFormRenderer::new);
+            event.registerEntityRenderer(PathosEntities.SPIDER_MOUNT.get(), SpiderMountRenderer::new);
         }
     }
 

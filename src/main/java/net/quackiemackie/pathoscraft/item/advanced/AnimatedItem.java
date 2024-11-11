@@ -2,7 +2,7 @@ package net.quackiemackie.pathoscraft.item.advanced;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.Item;
-import net.quackiemackie.pathoscraft.item.client.AnimatedItemRenderer;
+import net.quackiemackie.pathoscraft.item.renderer.AnimatedItemRenderer;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;

@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -20,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.quackiemackie.pathoscraft.util.ModTags;
+import net.quackiemackie.pathoscraft.registers.PathosTags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -75,7 +74,7 @@ public class RepairBlock extends Block {
     }
 
     private boolean isValidItem(ItemStack itemStack){
-        return itemStack.is(ModTags.Items.REPAIRABLE_BLOCK_ITEMS);
+        return itemStack.is(PathosTags.Items.REPAIRABLE_BLOCK_ITEMS);
     }
 
     @Override
