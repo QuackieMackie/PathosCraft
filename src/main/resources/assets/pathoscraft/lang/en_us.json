@@ -17,6 +17,7 @@
   "item.pathoscraft.animated_item": "Test Animated Item",
   "item.pathoscraft.astral_lantern": "Astral Lantern",
   "item.pathoscraft.quest_book": "Quest Book",
+  "item.pathoscraft.creature_crystal": "Creature Crystal",
 
   "block.pathoscraft.sadness_block": "Block of Sadness",
   "block.pathoscraft.sadness_ore": "Sadness Ore",
@@ -29,7 +30,7 @@
   "creative_tab.pathoscraft.ingredients": "Ingredients",
   "creative_tab.pathoscraft.tools": "Tools",
   "creative_tab.pathoscraft.food": "Food",
-
+  "creative_tab.pathoscraft.misc": "Misc",
 
   "item.pathoscraft.jump_wand.tooltip": "Click the ground to teleport to that block!",
   "item.pathoscraft.mana_potion.tooltip": "Drinking this gives you regeneration II for 5 seconds!",
@@ -44,5 +45,8 @@
   "networking.pathoscraft.client.failed": "Client network error:",
   "networking.pathoscraft.server.failed": "Server network error:",
   "abilities.pathoscraft.astral_form_name": "'s Physical body",
-  "menu.title.pathoscraft.quest_menu": "Quest Menu"
+  "menu.title.pathoscraft.quest_menu": "Quest Menu",
+  "menu.widget.pathoscraft.quest_menu.main_quest_button": "Main Quests",
+  "menu.widget.pathoscraft.quest_menu.side_quest_button": "Side Quests",
+  "menu.widget.pathoscraft.quest_menu.optional_quest_button": "Optional Quests"
 }

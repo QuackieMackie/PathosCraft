@@ -30,5 +30,6 @@ public class PathosItemModelProvider extends ItemModelProvider {
         handheldItem(PathosItems.SADNESS_HOE.get());
 
         handheldItem(PathosItems.QUEST_BOOK.get());
+        handheldItem(PathosItems.CREATURE_CRYSTAL.get());
     }
 }

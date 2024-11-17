@@ -29,4 +29,5 @@ public class PathosItems {
     //Tests
     public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () -> new ArrowItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> ANIMATED_ITEM = ITEMS.register("animated_item", () -> new AnimatedItem(new Item.Properties()));
+    public static final DeferredItem<Item> CREATURE_CRYSTAL = ITEMS.register("creature_crystal", () -> new CreatureCrystal(new Item.Properties().stacksTo(1)));
 }

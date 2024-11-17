@@ -59,6 +59,7 @@ public class PathosCreativeModeTabs {
 
                         output.accept(PathosItems.ANIMATED_ITEM.get());
                         output.accept(PathosItems.ASTRAL_LANTERN.get());
+                        output.accept(PathosItems.CREATURE_CRYSTAL.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_ingredients_creative_tab"))
                     .build());
@@ -72,6 +73,17 @@ public class PathosCreativeModeTabs {
                         output.accept(PathosItems.MANA_POTION.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_tools_creative_tab"))
+                    .build());
+
+    public static final Supplier<CreativeModeTab> PATHOSCRAFT_MISC_TAB = CREATIVE_MODE_TAB.register("pathoscraft_misc_creative_tab", () ->
+            CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(PathosItems.QUEST_BOOK.get()))
+                    .title(Component.translatable("creative_tab.pathoscraft.misc"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(PathosItems.QUEST_BOOK.get());
+                        output.accept(PathosItems.CREATURE_CRYSTAL.get());
+                    })
+                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_food_creative_tab"))
                     .build());
 
     @SubscribeEvent

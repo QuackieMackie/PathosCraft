@@ -23,7 +23,7 @@ public class PathosRegisters {
         registerSafe(modEventBus, "entities", PathosEntities.ENTITY_TYPES::register);
         registerSafe(modEventBus, "data components", PathosDataComponents.DATA_COMPONENT_TYPE::register);
         registerSafe(modEventBus, "attachments", PathosAttachments.ATTACHMENT_TYPES::register);
-        registerSafe(modEventBus, "menus", PathosMenu.MENUS::register);
+        registerSafe(modEventBus, "menus", PathosMenu.REGISTRY::register);
 
         PathosCraft.LOGGER.info("Registration process completed.");
     }
