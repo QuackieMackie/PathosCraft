@@ -15,7 +15,7 @@ import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
 import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.quest.Quest;
 
-import java.util.logging.Logger;
+import java.util.List;
 
 public class QuestBook extends Item {
 
@@ -33,22 +33,19 @@ public class QuestBook extends Item {
                     Component.translatable("menu.title.pathoscraft.quest_menu")
             ));
 
-            for (Quest quest : QuestHandler.getQuests()) {
-                String questInfo = "Quest ID: " + quest.getId()
-                        + ", Name: " + quest.getQuestName()
-                        + ", Description: " + quest.getQuestDescription();
+            List<Quest> questsByType = QuestHandler.getQuestsByType(0);
 
-                player.sendSystemMessage(Component.literal(questInfo));
-                Logger.getLogger(PathosCraft.MOD_ID).info(questInfo);
+            StringBuilder questTypeInfoBuilder = new StringBuilder("Quest Type Test");
+            for (Quest quest : questsByType) {
+                questTypeInfoBuilder.append("\nQuest ID: ").append(quest.getId())
+                        .append(", Name: ").append(quest.getQuestName())
+                        .append(", Description: ").append(quest.getQuestDescription())
+                        .append(", Type: ").append(quest.getQuestType())
+                        .append(", Objective: ").append(quest.getQuestObjectives())
+                        .append(", Reward: ").append(quest.getQuestRewards());
             }
-
-            Quest questId = QuestHandler.getQuestById(1);
-            String questInfo = "Quest ID: " + questId.getId()
-                    + ", Name: " + questId.getQuestName()
-                    + ", Description: " + questId.getQuestDescription()
-                    + ", Objective: " + questId.getQuestObjectives()
-                    + ", Reward: " + questId.getQuestRewards();
-            Logger.getLogger(PathosCraft.MOD_ID).info(questInfo);
+            String questTypeInfo = questTypeInfoBuilder.toString();
+            PathosCraft.LOGGER.info(questTypeInfo);
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
     }

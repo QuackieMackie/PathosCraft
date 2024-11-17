@@ -43,15 +43,21 @@ public class PathosQuestProvider implements DataProvider {
     private CompletableFuture<?> generateQuests(CachedOutput cache, Path outputFolder) {
         List<Quest> quests = new ArrayList<>();
 
-        quests.add(new Quest(1, "Test Quest", "Description for test quest.", 1, 0,
+        quests.add(new Quest(1, "Main quest 1", "Description for test quest.", "minecraft:dirt", 0, 0, 0,
                 List.of(new QuestObjective("collect", "minecraft:dirt", 10)),
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
-        quests.add(new Quest(2, "Test Quest 2", "Description for test quest 2.", 1, 1,
+        quests.add(new Quest(2, "Main quest 2", "Description for test quest 2.", "minecraft:stone", 0, 1, 1,
                 List.of(new QuestObjective("kill", "minecraft:zombie", 10),
                         new QuestObjective("collect", "pathoscraft:raw_sadness", 5)),
                 List.of(new QuestReward("give", "minecraft:gold_ingot", 1))
+        ));
+
+        quests.add(new Quest(3, "Side Quest 1", "Description for test quest 3.", "minecraft:gold_block", 1, 0, 0,
+                List.of(new QuestObjective("kill", "minecraft:ghast", 10),
+                        new QuestObjective("collect", "minecraft:dirt", 5)),
+                List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
         List<CompletableFuture<?>> futures = new ArrayList<>();

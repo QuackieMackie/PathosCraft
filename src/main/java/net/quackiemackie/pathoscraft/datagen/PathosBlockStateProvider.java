@@ -26,7 +26,6 @@ public class PathosBlockStateProvider extends BlockStateProvider {
         blockWithItem(PathosBlocks.DEEPSLATE_SUNNY_ORE);
         blockWithItem(PathosBlocks.SUNNY_ORE);
         booleanBlockModelChange(PathosBlocks.REPAIR_BLOCK.get(), RepairBlock.CLICKED, "repair_block_active", "repair_block_inactive");
-
     }
 
     private void blockWithItem(DeferredBlock<?> deferredBlock) {

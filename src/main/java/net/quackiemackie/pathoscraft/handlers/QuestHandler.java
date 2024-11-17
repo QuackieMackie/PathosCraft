@@ -73,4 +73,20 @@ public class QuestHandler {
                 .findFirst()
                 .orElse(null);
     }
+
+    /**
+     * Finds quests by their type.
+     *
+     * @param questType the type of the quests to find.
+     * @return the list of quests with the specified type.
+     */
+    public static List<Quest> getQuestsByType(int questType) {
+        List<Quest> questsByType = new ArrayList<>();
+        for (Quest quest : quests) {
+            if (quest.getQuestType() == questType) {
+                questsByType.add(quest);
+            }
+        }
+        return questsByType;
+    }
 }

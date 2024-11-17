@@ -1,7 +1,8 @@
 {
   "id": 1,
   "quest_description": "Description for test quest.",
-  "quest_name": "Test Quest",
+  "quest_icon": "minecraft:dirt",
+  "quest_name": "Main quest 1",
   "quest_objectives": [
     {
       "action": "collect",
@@ -17,5 +18,6 @@
       "quantity": 1
     }
   ],
-  "quest_type": 1
+  "quest_slot": 0,
+  "quest_type": 0
 }

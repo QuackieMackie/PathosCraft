@@ -1,0 +1,28 @@
+{
+  "id": 3,
+  "quest_description": "Description for test quest 3.",
+  "quest_icon": "minecraft:gold_block",
+  "quest_name": "Side Quest 1",
+  "quest_objectives": [
+    {
+      "action": "kill",
+      "quantity": 10,
+      "target": "minecraft:ghast"
+    },
+    {
+      "action": "collect",
+      "quantity": 5,
+      "target": "minecraft:dirt"
+    }
+  ],
+  "quest_preceding": 0,
+  "quest_rewards": [
+    {
+      "action": "give",
+      "item": "minecraft:diamond",
+      "quantity": 1
+    }
+  ],
+  "quest_slot": 0,
+  "quest_type": 1
+}

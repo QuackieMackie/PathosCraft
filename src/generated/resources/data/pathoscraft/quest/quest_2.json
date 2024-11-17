@@ -1,7 +1,8 @@
 {
   "id": 2,
   "quest_description": "Description for test quest 2.",
-  "quest_name": "Test Quest 2",
+  "quest_icon": "minecraft:stone",
+  "quest_name": "Main quest 2",
   "quest_objectives": [
     {
       "action": "kill",
@@ -22,5 +23,6 @@
       "quantity": 1
     }
   ],
-  "quest_type": 1
+  "quest_slot": 1,
+  "quest_type": 0
 }

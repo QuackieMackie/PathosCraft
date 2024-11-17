@@ -48,5 +48,6 @@
   "menu.title.pathoscraft.quest_menu": "Quest Menu",
   "menu.widget.pathoscraft.quest_menu.main_quest_button": "Main Quests",
   "menu.widget.pathoscraft.quest_menu.side_quest_button": "Side Quests",
-  "menu.widget.pathoscraft.quest_menu.optional_quest_button": "Optional Quests"
+  "menu.widget.pathoscraft.quest_menu.optional_quest_button": "Optional Quests",
+  "menu.widget.pathoscraft.quest_menu.active_quest_button": "Active Quests"
 }
