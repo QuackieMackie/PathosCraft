@@ -1,0 +1,28 @@
+{
+  "id": 6,
+  "quest_description": "Description for test quest 6.",
+  "quest_icon": "pathoscraft:raw_sadness",
+  "quest_name": "Optional Quest 1",
+  "quest_objectives": [
+    {
+      "action": "kill",
+      "quantity": 10,
+      "target": "minecraft:chicken"
+    },
+    {
+      "action": "kill",
+      "quantity": 5,
+      "target": "minecraft:pig"
+    }
+  ],
+  "quest_preceding": 0,
+  "quest_rewards": [
+    {
+      "action": "give",
+      "item": "minecraft:diamond",
+      "quantity": 1
+    }
+  ],
+  "quest_slot": 0,
+  "quest_type": 2
+}

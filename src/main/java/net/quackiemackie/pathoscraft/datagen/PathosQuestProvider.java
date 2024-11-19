@@ -54,9 +54,27 @@ public class PathosQuestProvider implements DataProvider {
                 List.of(new QuestReward("give", "minecraft:gold_ingot", 1))
         ));
 
-        quests.add(new Quest(3, "Side Quest 1", "Description for test quest 3.", "minecraft:gold_block", 1, 0, 0,
+        quests.add(new Quest(3, "Main quest 3", "Description for test quest 3.", "minecraft:diamond_block", 0, 2, 2,
+                List.of(new QuestObjective("kill", "minecraft:skeleton", 10),
+                        new QuestObjective("collect", "pathoscraft:raw_sadness", 5)),
+                List.of(new QuestReward("give", "minecraft:gold_ingot", 1))
+        ));
+
+        quests.add(new Quest(4, "Main quest 4", "Description for test quest 4.", "minecraft:apple", 0, 3, 3,
+                List.of(new QuestObjective("kill", "minecraft:skeleton", 10),
+                        new QuestObjective("collect", "minecraft:apple", 5)),
+                List.of(new QuestReward("give", "minecraft:gold_ingot", 1))
+        ));
+
+        quests.add(new Quest(5, "Side Quest 1", "Description for test quest 5.", "minecraft:gold_block", 1, 0, 0,
                 List.of(new QuestObjective("kill", "minecraft:ghast", 10),
                         new QuestObjective("collect", "minecraft:dirt", 5)),
+                List.of(new QuestReward("give", "minecraft:diamond", 1))
+        ));
+
+        quests.add(new Quest(6, "Optional Quest 1", "Description for test quest 6.", "pathoscraft:raw_sadness", 2, 0, 0,
+                List.of(new QuestObjective("kill", "minecraft:chicken", 10),
+                        new QuestObjective("kill", "minecraft:pig", 5)),
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 

@@ -15,12 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-//Todo:
-// Need to add a filter for quest types, so they can be loaded into the quest menu tabs by using what type of quest they are.
-// .
-// Need to also add in an item to the quest design, the quests need an item to appear as in the quest menu, unless I just want to use a default value for that.
-// Maybe both would be a better idea.. default if it's null item if it's specified.
-
 public class QuestHandler {
     private static final List<Quest> quests = new ArrayList<>();
 

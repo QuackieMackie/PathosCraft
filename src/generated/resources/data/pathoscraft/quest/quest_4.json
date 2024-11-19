@@ -1,8 +1,8 @@
 {
-  "id": 3,
-  "quest_description": "Description for test quest 3.",
-  "quest_icon": "minecraft:diamond_block",
-  "quest_name": "Main quest 3",
+  "id": 4,
+  "quest_description": "Description for test quest 4.",
+  "quest_icon": "minecraft:apple",
+  "quest_name": "Main quest 4",
   "quest_objectives": [
     {
       "action": "kill",
@@ -12,10 +12,10 @@
     {
       "action": "collect",
       "quantity": 5,
-      "target": "pathoscraft:raw_sadness"
+      "target": "minecraft:apple"
     }
   ],
-  "quest_preceding": 2,
+  "quest_preceding": 3,
   "quest_rewards": [
     {
       "action": "give",
@@ -23,6 +23,6 @@
       "quantity": 1
     }
   ],
-  "quest_slot": 2,
+  "quest_slot": 3,
   "quest_type": 0
 }
