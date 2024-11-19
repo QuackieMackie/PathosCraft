@@ -1,5 +1,7 @@
 package net.quackiemackie.pathoscraft.gui.screen;
 
+/* imports omitted for shortness */
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,9 +14,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
+import net.quackiemackie.pathoscraft.gui.parts.QuestPageButton;
 import net.quackiemackie.pathoscraft.gui.parts.QuestSlotButton;
 import net.quackiemackie.pathoscraft.gui.parts.QuestTabButton;
-import net.quackiemackie.pathoscraft.gui.parts.QuestPageButton;
 import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.quest.QuestObjective;
@@ -22,10 +24,6 @@ import net.quackiemackie.pathoscraft.quest.QuestReward;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-//Todo:
-// Issue with slots going over 98, it adds them under the menu. I need to set a limit to 98 slots per pages.
-// I also need to actually make the page logic.
 
 public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
@@ -38,6 +36,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     QuestPageButton previousPageButton;
     QuestPageButton nextPageButton;
     private int currentPage = 1;
+    private int maxPages = 1;
 
     private static final ResourceLocation texture = ResourceLocation.parse("pathoscraft:textures/screen/quest_menu.png");
 
@@ -61,7 +60,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * @param graphics the graphics context used for rendering.
      */
     private void drawPageNumber(GuiGraphics graphics) {
-        String pageText = "Page " + currentPage;
+        String pageText = "Page " + currentPage + "/" + maxPages;
         int textWidth = Minecraft.getInstance().font.width(pageText);
         int xPos = this.leftPos + (this.imageWidth / 2) - (textWidth / 2);
         int yPos = this.topPos + this.imageHeight + 8;
@@ -96,36 +95,28 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         super.init();
 
         // Initialize and add main quest button
-        mainQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 105, 95, 20,
-                Component.translatable("menu.widget.pathoscraft.quest_menu.main_quest_button"), true, 0, button -> {
+        mainQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 105, 95, 20, Component.translatable("menu.widget.pathoscraft.quest_menu.main_quest_button"), true, 0, button -> {
             setActiveButton(mainQuestButton);
             initQuestSlotButtons();
-        }
-        );
+        });
 
         // Initialize and add side quest button
-        sideQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 75, 95, 20,
-                Component.translatable("menu.widget.pathoscraft.quest_menu.side_quest_button"), false, 1, button -> {
+        sideQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 75, 95, 20, Component.translatable("menu.widget.pathoscraft.quest_menu.side_quest_button"), false, 1, button -> {
             setActiveButton(sideQuestButton);
             initQuestSlotButtons();
-        }
-        );
+        });
 
         // Initialize and add optional quest button
-        optionalQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 45, 95, 20,
-                Component.translatable("menu.widget.pathoscraft.quest_menu.optional_quest_button"), false, 2, button -> {
+        optionalQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 45, 95, 20, Component.translatable("menu.widget.pathoscraft.quest_menu.optional_quest_button"), false, 2, button -> {
             setActiveButton(optionalQuestButton);
             initQuestSlotButtons();
-        }
-        );
+        });
 
         // Initialize and add active quests button
-        activeQuestsButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 + 75, 95, 20,
-                Component.translatable("menu.widget.pathoscraft.quest_menu.active_quest_button"), false, 3, button -> {
+        activeQuestsButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 + 75, 95, 20, Component.translatable("menu.widget.pathoscraft.quest_menu.active_quest_button"), false, 3, button -> {
             setActiveButton(activeQuestsButton);
             initQuestSlotButtons();
-        }
-        );
+        });
 
         activeButton = mainQuestButton;
 
@@ -136,6 +127,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
             public void onPress() {
                 if (currentPage > 1) {
                     currentPage--;
+                    initQuestSlotButtons();
                 }
             }
         };
@@ -145,7 +137,10 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                 20, 20, Component.literal(">"), false) {
             @Override
             public void onPress() {
-                currentPage++;
+                if (currentPage < maxPages) {
+                    currentPage++;
+                    initQuestSlotButtons();
+                }
             }
         };
 
@@ -171,6 +166,8 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
             activeButton.setActive(false);
             button.setActive(true);
             activeButton = button;
+            currentPage = 1;
+            initQuestSlotButtons();
         }
     }
 
@@ -185,37 +182,52 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         // Get quests of the active type
         List<Quest> questsByType = QuestHandler.getQuestsByType(activeButton.getQuestType());
 
-        // Create and add QuestSlotButtons for each quest
+        // Calculate the maximum number of pages
+        maxPages = questsByType.stream()
+                .mapToInt(Quest::getQuestSlot)
+                .max()
+                .orElse(0) / 99 + 1;
+
+        // Set the buttons' enabled state based on the current page and max pages
+        previousPageButton.active = currentPage > 1;
+        nextPageButton.active = currentPage < maxPages;
+
+        // Create and add QuestSlotButtons for each quest on the current page
         for (Quest quest : questsByType) {
             int slotIndex = quest.getQuestSlot();
-            int x = 8 + (slotIndex % 9) * 18;
-            int y = 18 + (slotIndex / 9) * 18;
+            int slotPage = slotIndex / 99 + 1;
 
-            ItemStack questItemStack = createQuestIconStack(quest);
+            if (slotPage == currentPage) {
+                int pageIndex = slotIndex % 99;
+                int x = 8 + (pageIndex % 9) * 18;
+                int y = 18 + (pageIndex / 9) * 18;
 
-            QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, e -> {
-                PathosCraft.LOGGER.info("Quest Button Clicked for Quest: " + quest.getQuestName());
-            });
+                ItemStack questItemStack = createQuestIconStack(quest);
 
-            // Add hover information
-            questButton.addHoverInfo(Component.literal("§7" + quest.getQuestName()));
-            questButton.addHoverInfo(Component.literal("§7" + quest.getQuestDescription()));
-            questButton.addHoverInfo(Component.literal(""));
-            questButton.addHoverInfo(Component.literal("§aObjectives:"));
-            for (QuestObjective objective : quest.getQuestObjectives()) {
-                String target = objective.getTarget().substring(objective.getTarget().indexOf(':') + 1).replace('_', ' ');
-                questButton.addHoverInfo(Component.literal("  §8- §a" + objective.getAction() + " " + objective.getQuantity() + " " + target));
+                QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, e -> {
+                    PathosCraft.LOGGER.info("Quest Button Clicked for Quest: " + quest.getQuestName());
+                });
+
+                // Add hover information
+                questButton.addHoverInfo(Component.literal("§7" + quest.getQuestName()));
+                questButton.addHoverInfo(Component.literal("§7" + quest.getQuestDescription()));
+                questButton.addHoverInfo(Component.literal(""));
+                questButton.addHoverInfo(Component.literal("§aObjectives:"));
+                for (QuestObjective objective : quest.getQuestObjectives()) {
+                    String target = objective.getTarget().substring(objective.getTarget().indexOf(':') + 1).replace('_', ' ');
+                    questButton.addHoverInfo(Component.literal("  §8- §a" + objective.getAction() + " " + objective.getQuantity() + " " + target));
+                }
+                questButton.addHoverInfo(Component.literal("§cRewards:"));
+                for (QuestReward reward : quest.getQuestRewards()) {
+                    String itemName = reward.getItem().substring(reward.getItem().indexOf(':') + 1).replace('_', ' ');
+                    questButton.addHoverInfo(Component.literal("  §8- §c" + reward.getQuantity() + " " + itemName));
+                }
+                questButton.addHoverInfo(Component.literal(""));
+                questButton.addHoverInfo(Component.literal("§7Type: §f" + (quest.getQuestType() == 0 ? "Main Quest" : "Side Quest")));
+                questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + quest.getId()));
+
+                this.addRenderableWidget(questButton);
             }
-            questButton.addHoverInfo(Component.literal("§cRewards:"));
-            for (QuestReward reward : quest.getQuestRewards()) {
-                String itemName = reward.getItem().substring(reward.getItem().indexOf(':') + 1).replace('_', ' ');
-                questButton.addHoverInfo(Component.literal("  §8- §c" + reward.getQuantity() + " " + itemName));
-            }
-            questButton.addHoverInfo(Component.literal(""));
-            questButton.addHoverInfo(Component.literal("§7Type: §f" + (quest.getQuestType() == 0 ? "Main Quest" : "Side Quest")));
-            questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + quest.getId()));
-
-            this.addRenderableWidget(questButton);
         }
     }
 
