@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -59,15 +60,29 @@ public class QuestSlotButton extends Button {
     }
 
     private void renderItem(ItemStack itemStack, int x, int y, GuiGraphics guiGraphics) {
-        Minecraft minecraft = Minecraft.getInstance();
         PoseStack poseStack = guiGraphics.pose();
-        MultiBufferSource bufferSource = minecraft.renderBuffers().bufferSource();
-        BakedModel bakedModel = minecraft.getItemRenderer().getModel(itemStack, null, minecraft.player, 0);
 
         poseStack.pushPose();
         poseStack.translate(x, y, 100.0F);
-        poseStack.scale(16.0F, -16.0F, 16.0F);
-        minecraft.getItemRenderer().render(itemStack, ItemDisplayContext.GUI, false, poseStack, bufferSource, LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY, bakedModel);
+
+        boolean isBlock = itemStack.getItem() instanceof BlockItem;
+
+        if (isBlock) {
+            poseStack.scale(16.0F, -16.0F, 16.0F);
+            renderBlockItem(itemStack, poseStack, guiGraphics);
+        } else {
+            guiGraphics.renderItem(itemStack, -8, -8);
+        }
+
         poseStack.popPose();
+    }
+
+    private void renderBlockItem(ItemStack itemStack, PoseStack poseStack, GuiGraphics guiGraphics) {
+        Minecraft minecraft = Minecraft.getInstance();
+        MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
+        BakedModel bakedModel = minecraft.getItemRenderer().getModel(itemStack, null, minecraft.player, 0);
+
+        minecraft.getItemRenderer().render(itemStack, ItemDisplayContext.GUI, false, poseStack, bufferSource, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, bakedModel);
+        bufferSource.endBatch();
     }
 }

@@ -11,16 +11,18 @@ public class QuestTabButton extends AbstractButton {
     private boolean active;
     private final int questType;
     private final OnPress onPress;
+    private boolean flipped;
 
     public interface OnPress {
         void onPress(QuestTabButton button);
     }
 
-    public QuestTabButton(int x, int y, int width, int height, Component message, boolean initialState, int questType, OnPress onPress) {
+    public QuestTabButton(int x, int y, int width, int height, Component message, boolean initialState, int questType, OnPress onPress, boolean flipped) {
         super(x, y, width, height, message);
         this.active = initialState;
         this.questType = questType;
         this.onPress = onPress;
+        this.flipped = flipped;
     }
 
     public int getQuestType() {
@@ -31,12 +33,21 @@ public class QuestTabButton extends AbstractButton {
         return active;
     }
 
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-    }
-
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isFlipped() {
+        return flipped;
+    }
+
+    public void setFlipped(boolean flipped) {
+        this.flipped = flipped;
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        // Method placeholder for narration updates
     }
 
     @Override
@@ -56,20 +67,28 @@ public class QuestTabButton extends AbstractButton {
     }
 
     private void drawRoundedRect(GuiGraphics graphics, int color, int cornerRadius) {
-        graphics.fill(this.getX() + cornerRadius, this.getY(), this.getX() + this.width, this.getY() + this.height, color);
+        int xLeft = this.getX();
+        int xRight = this.getX() + this.width;
+        int xStart = flipped ? xRight - cornerRadius : xLeft + cornerRadius;
+        int xEnd = flipped ? xLeft : xRight;
+
+        graphics.fill(xStart, this.getY(), xEnd, this.getY() + this.height, color);
+
         for (int i = 0; i < cornerRadius; i++) {
-            graphics.fill(this.getX() + i, this.getY() + i, this.getX() + cornerRadius - i, this.getY() + i + 1, color);
+            int xCornerStart = flipped ? xRight - cornerRadius + i : xLeft + i;
+            int xCornerEnd = flipped ? xRight - i : xLeft + cornerRadius - i;
+            graphics.fill(xCornerStart, this.getY() + i, xCornerEnd, this.getY() + i + 1, color);
+            graphics.fill(xCornerStart, this.getY() + this.height - i - 1, xCornerEnd, this.getY() + this.height - i, color);
         }
-        for (int i = 0; i < cornerRadius; i++) {
-            graphics.fill(this.getX() + i, this.getY() + this.height - i - 1, this.getX() + cornerRadius - i, this.getY() + this.height - i, color);
-        }
-        graphics.fill(this.getX(), this.getY() + cornerRadius, this.getX() + cornerRadius, this.getY() + this.height - cornerRadius, color);
+
+        graphics.fill(xLeft, this.getY() + cornerRadius, xLeft + cornerRadius, this.getY() + this.height - cornerRadius, color);
     }
 
     private void drawRightAlignedText(GuiGraphics graphics, int mouseX, int mouseY) {
         int textColor = this.isHovered() ? 0xFFFFFFA0 : 0xFFFFFFFF;
         int textWidth = Minecraft.getInstance().font.width(this.getMessage().getString());
-        int xPos = this.getX() + this.width - textWidth - 5;
+        int xPos = this.flipped ? this.getX() + 5 : this.getX() + this.width - textWidth - 5;
+
         graphics.drawString(Minecraft.getInstance().font, this.getMessage(), xPos, this.getY() + 5, textColor);
     }
 }
