@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.quackiemackie.pathoscraft.PathosCraft;
 
 public record AstralFormKeyPressPayload() implements CustomPacketPayload {
-
     public static final AstralFormKeyPressPayload INSTANCE = new AstralFormKeyPressPayload();
 
     public static final CustomPacketPayload.Type<AstralFormKeyPressPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "astral_form_key_press"));

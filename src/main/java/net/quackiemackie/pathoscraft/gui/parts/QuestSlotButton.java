@@ -8,10 +8,17 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuSelectQuestPayload;
+import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +27,68 @@ public class QuestSlotButton extends Button {
 
     private final ItemStack itemStack;
     private final List<Component> hoverInfo;
+    private final int questId;
+    private final int maxQuests = 45;
 
-    public QuestSlotButton(int x, int y, Component message, ItemStack itemStack, OnPress onPress) {
+    /**
+     * Constructs a new QuestSlotButton.
+     *
+     * @param x         The x-coordinate of the button.
+     * @param y         The y-coordinate of the button.
+     * @param message   The text to display on the button.
+     * @param itemStack The ItemStack to render on the button.
+     * @param questId   The ID of the quest associated with this button.
+     * @param onPress   The action to perform when the button is pressed.
+     */
+    public QuestSlotButton(int x, int y, Component message, ItemStack itemStack, int questId, OnPress onPress) {
         super(x, y, 16, 16, message, onPress, DEFAULT_NARRATION);
         this.itemStack = itemStack;
         this.hoverInfo = new ArrayList<>();
+        this.questId = questId;
+    }
+
+    /**
+     * Gets the quest ID associated with this button.
+     *
+     * @return The quest ID.
+     */
+    public int getQuestId() {
+        return questId;
+    }
+
+    @Override
+    public void onPress() {
+        Minecraft minecraft = Minecraft.getInstance();
+        QuestScreen questScreen = (QuestScreen) minecraft.screen;
+        int questType = questScreen.activeButton.getQuestType();
+
+        if (questType == 3) {
+            PathosCraft.LOGGER.info("Ignoring button press on quest type 3");
+            return;
+        }
+
+        Player player = minecraft.player;
+        List<Integer> selectedQuests = player.getData(PathosAttachments.ACTIVE_QUESTS.get());
+        PathosCraft.LOGGER.info("Current selected quests: {}", selectedQuests);
+        if (selectedQuests.contains(questId)) {
+            selectedQuests.remove(Integer.valueOf(questId));
+            PacketDistributor.sendToServer(new QuestMenuSelectQuestPayload(selectedQuests));
+            PathosCraft.LOGGER.info("Quest {} removed. Updated selected quests: {}", questId, selectedQuests);
+        } else if (selectedQuests.size() < maxQuests) {
+            selectedQuests.add(questId);
+            PacketDistributor.sendToServer(new QuestMenuSelectQuestPayload(selectedQuests));
+            PathosCraft.LOGGER.info("Quest {} added. Updated selected quests: {}", questId, selectedQuests);
+        } else {
+            PathosCraft.LOGGER.info("Max quests ({}) selected.", maxQuests);
+        }
+
+        PathosCraft.LOGGER.info("Current selected quests: {}, {}", selectedQuests, player.getData(PathosAttachments.ACTIVE_QUESTS.get()));
+
+        if (selectedQuests.contains(questId)) {
+            itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        } else {
+            itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
+        }
     }
 
     @Override
@@ -59,6 +123,14 @@ public class QuestSlotButton extends Button {
         guiGraphics.fill(right - 1, top, right, bottom, borderColor);
     }
 
+    /**
+     * Renders the ItemStack on the button.
+     *
+     * @param itemStack   The ItemStack to render.
+     * @param x           The x-coordinate where the item should be rendered.
+     * @param y           The y-coordinate where the item should be rendered.
+     * @param guiGraphics The graphics context used for rendering.
+     */
     private void renderItem(ItemStack itemStack, int x, int y, GuiGraphics guiGraphics) {
         PoseStack poseStack = guiGraphics.pose();
 
@@ -77,6 +149,13 @@ public class QuestSlotButton extends Button {
         poseStack.popPose();
     }
 
+    /**
+     * Renders a BlockItem on the button.
+     *
+     * @param itemStack   The BlockItem stack to render.
+     * @param poseStack   The pose stack for transformations.
+     * @param guiGraphics The graphics context used for rendering.
+     */
     private void renderBlockItem(ItemStack itemStack, PoseStack poseStack, GuiGraphics guiGraphics) {
         Minecraft minecraft = Minecraft.getInstance();
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();

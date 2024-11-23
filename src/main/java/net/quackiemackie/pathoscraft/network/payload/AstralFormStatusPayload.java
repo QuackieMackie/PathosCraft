@@ -7,14 +7,13 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.quackiemackie.pathoscraft.PathosCraft;
 
-public record AstralFormStatus(boolean status) implements CustomPacketPayload {
+public record AstralFormStatusPayload(boolean status) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<AstralFormStatusPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "astral_form_status"));
 
-    public static final CustomPacketPayload.Type<AstralFormStatus> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "astral_form_status"));
-
-    public static final StreamCodec<ByteBuf, AstralFormStatus> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, AstralFormStatusPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
-            AstralFormStatus::status,
-            AstralFormStatus::new
+            AstralFormStatusPayload::status,
+            AstralFormStatusPayload::new
     );
 
     @Override

@@ -6,6 +6,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuSelectQuestPayload;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 public class ServerPayloadHandler {
@@ -24,5 +25,9 @@ public class ServerPayloadHandler {
                     context.disconnect(Component.translatable("networking.pathoscraft.server.failed", e.getMessage()));
                     return null;
                 });
+    }
+
+    public static void handleQuestMenuSelectQuest(final QuestMenuSelectQuestPayload data, final IPayloadContext context) {
+        System.out.println("Processing quest IDs: " + data.questIds());
     }
 }

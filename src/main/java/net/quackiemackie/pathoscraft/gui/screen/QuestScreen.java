@@ -4,10 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.quackiemackie.pathoscraft.PathosCraft;
@@ -19,8 +21,10 @@ import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.quest.QuestObjective;
 import net.quackiemackie.pathoscraft.quest.QuestReward;
+import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
@@ -29,11 +33,11 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     QuestTabButton sideQuestButton;
     QuestTabButton optionalQuestButton;
     QuestTabButton activeQuestsButton;
-    QuestTabButton activeButton;
+    public QuestTabButton activeButton;
 
     QuestPageButton previousPageButton;
     QuestPageButton nextPageButton;
-    private int currentPage = 1;
+    public int currentPage = 1;
     private int maxPages = 1;
 
     private static final ResourceLocation questTexture = ResourceLocation.parse("pathoscraft:textures/screen/quest_menu.png");
@@ -243,6 +247,9 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
             nextPageButton.active = currentPage < maxPages;
         }
 
+        Player player = Minecraft.getInstance().player;
+        List<Integer> selectedQuests = player != null ? player.getData(PathosAttachments.ACTIVE_QUESTS.get()) : new ArrayList<>();
+
         int questType = activeButton.getQuestType();
 
         if (questType == 0 || questType == 1 || questType == 2) {
@@ -260,8 +267,11 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                     //Adding an enchantment glint to the item stack.
                     // This is a placeholder for when I create the active quest logic.
                     //questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                    if (selectedQuests.contains(quest.getId())) {
+                        questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                    }
 
-                    QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, e -> {
+                    QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest.getId(), e -> {
                         PathosCraft.LOGGER.info("Quest Button Clicked for Quest: " + quest.getQuestName());
                     });
 
@@ -284,7 +294,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
                 ItemStack itemStack = new ItemStack(item);
 
-                QuestSlotButton placeHolderButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), itemStack, e -> {
+                QuestSlotButton placeHolderButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), itemStack, 0, e -> {
                     PathosCraft.LOGGER.info("Placeholder logic for Quest.");
                 });
 
