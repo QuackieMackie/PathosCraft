@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuSelectQuestPayload;
@@ -28,6 +29,10 @@ public class ServerPayloadHandler {
     }
 
     public static void handleQuestMenuSelectQuest(final QuestMenuSelectQuestPayload data, final IPayloadContext context) {
-        System.out.println("Processing quest IDs: " + data.questIds());
+        context.enqueueWork(() -> {
+            Player player = context.player();
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), data.questIds());
+            PathosCraft.LOGGER.info("Updated selected quests for player {}: {}", player.getName().getString(), data.questIds());
+        });
     }
 }

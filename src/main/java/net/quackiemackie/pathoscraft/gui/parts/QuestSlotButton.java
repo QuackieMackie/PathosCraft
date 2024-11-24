@@ -14,9 +14,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuSelectQuestPayload;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
@@ -59,36 +59,28 @@ public class QuestSlotButton extends Button {
     @Override
     public void onPress() {
         Minecraft minecraft = Minecraft.getInstance();
-        QuestScreen questScreen = (QuestScreen) minecraft.screen;
-        int questType = questScreen.activeButton.getQuestType();
+        Player player = minecraft.player;
+        List<Integer> selectedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
+        int questId = this.getQuestId();
 
-        if (questType == 3) {
-            PathosCraft.LOGGER.info("Ignoring button press on quest type 3");
+        if (selectedQuests.contains(questId)) {
+            selectedQuests.remove(Integer.valueOf(questId));
+        } else if (selectedQuests.size() < maxQuests) {
+            selectedQuests.add(questId);
+        } else {
+            PathosCraft.LOGGER.info("Max quests ({}) selected.", maxQuests);
             return;
         }
 
-        Player player = minecraft.player;
-        List<Integer> selectedQuests = player.getData(PathosAttachments.ACTIVE_QUESTS.get());
-        PathosCraft.LOGGER.info("Current selected quests: {}", selectedQuests);
-        if (selectedQuests.contains(questId)) {
-            selectedQuests.remove(Integer.valueOf(questId));
-            PacketDistributor.sendToServer(new QuestMenuSelectQuestPayload(selectedQuests));
-            PathosCraft.LOGGER.info("Quest {} removed. Updated selected quests: {}", questId, selectedQuests);
-        } else if (selectedQuests.size() < maxQuests) {
-            selectedQuests.add(questId);
-            PacketDistributor.sendToServer(new QuestMenuSelectQuestPayload(selectedQuests));
-            PathosCraft.LOGGER.info("Quest {} added. Updated selected quests: {}", questId, selectedQuests);
-        } else {
-            PathosCraft.LOGGER.info("Max quests ({}) selected.", maxQuests);
-        }
-
-        PathosCraft.LOGGER.info("Current selected quests: {}, {}", selectedQuests, player.getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        QuestMenuSelectQuestPayload payload = new QuestMenuSelectQuestPayload(selectedQuests);
+        PacketDistributor.sendToServer(payload);
 
         if (selectedQuests.contains(questId)) {
             itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         } else {
             itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
         }
+
     }
 
     @Override

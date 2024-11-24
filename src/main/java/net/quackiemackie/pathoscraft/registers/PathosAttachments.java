@@ -19,7 +19,9 @@ import java.util.function.Supplier;
 public class PathosAttachments {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, PathosCraft.MOD_ID);
 
-    public static final Supplier<AttachmentType<Boolean>> IN_ASTRAL_FORM = ATTACHMENT_TYPES.register("in_astral_form", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).build());
+    public static final Supplier<AttachmentType<Boolean>> IN_ASTRAL_FORM = ATTACHMENT_TYPES.register("in_astral_form", () -> AttachmentType.builder(() -> false)
+            .serialize(Codec.BOOL)
+            .build());
 
     private static final Supplier<List<Integer>> defaultQuestListSupplier = ArrayList::new;
     public static final Supplier<AttachmentType<List<Integer>>> ACTIVE_QUESTS = ATTACHMENT_TYPES.register("active_quests", () -> AttachmentType.builder(defaultQuestListSupplier)
