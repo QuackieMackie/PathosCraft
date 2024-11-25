@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuSelectQuestPayload;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.ArrayList;
@@ -60,27 +60,29 @@ public class QuestSlotButton extends Button {
     public void onPress() {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-        List<Integer> selectedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
+
+        List<Integer> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
         int questId = this.getQuestId();
 
-        if (selectedQuests.contains(questId)) {
-            selectedQuests.remove(Integer.valueOf(questId));
-        } else if (selectedQuests.size() < maxQuests) {
-            selectedQuests.add(questId);
+        if (activeQuests.contains(questId)) {
+            activeQuests.remove(Integer.valueOf(questId));
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+        } else if (activeQuests.size() < maxQuests) {
+            activeQuests.add(questId);
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
         } else {
             PathosCraft.LOGGER.info("Max quests ({}) selected.", maxQuests);
             return;
         }
 
-        QuestMenuSelectQuestPayload payload = new QuestMenuSelectQuestPayload(selectedQuests);
+        QuestMenuActiveQuestsPayload payload = new QuestMenuActiveQuestsPayload(activeQuests);
         PacketDistributor.sendToServer(payload);
 
-        if (selectedQuests.contains(questId)) {
+        if (activeQuests.contains(questId)) {
             itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         } else {
             itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
         }
-
     }
 
     @Override
@@ -102,7 +104,7 @@ public class QuestSlotButton extends Button {
         this.hoverInfo.add(info);
     }
 
-    private void renderBorder(GuiGraphics guiGraphics) {
+    protected void renderBorder(GuiGraphics guiGraphics) {
         int borderColor = 0xFFFFFFFF;
         int left = this.getX();
         int top = this.getY();
@@ -123,7 +125,7 @@ public class QuestSlotButton extends Button {
      * @param y           The y-coordinate where the item should be rendered.
      * @param guiGraphics The graphics context used for rendering.
      */
-    private void renderItem(ItemStack itemStack, int x, int y, GuiGraphics guiGraphics) {
+    protected void renderItem(ItemStack itemStack, int x, int y, GuiGraphics guiGraphics) {
         PoseStack poseStack = guiGraphics.pose();
 
         poseStack.pushPose();
@@ -148,7 +150,7 @@ public class QuestSlotButton extends Button {
      * @param poseStack   The pose stack for transformations.
      * @param guiGraphics The graphics context used for rendering.
      */
-    private void renderBlockItem(ItemStack itemStack, PoseStack poseStack, GuiGraphics guiGraphics) {
+    protected void renderBlockItem(ItemStack itemStack, PoseStack poseStack, GuiGraphics guiGraphics) {
         Minecraft minecraft = Minecraft.getInstance();
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
         BakedModel bakedModel = minecraft.getItemRenderer().getModel(itemStack, null, minecraft.player, 0);

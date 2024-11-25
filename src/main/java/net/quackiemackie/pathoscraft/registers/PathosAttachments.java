@@ -23,9 +23,9 @@ public class PathosAttachments {
             .serialize(Codec.BOOL)
             .build());
 
-    private static final Supplier<List<Integer>> defaultQuestListSupplier = ArrayList::new;
-    public static final Supplier<AttachmentType<List<Integer>>> ACTIVE_QUESTS = ATTACHMENT_TYPES.register("active_quests", () -> AttachmentType.builder(defaultQuestListSupplier)
-                    .serialize(Codec.list(Codec.INT))
-                    .copyOnDeath()
-                    .build());
+    private static final Supplier<List<Integer>> defaultQuestList = ArrayList::new;
+    public static final Supplier<AttachmentType<List<Integer>>> ACTIVE_QUESTS = ATTACHMENT_TYPES.register("active_quests", () -> AttachmentType.builder(defaultQuestList)
+            .serialize(Codec.list(Codec.INT))
+            .copyOnDeath()
+            .build());
 }

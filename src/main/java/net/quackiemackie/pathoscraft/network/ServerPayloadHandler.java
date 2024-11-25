@@ -7,7 +7,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuSelectQuestPayload;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 public class ServerPayloadHandler {
@@ -21,18 +21,20 @@ public class ServerPayloadHandler {
                     if (((IAttachmentHolder) player).getData(PathosAttachments.IN_ASTRAL_FORM.get())) {
                         AstralFormHandler.leaveAstralForm(player);
                     }
-                })
-                .exceptionally(e -> {
+                }).exceptionally(e -> {
                     context.disconnect(Component.translatable("networking.pathoscraft.server.failed", e.getMessage()));
                     return null;
                 });
     }
 
-    public static void handleQuestMenuSelectQuest(final QuestMenuSelectQuestPayload data, final IPayloadContext context) {
+    public static void handleQuestMenuActiveQuests(final QuestMenuActiveQuestsPayload data, final IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), data.questIds());
-            PathosCraft.LOGGER.info("Updated selected quests for player {}: {}", player.getName().getString(), data.questIds());
+            PathosCraft.LOGGER.info("Updated the servers active quests for player {}: {}", player.getName().getString(), data.questIds());
+        }).exceptionally(e -> {
+            context.disconnect(Component.translatable("networking.pathoscraft.server.failed", e.getMessage()));
+            return null;
         });
     }
 }

@@ -12,8 +12,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
+import net.quackiemackie.pathoscraft.gui.parts.QuestActiveSlotButton;
 import net.quackiemackie.pathoscraft.gui.parts.QuestPageButton;
 import net.quackiemackie.pathoscraft.gui.parts.QuestSlotButton;
 import net.quackiemackie.pathoscraft.gui.parts.QuestTabButton;
@@ -24,7 +26,7 @@ import net.quackiemackie.pathoscraft.quest.QuestReward;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
@@ -248,7 +250,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         }
 
         Player player = Minecraft.getInstance().player;
-        List<Integer> selectedQuests = player != null ? player.getData(PathosAttachments.ACTIVE_QUESTS.get()) : new ArrayList<>();
+        List<Integer> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
         int questType = activeButton.getQuestType();
 
@@ -264,10 +266,8 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
                     ItemStack questItemStack = createQuestIconStack(quest);
 
-                    //Adding an enchantment glint to the item stack.
-                    // This is a placeholder for when I create the active quest logic.
-                    //questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-                    if (selectedQuests.contains(quest.getId())) {
+
+                    if (activeQuests.contains(quest.getId())) {
                         questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
                     }
 
@@ -281,26 +281,29 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                 }
             }
         } else if (questType == 3) {
-            int slotIndex = 35;
-            int slotPage = slotIndex / 99 + 1;
+            Collections.sort(activeQuests);
+            int maxSlots = 45;
 
-            if (slotPage == currentPage) {
-                int pageIndex = slotIndex % 99;
-                int x = 8 + (pageIndex % 9) * 18;
-                int y = 18 + (pageIndex / 9) * 18;
+            for (int i = 0; i < activeQuests.size() && i < maxSlots; i++) {
+                int questId = activeQuests.get(i);
+                Quest quest = QuestHandler.getQuestById(questId);
 
-                ResourceLocation questIcon = ResourceLocation.fromNamespaceAndPath("minecraft", "sand");
-                Item item = BuiltInRegistries.ITEM.get(questIcon);
+                if (quest == null) {
+                    continue;
+                }
 
-                ItemStack itemStack = new ItemStack(item);
+                int x = 8 + (i % 9) * 18;
+                int y = 18 + (i / 9) * 18;
 
-                QuestSlotButton placeHolderButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), itemStack, 0, e -> {
-                    PathosCraft.LOGGER.info("Placeholder logic for Quest.");
+                ItemStack questItemStack = createQuestIconStack(quest);
+
+                QuestActiveSlotButton questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest.getId(), e -> {
+                    PathosCraft.LOGGER.info("Active Quest Button Clicked for Quest: " + quest.getQuestName());
                 });
 
-                placeHolderButton.addHoverInfo(Component.literal("test text"));
+                addHoverInfo(questButton, quest);
 
-                this.addRenderableWidget(placeHolderButton);
+                this.addRenderableWidget(questButton);
             }
         }
     }

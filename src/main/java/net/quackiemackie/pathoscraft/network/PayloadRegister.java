@@ -7,7 +7,7 @@ import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormStatusPayload;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuSelectQuestPayload;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
 
 public class PayloadRegister {
     /**
@@ -36,11 +36,11 @@ public class PayloadRegister {
         );
 
         registrar.playBidirectional(
-                QuestMenuSelectQuestPayload.TYPE,
-                QuestMenuSelectQuestPayload.STREAM_CODEC,
+                QuestMenuActiveQuestsPayload.TYPE,
+                QuestMenuActiveQuestsPayload.STREAM_CODEC,
                 new DirectionalPayloadHandler<>(
-                        ClientPayloadHandler::handleQuestMenuSelectQuest,
-                        ServerPayloadHandler::handleQuestMenuSelectQuest
+                        ClientPayloadHandler::handleQuestMenuActiveQuests,
+                        ServerPayloadHandler::handleQuestMenuActiveQuests
                 )
         );
     }
