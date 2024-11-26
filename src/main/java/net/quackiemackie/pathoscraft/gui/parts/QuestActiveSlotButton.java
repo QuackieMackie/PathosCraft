@@ -3,8 +3,15 @@ package net.quackiemackie.pathoscraft.gui.parts;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
+import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +48,26 @@ public class QuestActiveSlotButton extends QuestSlotButton {
         return questId;
     }
 
-    //TODO:
-    // Adding logic for reloading the active quests buttons, and removing from active quests if it's clicked in this screens tab.
     @Override
     public void onPress() {
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+
+        List<Integer> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
+        int questId = this.getQuestId();
+
+        if (activeQuests.contains(questId)) {
+            activeQuests.remove(Integer.valueOf(questId));
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+        }
+
+        PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
+
+        if (minecraft.screen instanceof QuestScreen) {
+            QuestScreen questScreen = (QuestScreen) minecraft.screen;
+            questScreen.removeActiveQuestButtons();
+            questScreen.addActiveQuestButton(activeQuests);
+        }
     }
 
     @Override
@@ -52,6 +75,7 @@ public class QuestActiveSlotButton extends QuestSlotButton {
         int itemX = this.getX() + (this.width / 2);
         int itemY = this.getY() + (this.height / 2);
 
+        itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         renderItem(itemStack, itemX, itemY, guiGraphics);
         //renderBorder(guiGraphics);
 

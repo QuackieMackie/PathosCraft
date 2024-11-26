@@ -13,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
 import net.quackiemackie.pathoscraft.gui.parts.QuestActiveSlotButton;
 import net.quackiemackie.pathoscraft.gui.parts.QuestPageButton;
@@ -36,6 +35,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     QuestTabButton optionalQuestButton;
     QuestTabButton activeQuestsButton;
     public QuestTabButton activeButton;
+    public static final int maxActiveQuests = 45;
 
     QuestPageButton previousPageButton;
     QuestPageButton nextPageButton;
@@ -230,14 +230,18 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * Initializes and adds quest slot buttons to the screen based on the active quest type.
      */
     private void initQuestSlotButtons() {
+        Player player = Minecraft.getInstance().player;
+        int questType = activeButton.getQuestType();
+
         // Remove existing QuestSlotButtons
         this.children().removeIf(child -> child instanceof QuestSlotButton);
         this.renderables.removeIf(renderable -> renderable instanceof QuestSlotButton);
 
-        // Get quests of the active type
+        // Creates an array containing quests with a quest type of the active tab.
         List<Quest> questsByType = QuestHandler.getQuestsByType(activeButton.getQuestType());
+        // Creates an array containing all quests currently set in the active data attachment.
+        List<Integer> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
-        // Calculate the maximum number of pages
         maxPages = questsByType.stream()
                 .mapToInt(Quest::getQuestSlot)
                 .max()
@@ -249,62 +253,68 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
             nextPageButton.active = currentPage < maxPages;
         }
 
-        Player player = Minecraft.getInstance().player;
-        List<Integer> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
-
-        int questType = activeButton.getQuestType();
-
         if (questType == 0 || questType == 1 || questType == 2) {
-            for (Quest quest : questsByType) {
-                int slotIndex = quest.getQuestSlot();
-                int slotPage = slotIndex / 99 + 1;
-
-                if (slotPage == currentPage) {
-                    int pageIndex = slotIndex % 99;
-                    int x = 8 + (pageIndex % 9) * 18;
-                    int y = 18 + (pageIndex / 9) * 18;
-
-                    ItemStack questItemStack = createQuestIconStack(quest);
-
-
-                    if (activeQuests.contains(quest.getId())) {
-                        questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-                    }
-
-                    QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest.getId(), e -> {
-                        PathosCraft.LOGGER.info("Quest Button Clicked for Quest: " + quest.getQuestName());
-                    });
-
-                    addHoverInfo(questButton, quest);
-
-                    this.addRenderableWidget(questButton);
-                }
-            }
+            questTabBuilder(activeQuests, questsByType);
         } else if (questType == 3) {
-            Collections.sort(activeQuests);
-            int maxSlots = 45;
+            activeQuestTabBuilder(activeQuests);
+        }
+    }
 
-            for (int i = 0; i < activeQuests.size() && i < maxSlots; i++) {
-                int questId = activeQuests.get(i);
-                Quest quest = QuestHandler.getQuestById(questId);
+    private void questTabBuilder(List<Integer> activeQuests, List<Quest> questsByType) {
+        for (Quest quest : questsByType) {
+            int slotIndex = quest.getQuestSlot();
+            int slotPage = slotIndex / 99 + 1;
 
-                if (quest == null) {
-                    continue;
-                }
-
-                int x = 8 + (i % 9) * 18;
-                int y = 18 + (i / 9) * 18;
+            if (slotPage == currentPage) {
+                int pageIndex = slotIndex % 99;
+                int x = 8 + (pageIndex % 9) * 18;
+                int y = 18 + (pageIndex / 9) * 18;
 
                 ItemStack questItemStack = createQuestIconStack(quest);
 
-                QuestActiveSlotButton questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest.getId(), e -> {
-                    PathosCraft.LOGGER.info("Active Quest Button Clicked for Quest: " + quest.getQuestName());
-                });
+
+                if (activeQuests.contains(quest.getId())) {
+                    questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                }
+
+                QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest.getId(), e -> {});
 
                 addHoverInfo(questButton, quest);
 
                 this.addRenderableWidget(questButton);
             }
+        }
+    }
+
+    public void addActiveQuestButton(List<Integer> activeQuests) {
+        activeQuestTabBuilder(activeQuests);
+    }
+
+    public void removeActiveQuestButtons() {
+        this.children().removeIf(child -> child instanceof QuestActiveSlotButton);
+        this.renderables.removeIf(renderable -> renderable instanceof QuestActiveSlotButton);
+    }
+
+    private void activeQuestTabBuilder(List<Integer> activeQuests) {
+        Collections.sort(activeQuests);
+        for (int i = 0; i < activeQuests.size() && i < maxActiveQuests; i++) {
+            int questId = activeQuests.get(i);
+            Quest quest = QuestHandler.getQuestById(questId);
+
+            if (quest == null) {
+                continue;
+            }
+
+            int x = 8 + (i % 9) * 18;
+            int y = 18 + (i / 9) * 18;
+
+            ItemStack questItemStack = createQuestIconStack(quest);
+
+            QuestActiveSlotButton questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest.getId(), e -> {});
+
+            addHoverInfo(questButton, quest);
+
+            addRenderableWidget(questButton);
         }
     }
 
@@ -331,7 +341,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * @param questButton the quest button to add hover information to.
      * @param quest       the quest for which to add hover information.
      */
-    private void addHoverInfo(QuestSlotButton questButton, Quest quest) {
+    private static void addHoverInfo(QuestSlotButton questButton, Quest quest) {
         questButton.addHoverInfo(Component.literal("§7" + quest.getQuestName()));
         questButton.addHoverInfo(Component.literal("§7" + quest.getQuestDescription()));
         questButton.addHoverInfo(Component.literal(""));

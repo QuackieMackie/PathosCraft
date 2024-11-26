@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
@@ -28,7 +29,6 @@ public class QuestSlotButton extends Button {
     private final ItemStack itemStack;
     private final List<Component> hoverInfo;
     private final int questId;
-    private final int maxQuests = 45;
 
     /**
      * Constructs a new QuestSlotButton.
@@ -67,16 +67,15 @@ public class QuestSlotButton extends Button {
         if (activeQuests.contains(questId)) {
             activeQuests.remove(Integer.valueOf(questId));
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-        } else if (activeQuests.size() < maxQuests) {
+        } else if (activeQuests.size() < QuestScreen.maxActiveQuests) {
             activeQuests.add(questId);
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
         } else {
-            PathosCraft.LOGGER.info("Max quests ({}) selected.", maxQuests);
+            PathosCraft.LOGGER.info("Max quests ({}) selected.", QuestScreen.maxActiveQuests);
             return;
         }
 
-        QuestMenuActiveQuestsPayload payload = new QuestMenuActiveQuestsPayload(activeQuests);
-        PacketDistributor.sendToServer(payload);
+        PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
         if (activeQuests.contains(questId)) {
             itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
