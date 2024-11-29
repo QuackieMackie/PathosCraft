@@ -26,8 +26,8 @@ public class ClientPayloadHandler {
     public static void handleQuestMenuActiveQuests(QuestMenuActiveQuestsPayload data, IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
-            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), data.questIds());
-            PathosCraft.LOGGER.info("Updated the clients active quests for player {}: {}", player.getName().getString(), data.questIds());
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), data.quests());
+            PathosCraft.LOGGER.info("Updated the clients active quests for player {}: {}", player.getName().getString(), data.quests());
         }).exceptionally(e -> {
             context.disconnect(Component.translatable("networking.pathoscraft.client.failed", e.getMessage()));
             return null;

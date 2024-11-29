@@ -19,6 +19,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
+import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class QuestSlotButton extends Button {
 
     private final ItemStack itemStack;
     private final List<Component> hoverInfo;
-    private final int questId;
+    private final Quest quest;
 
     /**
      * Constructs a new QuestSlotButton.
@@ -37,23 +38,23 @@ public class QuestSlotButton extends Button {
      * @param y         The y-coordinate of the button.
      * @param message   The text to display on the button.
      * @param itemStack The ItemStack to render on the button.
-     * @param questId   The ID of the quest associated with this button.
+     * @param quest     The quest associated with this button.
      * @param onPress   The action to perform when the button is pressed.
      */
-    public QuestSlotButton(int x, int y, Component message, ItemStack itemStack, int questId, OnPress onPress) {
+    public QuestSlotButton(int x, int y, Component message, ItemStack itemStack, Quest quest, OnPress onPress) {
         super(x, y, 16, 16, message, onPress, DEFAULT_NARRATION);
         this.itemStack = itemStack;
         this.hoverInfo = new ArrayList<>();
-        this.questId = questId;
+        this.quest = quest;
     }
 
     /**
-     * Gets the quest ID associated with this button.
+     * Gets the quest associated with this button.
      *
-     * @return The quest ID.
+     * @return The quest.
      */
-    public int getQuestId() {
-        return questId;
+    public Quest getQuest() {
+        return quest;
     }
 
     @Override
@@ -61,14 +62,14 @@ public class QuestSlotButton extends Button {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
 
-        List<Integer> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
-        int questId = this.getQuestId();
+        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        Quest quest = this.getQuest();
 
-        if (activeQuests.contains(questId)) {
-            activeQuests.remove(Integer.valueOf(questId));
+        if (activeQuests.contains(quest)) {
+            activeQuests.remove(quest);
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
         } else if (activeQuests.size() < QuestScreen.maxActiveQuests) {
-            activeQuests.add(questId);
+            activeQuests.add(quest);
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
         } else {
             PathosCraft.LOGGER.info("Max quests ({}) selected.", QuestScreen.maxActiveQuests);
@@ -77,7 +78,7 @@ public class QuestSlotButton extends Button {
 
         PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
-        if (activeQuests.contains(questId)) {
+        if (activeQuests.contains(quest)) {
             itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         } else {
             itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
@@ -99,10 +100,20 @@ public class QuestSlotButton extends Button {
         }
     }
 
+    /**
+     * Adds information to be displayed when hovering over the button.
+     *
+     * @param info The hover information to add.
+     */
     public void addHoverInfo(Component info) {
         this.hoverInfo.add(info);
     }
 
+    /**
+     * Renders the border around the button.
+     *
+     * @param guiGraphics The graphics context used for rendering.
+     */
     protected void renderBorder(GuiGraphics guiGraphics) {
         int borderColor = 0xFFFFFFFF;
         int left = this.getX();

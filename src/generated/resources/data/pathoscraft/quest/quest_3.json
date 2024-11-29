@@ -1,7 +1,7 @@
 {
-  "id": 3,
   "quest_description": "Description for test quest 3.",
   "quest_icon": "minecraft:diamond_block",
+  "quest_id": 3,
   "quest_name": "Main quest 3",
   "quest_objectives": [
     {

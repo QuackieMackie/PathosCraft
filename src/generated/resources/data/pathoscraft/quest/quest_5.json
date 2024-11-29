@@ -1,7 +1,7 @@
 {
-  "id": 5,
   "quest_description": "Description for test quest 5.",
   "quest_icon": "minecraft:gold_block",
+  "quest_id": 5,
   "quest_name": "Side Quest 1",
   "quest_objectives": [
     {

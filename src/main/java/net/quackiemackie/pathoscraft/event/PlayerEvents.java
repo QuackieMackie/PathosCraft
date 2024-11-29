@@ -11,6 +11,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
+import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 
@@ -41,7 +42,7 @@ public class PlayerEvents {
 
         if (player instanceof ServerPlayer serverPlayer) {
             if (serverPlayer.hasData(PathosAttachments.ACTIVE_QUESTS.get())) {
-                List<Integer> activeQuests = ((IAttachmentHolder) serverPlayer).getData(PathosAttachments.ACTIVE_QUESTS.get());
+                List<Quest> activeQuests = ((IAttachmentHolder) serverPlayer).getData(PathosAttachments.ACTIVE_QUESTS.get());
                 PacketDistributor.sendToPlayer(serverPlayer, new QuestMenuActiveQuestsPayload(activeQuests));
                 PathosCraft.LOGGER.error("Active Quests: {}", activeQuests);
 

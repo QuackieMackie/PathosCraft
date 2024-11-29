@@ -89,7 +89,7 @@ public class PathosQuestProvider implements DataProvider {
     }
 
     private Path generateQuestPath(Path outputFolder, Quest quest) {
-        String questFileName = String.format("quest_%d.json", quest.getId());
+        String questFileName = String.format("quest_%d.json", quest.getQuestId());
         return outputFolder.resolve(String.format("data/%s/quest/%s", PathosCraft.MOD_ID, questFileName));
     }
 }

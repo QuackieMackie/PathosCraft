@@ -5,6 +5,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.quest.Quest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,9 @@ public class PathosAttachments {
             .serialize(Codec.BOOL)
             .build());
 
-    private static final Supplier<List<Integer>> defaultQuestList = ArrayList::new;
-    public static final Supplier<AttachmentType<List<Integer>>> ACTIVE_QUESTS = ATTACHMENT_TYPES.register("active_quests", () -> AttachmentType.builder(defaultQuestList)
-            .serialize(Codec.list(Codec.INT))
+    private static final Supplier<List<Quest>> DefaultQuestList = ArrayList::new;
+    public static final Supplier<AttachmentType<List<Quest>>> ACTIVE_QUESTS = ATTACHMENT_TYPES.register("active_quests", () -> AttachmentType.builder(DefaultQuestList)
+            .serialize(Codec.list(Quest.CODEC))
             .copyOnDeath()
             .build());
 }

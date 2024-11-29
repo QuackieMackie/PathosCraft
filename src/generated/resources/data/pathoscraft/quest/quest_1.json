@@ -1,7 +1,7 @@
 {
-  "id": 1,
   "quest_description": "Description for test quest.",
   "quest_icon": "minecraft:dirt",
+  "quest_id": 1,
   "quest_name": "Main quest 1",
   "quest_objectives": [
     {

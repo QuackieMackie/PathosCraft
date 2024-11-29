@@ -25,7 +25,9 @@ import net.quackiemackie.pathoscraft.quest.QuestReward;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
@@ -228,6 +230,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
     /**
      * Initializes and adds quest slot buttons to the screen based on the active quest type.
+     * This includes setting up buttons for main, side, and optional quests, as well as active quests.
      */
     private void initQuestSlotButtons() {
         Player player = Minecraft.getInstance().player;
@@ -237,17 +240,16 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         this.children().removeIf(child -> child instanceof QuestSlotButton);
         this.renderables.removeIf(renderable -> renderable instanceof QuestSlotButton);
 
-        // Creates an array containing quests with a quest type of the active tab.
+        // Retrieve relevant quests for display
         List<Quest> questsByType = QuestHandler.getQuestsByType(activeButton.getQuestType());
-        // Creates an array containing all quests currently set in the active data attachment.
-        List<Integer> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
+        List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
         maxPages = questsByType.stream()
                 .mapToInt(Quest::getQuestSlot)
                 .max()
                 .orElse(0) / 99 + 1;
 
-        // Set the buttons' enabled state based on the current page and max pages
+        // Adjust page buttons' enabled states
         if (activeButton != activeQuestsButton) {
             previousPageButton.active = currentPage > 1;
             nextPageButton.active = currentPage < maxPages;
@@ -260,7 +262,13 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         }
     }
 
-    private void questTabBuilder(List<Integer> activeQuests, List<Quest> questsByType) {
+    /**
+     * Constructs the quest tab by adding buttons for quests on the current page.
+     *
+     * @param activeQuests the list of quests that are currently active.
+     * @param questsByType the list of quests filtered by type based on the active tab.
+     */
+    private void questTabBuilder(List<Quest> activeQuests, List<Quest> questsByType) {
         for (Quest quest : questsByType) {
             int slotIndex = quest.getQuestSlot();
             int slotPage = slotIndex / 99 + 1;
@@ -272,12 +280,17 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
                 ItemStack questItemStack = createQuestIconStack(quest);
 
-
-                if (activeQuests.contains(quest.getId())) {
+                if (activeQuests.contains(quest)) {
                     questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
                 }
 
-                QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest.getId(), e -> {});
+                QuestSlotButton questButton = new QuestSlotButton(
+                        this.leftPos + x,
+                        this.topPos + y,
+                        Component.empty(),
+                        questItemStack,
+                        quest, e -> {}
+                );
 
                 addHoverInfo(questButton, quest);
 
@@ -286,7 +299,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         }
     }
 
-    public void addActiveQuestButton(List<Integer> activeQuests) {
+    public void addActiveQuestButton(List<Quest> activeQuests) {
         activeQuestTabBuilder(activeQuests);
     }
 
@@ -295,11 +308,22 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         this.renderables.removeIf(renderable -> renderable instanceof QuestActiveSlotButton);
     }
 
-    private void activeQuestTabBuilder(List<Integer> activeQuests) {
-        Collections.sort(activeQuests);
+    /**
+     * Initializes and displays active quests on the screen.
+     * Sorts and adds buttons for each active quest.
+     *
+     * @param activeQuests the list of active quests.
+     */
+    private void activeQuestTabBuilder(List<Quest> activeQuests) {
+        if (activeQuests == null) {
+            activeQuests = new ArrayList<>();
+        } else {
+            activeQuests = new ArrayList<>(activeQuests);
+        }
+        Collections.sort(activeQuests, Comparator.comparing(Quest::getQuestId));
+
         for (int i = 0; i < activeQuests.size() && i < maxActiveQuests; i++) {
-            int questId = activeQuests.get(i);
-            Quest quest = QuestHandler.getQuestById(questId);
+            Quest quest = activeQuests.get(i);
 
             if (quest == null) {
                 continue;
@@ -310,7 +334,13 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
             ItemStack questItemStack = createQuestIconStack(quest);
 
-            QuestActiveSlotButton questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest.getId(), e -> {});
+            QuestActiveSlotButton questButton = new QuestActiveSlotButton(
+                    this.leftPos + x,
+                    this.topPos + y,
+                    Component.empty(),
+                    questItemStack,
+                    quest, e -> {}
+            );
 
             addHoverInfo(questButton, quest);
 
@@ -357,6 +387,6 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         }
         questButton.addHoverInfo(Component.literal(""));
         questButton.addHoverInfo(Component.literal("§7Type: §f" + (quest.getQuestType() == 0 ? "Main Quest" : "Side Quest")));
-        questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + quest.getId()));
+        questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + quest.getQuestId()));
     }
 }

@@ -1,7 +1,7 @@
 {
-  "id": 2,
   "quest_description": "Description for test quest 2.",
-  "quest_icon": "pathoscraft:raw_sadness",
+  "quest_icon": "minecraft:stone",
+  "quest_id": 2,
   "quest_name": "Main quest 2",
   "quest_objectives": [
     {

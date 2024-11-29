@@ -11,7 +11,7 @@ import java.util.List;
 public class Quest {
 
     public static final Codec<Quest> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("id").forGetter(Quest::getId),
+            Codec.INT.fieldOf("quest_id").forGetter(Quest::getQuestId),
             Codec.STRING.fieldOf("quest_name").forGetter(Quest::getQuestName),
             Codec.STRING.fieldOf("quest_description").forGetter(Quest::getQuestDescription),
             Codec.STRING.fieldOf("quest_icon").forGetter(Quest::getQuestIcon),
@@ -22,7 +22,7 @@ public class Quest {
             QuestReward.CODEC.listOf().fieldOf("quest_rewards").forGetter(Quest::getQuestRewards)
     ).apply(instance, Quest::new));
 
-    private final int id;
+    private final int questId;
     private final String questName;
     private final String questDescription;
     private final String questIcon;
@@ -35,7 +35,7 @@ public class Quest {
     /**
      * Creates a Quest.
      *
-     * @param id               the unique identifier of the quest.
+     * @param questId          the unique identifier of the quest.
      * @param questName        the name of the quest.
      * @param questDescription a description of the quest.
      * @param questIcon        the icon representing the quest.
@@ -45,8 +45,8 @@ public class Quest {
      * @param questObjectives  a list of objectives required to complete the quest.
      * @param questRewards     a list of rewards given upon completing the quest.
      */
-    public Quest(int id, String questName, String questDescription, String questIcon, int questType, int questPreceding, int questSlot, List<QuestObjective> questObjectives, List<QuestReward> questRewards) {
-        this.id = id;
+    public Quest(int questId, String questName, String questDescription, String questIcon, int questType, int questPreceding, int questSlot, List<QuestObjective> questObjectives, List<QuestReward> questRewards) {
+        this.questId = questId;
         this.questName = questName;
         this.questDescription = questDescription;
         this.questIcon = questIcon;
@@ -57,8 +57,8 @@ public class Quest {
         this.questRewards = questRewards;
     }
 
-    public int getId() {
-        return this.id;
+    public int getQuestId() {
+        return this.questId;
     }
 
     public String getQuestName() {
@@ -91,5 +91,17 @@ public class Quest {
 
     public List<QuestReward> getQuestRewards() {
         return this.questRewards;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + questId +
+                ", name='" + questName + '\'' +
+                ", description='" + questDescription + '\'' +
+                ", type=" + questType +
+                (questObjectives.isEmpty() ? "" : ", objectives=" + questObjectives) +
+                (questRewards.isEmpty() ? "" : ", rewards=" + questRewards) +
+                '}';
     }
 }

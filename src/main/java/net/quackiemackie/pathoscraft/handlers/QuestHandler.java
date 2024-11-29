@@ -63,7 +63,7 @@ public class QuestHandler {
      */
     public static Quest getQuestById(int questId) {
         return quests.stream()
-                .filter(quest -> quest.getId() == questId)
+                .filter(quest -> quest.getQuestId() == questId)
                 .findFirst()
                 .orElse(null);
     }

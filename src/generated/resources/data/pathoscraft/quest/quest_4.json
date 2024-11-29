@@ -1,7 +1,7 @@
 {
-  "id": 4,
   "quest_description": "Description for test quest 4.",
   "quest_icon": "minecraft:apple",
+  "quest_id": 4,
   "quest_name": "Main quest 4",
   "quest_objectives": [
     {

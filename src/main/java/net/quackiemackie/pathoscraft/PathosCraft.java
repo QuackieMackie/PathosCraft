@@ -33,7 +33,6 @@ public class PathosCraft {
     //TODO:
     // - When quests are in place, the quest name and description need to be translatable.
 
-
     public static final String MOD_ID = "pathoscraft";
     public static final Logger LOGGER = LogUtils.getLogger();
     private static final QuestHandler QUEST_HANDLER = new QuestHandler();
@@ -42,9 +41,10 @@ public class PathosCraft {
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        modEventBus.addListener(PayloadRegister::register);
         NeoForge.EVENT_BUS.register(GeneralEntityEvents.class);
+
         PathosRegisters.register(modEventBus);
+        modEventBus.addListener(PayloadRegister::register);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
