@@ -262,6 +262,15 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         }
     }
 
+    public void addQuestButton(List<Quest> activeQuests, List<Quest> questsByType) {
+        questTabBuilder(activeQuests, questsByType);
+    }
+
+    public void removeQuestButtons() {
+        this.children().removeIf(child -> child instanceof QuestSlotButton);
+        this.renderables.removeIf(renderable -> renderable instanceof QuestSlotButton);
+    }
+
     /**
      * Constructs the quest tabs by adding buttons for quests on the current page.
      *
@@ -284,13 +293,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                     questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
                 }
 
-                QuestSlotButton questButton = new QuestSlotButton(
-                        this.leftPos + x,
-                        this.topPos + y,
-                        Component.empty(),
-                        questItemStack,
-                        quest, e -> {}
-                );
+                QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});
 
                 addHoverInfo(questButton, quest);
 
@@ -334,13 +337,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
             ItemStack questItemStack = createQuestIconStack(quest);
 
-            QuestActiveSlotButton questButton = new QuestActiveSlotButton(
-                    this.leftPos + x,
-                    this.topPos + y,
-                    Component.empty(),
-                    questItemStack,
-                    quest, e -> {}
-            );
+            QuestActiveSlotButton questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});
 
             addHoverInfo(questButton, quest);
 
@@ -366,27 +363,37 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     }
 
     /**
-     * Adds hover information (lore) to the given quest button.
+     * Adds hover information (lore) to the given quest button, using active quest data if available.
      *
      * @param questButton the quest button to add hover information to.
      * @param quest       the quest for which to add hover information.
      */
     private static void addHoverInfo(QuestSlotButton questButton, Quest quest) {
-        questButton.addHoverInfo(Component.literal("§7" + quest.getQuestName()));
-        questButton.addHoverInfo(Component.literal("§7" + quest.getQuestDescription()));
+        Player player = Minecraft.getInstance().player;
+        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+
+        // Check if the current quest is an active quest
+        Quest displayQuest = activeQuests.stream()
+                .filter(activeQuest -> activeQuest.getQuestId() == quest.getQuestId())
+                .findFirst()
+                .orElse(quest);
+
+        questButton.addHoverInfo(Component.literal("§7" + displayQuest.getQuestName()));
+        questButton.addHoverInfo(Component.literal("§7" + displayQuest.getQuestDescription()));
         questButton.addHoverInfo(Component.literal(""));
         questButton.addHoverInfo(Component.literal("§aObjectives:"));
-        for (QuestObjective objective : quest.getQuestObjectives()) {
+        for (QuestObjective objective : displayQuest.getQuestObjectives()) {
             String target = objective.getTarget().substring(objective.getTarget().indexOf(':') + 1).replace('_', ' ');
-            questButton.addHoverInfo(Component.literal("  §8- §a" + objective.getAction() + " " + objective.getQuantity() + " " + target));
+            questButton.addHoverInfo(Component.literal("  §8- §a" + objective.getAction() + " " + objective.getProgress() + "/" + objective.getQuantity() + " " + target));
         }
         questButton.addHoverInfo(Component.literal("§cRewards:"));
-        for (QuestReward reward : quest.getQuestRewards()) {
+
+        for (QuestReward reward : displayQuest.getQuestRewards()) {
             String itemName = reward.getItem().substring(reward.getItem().indexOf(':') + 1).replace('_', ' ');
             questButton.addHoverInfo(Component.literal("  §8- §c" + reward.getQuantity() + " " + itemName));
         }
         questButton.addHoverInfo(Component.literal(""));
-        questButton.addHoverInfo(Component.literal("§7Type: §f" + (quest.getQuestType() == 0 ? "Main Quest" : "Side Quest")));
-        questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + quest.getQuestId()));
+        questButton.addHoverInfo(Component.literal("§7Type: §f" + (displayQuest.getQuestType() == 0 ? "Main Quest" : "Side Quest")));
+        questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + displayQuest.getQuestId()));
     }
 }

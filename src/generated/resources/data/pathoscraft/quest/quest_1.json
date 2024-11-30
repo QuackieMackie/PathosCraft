@@ -6,6 +6,7 @@
   "quest_objectives": [
     {
       "action": "collect",
+      "progress": 0,
       "quantity": 10,
       "target": "minecraft:dirt"
     }

@@ -18,6 +18,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
+import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
@@ -83,6 +84,12 @@ public class QuestSlotButton extends Button {
         } else {
             itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
         }
+
+        if (minecraft.screen instanceof QuestScreen questScreen) {
+            List<Quest> questsByType = QuestHandler.getQuestsByType(questScreen.activeButton.getQuestType());
+            questScreen.removeQuestButtons();
+            questScreen.addQuestButton(activeQuests, questsByType);
+        }
     }
 
     @Override
@@ -91,7 +98,6 @@ public class QuestSlotButton extends Button {
         int itemY = this.getY() + (this.height / 2);
 
         renderItem(itemStack, itemX, itemY, guiGraphics);
-        //renderBorder(guiGraphics);
 
         if (this.isHovered()) {
             if (!hoverInfo.isEmpty()) {
