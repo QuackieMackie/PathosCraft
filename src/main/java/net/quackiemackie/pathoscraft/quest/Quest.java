@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a quest in the game.
@@ -91,6 +92,19 @@ public class Quest {
 
     public List<QuestReward> getQuestRewards() {
         return this.questRewards;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Quest quest = (Quest) obj;
+        return questId == quest.questId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(questId);
     }
 
     @Override

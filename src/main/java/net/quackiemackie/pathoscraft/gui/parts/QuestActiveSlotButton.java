@@ -54,7 +54,7 @@ public class QuestActiveSlotButton extends QuestSlotButton {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
 
-        List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
+        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
         Quest quest = this.getQuest();
 
         if (activeQuests.contains(quest)) {

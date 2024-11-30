@@ -44,7 +44,7 @@ public class PlayerEvents {
             if (serverPlayer.hasData(PathosAttachments.ACTIVE_QUESTS.get())) {
                 List<Quest> activeQuests = ((IAttachmentHolder) serverPlayer).getData(PathosAttachments.ACTIVE_QUESTS.get());
                 PacketDistributor.sendToPlayer(serverPlayer, new QuestMenuActiveQuestsPayload(activeQuests));
-                PathosCraft.LOGGER.error("Active Quests: {}", activeQuests);
+                PathosCraft.LOGGER.info("Active Quests: {}", activeQuests);
 
             } else {
                 PathosCraft.LOGGER.error("Issue with active quests, it is empty.");

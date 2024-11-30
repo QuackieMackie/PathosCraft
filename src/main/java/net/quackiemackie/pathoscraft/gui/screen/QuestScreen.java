@@ -263,7 +263,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     }
 
     /**
-     * Constructs the quest tab by adding buttons for quests on the current page.
+     * Constructs the quest tabs by adding buttons for quests on the current page.
      *
      * @param activeQuests the list of quests that are currently active.
      * @param questsByType the list of quests filtered by type based on the active tab.
