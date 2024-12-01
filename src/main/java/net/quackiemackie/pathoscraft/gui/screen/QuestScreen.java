@@ -26,8 +26,6 @@ import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
@@ -318,13 +316,6 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * @param activeQuests the list of active quests.
      */
     private void activeQuestTabBuilder(List<Quest> activeQuests) {
-        if (activeQuests == null) {
-            activeQuests = new ArrayList<>();
-        } else {
-            activeQuests = new ArrayList<>(activeQuests);
-        }
-        Collections.sort(activeQuests, Comparator.comparing(Quest::getQuestId));
-
         for (int i = 0; i < activeQuests.size() && i < maxActiveQuests; i++) {
             Quest quest = activeQuests.get(i);
 

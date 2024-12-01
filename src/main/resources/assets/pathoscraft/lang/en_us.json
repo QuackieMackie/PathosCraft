@@ -16,7 +16,7 @@
 
   "item.pathoscraft.animated_item": "Test Animated Item",
   "item.pathoscraft.astral_lantern": "Astral Lantern",
-  "item.pathoscraft.quest_book": "Quest Book",
+  "item.pathoscraft.quest_book": "§2Quest Book",
   "item.pathoscraft.creature_crystal": "Creature Crystal",
 
   "block.pathoscraft.sadness_block": "Block of Sadness",
@@ -35,6 +35,7 @@
   "item.pathoscraft.jump_wand.tooltip": "Click the ground to teleport to that block!",
   "item.pathoscraft.mana_potion.tooltip": "Drinking this gives you regeneration II for 5 seconds!",
   "item.pathoscraft.mana_herb.tooltip": "Harvested in the open world, this herb when eaten has a chance to heal you.\nIt's also pretty good for cooking with...",
+  "item.pathoscraft.quest_book.tooltip": "§8A log of quests available and active for you..\n\nLegend has it...\nThis book contains the power to grant mythical abilities by fulfilling tasks for it.",
 
   "block.pathoscraft.repair_block.tooltip": "Repair your jump wand by:\n- §cDropping your jump wand on the block!\n§r- §cClicking the repair block with your jump wand!",
 
@@ -42,9 +43,11 @@
   "keybinding.pathoscraft.astral_form_exit": "Exit Astral Form",
 
   "abilities.pathoscraft.astral_form_exit": "Press %s to exit Astral Form",
+  "abilities.pathoscraft.astral_form_name": "'s Physical body",
+
   "networking.pathoscraft.client.failed": "Client network error:",
   "networking.pathoscraft.server.failed": "Server network error:",
-  "abilities.pathoscraft.astral_form_name": "'s Physical body",
+
   "menu.title.pathoscraft.quest_menu": "Quest Menu",
   "menu.widget.pathoscraft.quest_menu.main_quest_button": "Main Quests",
   "menu.widget.pathoscraft.quest_menu.side_quest_button": "Side Quests",

@@ -32,10 +32,13 @@ public class PathosCraft {
 
     //TODO:
     // - When quests are in place, the quest name and description need to be translatable.
+    // - I want to add a toggle method for quests, so when the mod launches, I am able to toggle whether the quests from the mod load or only external data packs load.
+    // - When quests are completed add an option to keep or remove the items, so quests could take items permanently to complete or they'd return them after completing.
+    // - I want to add some kind of organising to active quests, not manually done in the code like before.
+    //   The goal is for the player to be able to drag the quests in the active quests tab and swap them around to reorganise the array.
 
     public static final String MOD_ID = "pathoscraft";
     public static final Logger LOGGER = LogUtils.getLogger();
-    private static final QuestHandler QUEST_HANDLER = new QuestHandler();
 
     public PathosCraft(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
@@ -54,7 +57,7 @@ public class PathosCraft {
     public void onServerStarting(ServerStartingEvent event) {
         MinecraftServer server = event.getServer();
         ResourceManager resourceManager = server.getResourceManager();
-        QUEST_HANDLER.loadQuests(resourceManager);
+        QuestHandler.loadQuests(resourceManager);
     }
 
     @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -73,9 +76,5 @@ public class PathosCraft {
             event.registerEntityRenderer(PathosEntities.ASTRAL_FORM.get(), AstralFormRenderer::new);
             event.registerEntityRenderer(PathosEntities.SPIDER_MOUNT.get(), SpiderMountRenderer::new);
         }
-    }
-
-    public static QuestHandler getQuestHandler() {
-        return QUEST_HANDLER;
     }
 }
