@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
@@ -174,28 +173,21 @@ public class QuestHandler {
 
         for (Quest quest : activeQuests) {
             for (QuestObjective objective : quest.getQuestObjectives()) {
-                // Check if the quest objective is a "collect" task for the picked-up item
                 if ("collect".equals(objective.getAction()) && pickedUpItem.equals(objective.getTarget()) && remainingQuantity > 0) {
                     int currentProgress = objective.getProgress();
                     int requiredQuantity = objective.getQuantity();
 
                     if (currentProgress < requiredQuantity) {
-                        // Calculate the number of items to be applied to the objective progress
                         int progressIncrement = Math.min(remainingQuantity, requiredQuantity - currentProgress);
 
-                        // Update the objective's progress
                         objective.setProgress(currentProgress + progressIncrement);
-
-                        // Decrease the remaining quantity
                         remainingQuantity -= progressIncrement;
 
-                        // Update the player's progress and inventory
                         updateProgress(player, (ServerPlayer) player, activeQuests, objective, quest);
-                        removeItemFromInventory(player, pickedUpItem, progressIncrement);
 
                         // Exit the loop if there are no remaining items
                         if (remainingQuantity <= 0) {
-                            return;  // Early return as no further processing is needed
+                            return;
                         }
                     }
                 }
@@ -203,33 +195,37 @@ public class QuestHandler {
         }
     }
 
-    /**
-     * Removes a specified quantity of an item from the player's inventory.
-     *
-     * @param player   the player whose inventory will be modified
-     * @param itemName the name of the item to remove
-     * @param quantity the quantity of the item to remove
-     */
-    private static void removeItemFromInventory(Player player, String itemName, int quantity) {
-        int quantityToRemove = quantity;
+    public static boolean willUpdateQuestProgress(Player player, String itemRegistry) {
+        List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
-        for (int i = 0; i < player.getInventory().getContainerSize() && quantityToRemove > 0; i++) {
-            ItemStack itemStack = player.getInventory().getItem(i);
-
-            // Check if the current item stack matches the target item
-            if (itemStack.getItem().toString().equals(itemName)) {
-                int stackSize = itemStack.getCount();
-
-                if (stackSize <= quantityToRemove) {
-                    // Remove the entire stack and update the remaining quantity to remove
-                    player.getInventory().setItem(i, ItemStack.EMPTY);
-                    quantityToRemove -= stackSize;
-                } else {
-                    // Remove part of the stack and break as the required quantity is fully removed
-                    itemStack.shrink(quantityToRemove);
-                    quantityToRemove = 0;
+        for (Quest quest : activeQuests) {
+            for (QuestObjective objective : quest.getQuestObjectives()) {
+                if ("collect".equals(objective.getAction()) && itemRegistry.equals(objective.getTarget())
+                        && objective.getProgress() < objective.getQuantity()) {
+                    return true;
                 }
             }
         }
+
+        return false;
+    }
+
+    public static int getAmountForQuest(Player player, String itemRegistry) {
+        List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
+        int totalRequiredQuantity = 0;
+
+        for (Quest quest : activeQuests) {
+            for (QuestObjective objective : quest.getQuestObjectives()) {
+                if ("collect".equals(objective.getAction()) && itemRegistry.equals(objective.getTarget())) {
+                    int currentProgress = objective.getProgress();
+                    int requiredQuantity = objective.getQuantity();
+                    if (currentProgress < requiredQuantity) {
+                        totalRequiredQuantity += (requiredQuantity - currentProgress);
+                    }
+                }
+            }
+        }
+
+        return totalRequiredQuantity;
     }
 }
