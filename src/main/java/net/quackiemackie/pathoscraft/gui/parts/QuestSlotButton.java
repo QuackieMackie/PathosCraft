@@ -8,12 +8,9 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
@@ -79,24 +76,36 @@ public class QuestSlotButton extends Button {
 
         PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
-        if (activeQuests.contains(quest)) {
-            itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-        } else {
-            itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
-        }
-
         if (minecraft.screen instanceof QuestScreen questScreen) {
-            List<Quest> questsByType = QuestHandler.getQuestsByType(questScreen.activeButton.getQuestType());
             questScreen.removeQuestButtons();
-            questScreen.addQuestButton(activeQuests, questsByType);
+            questScreen.addQuestButton(activeQuests, questScreen.activeButton.getQuestType());
         }
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        Quest quest = this.getQuest();
+
+        boolean isQuestActive = activeQuests.contains(quest);
+        boolean isQuestCompleted = QuestHandler.isQuestCompleted(quest);
+
         int itemX = this.getX() + (this.width / 2);
         int itemY = this.getY() + (this.height / 2);
+        int glowColorBackground;
+        int glowColorBorder;
 
+        if (isQuestCompleted) {
+            glowColorBackground = 0x4000FF00; // Green for completed
+            glowColorBorder = 0x8000FF00;
+            renderGlow(guiGraphics, itemX, itemY, glowColorBackground, glowColorBorder);
+        } else if (isQuestActive) {
+            glowColorBackground = 0x40FFA500; // Orange for active
+            glowColorBorder = 0x80FFA500;
+            renderGlow(guiGraphics, itemX, itemY, glowColorBackground, glowColorBorder);
+        }
         renderItem(itemStack, itemX, itemY, guiGraphics);
 
         if (this.isHovered()) {
@@ -116,24 +125,6 @@ public class QuestSlotButton extends Button {
     }
 
     /**
-     * Renders the border around the button.
-     *
-     * @param guiGraphics The graphics context used for rendering.
-     */
-    protected void renderBorder(GuiGraphics guiGraphics) {
-        int borderColor = 0xFFFFFFFF;
-        int left = this.getX();
-        int top = this.getY();
-        int right = this.getX() + this.width;
-        int bottom = this.getY() + this.height;
-
-        guiGraphics.fill(left, top, right, top + 1, borderColor);
-        guiGraphics.fill(left, bottom - 1, right, bottom, borderColor);
-        guiGraphics.fill(left, top, left + 1, bottom, borderColor);
-        guiGraphics.fill(right - 1, top, right, bottom, borderColor);
-    }
-
-    /**
      * Renders the ItemStack on the button.
      *
      * @param itemStack   The ItemStack to render.
@@ -147,10 +138,7 @@ public class QuestSlotButton extends Button {
         poseStack.pushPose();
         poseStack.translate(x, y, 100.0F);
 
-        boolean isBlock = itemStack.getItem() instanceof BlockItem;
-
-        if (isBlock) {
-            poseStack.scale(16.0F, -16.0F, 16.0F);
+        if (itemStack.getItem() instanceof BlockItem) {
             renderBlockItem(itemStack, poseStack, guiGraphics);
         } else {
             guiGraphics.renderItem(itemStack, -8, -8);
@@ -171,7 +159,23 @@ public class QuestSlotButton extends Button {
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
         BakedModel bakedModel = minecraft.getItemRenderer().getModel(itemStack, null, minecraft.player, 0);
 
+        poseStack.scale(16.0F, -16.0F, 16.0F);
         minecraft.getItemRenderer().render(itemStack, ItemDisplayContext.GUI, false, poseStack, bufferSource, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, bakedModel);
         bufferSource.endBatch();
+    }
+
+    protected void renderGlow(GuiGraphics guiGraphics, int x, int y, int glowColorBackground, int glowColorBorder) {
+
+        int backgroundSize = 9;
+        int borderSize = 1;
+
+        // Fill background rectangle
+        guiGraphics.fill(x - backgroundSize, y - backgroundSize, x + backgroundSize, y + backgroundSize, glowColorBackground);
+
+        // Render glowing border
+        guiGraphics.fill(x - 8 - borderSize, y - 8 - borderSize, x + 8 + borderSize, y - 8, glowColorBorder);
+        guiGraphics.fill(x - 8 - borderSize, y + 8, x + 8 + borderSize, y + 8 + borderSize, glowColorBorder);
+        guiGraphics.fill(x - 8 - borderSize, y - 8, x - 8, y + 8, glowColorBorder);
+        guiGraphics.fill(x + 8, y - 8, x + 8 + borderSize, y + 8, glowColorBorder);
     }
 }

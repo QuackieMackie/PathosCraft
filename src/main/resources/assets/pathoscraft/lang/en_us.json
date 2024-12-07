@@ -16,7 +16,7 @@
 
   "item.pathoscraft.animated_item": "Test Animated Item",
   "item.pathoscraft.astral_lantern": "Astral Lantern",
-  "item.pathoscraft.quest_book": "§2Quest Book",
+  "item.pathoscraft.quest_book": "§dQuest Book",
   "item.pathoscraft.creature_crystal": "Creature Crystal",
 
   "block.pathoscraft.sadness_block": "Block of Sadness",
@@ -35,7 +35,7 @@
   "item.pathoscraft.jump_wand.tooltip": "Click the ground to teleport to that block!",
   "item.pathoscraft.mana_potion.tooltip": "Drinking this gives you regeneration II for 5 seconds!",
   "item.pathoscraft.mana_herb.tooltip": "Harvested in the open world, this herb when eaten has a chance to heal you.\nIt's also pretty good for cooking with...",
-  "item.pathoscraft.quest_book.tooltip": "§8A log of quests available and active for you..\n\nLegend has it...\nThis book contains the power to grant mythical abilities by fulfilling tasks for it.",
+  "item.pathoscraft.quest_book.tooltip": "§8A log of quests available and active for you.\n\n§7§oLegend has it...\n§7§oThis book contains the power to grant §6mythical abilities§7§o by fulfilling its tasks.",
 
   "block.pathoscraft.repair_block.tooltip": "Repair your jump wand by:\n- §cDropping your jump wand on the block!\n§r- §cClicking the repair block with your jump wand!",
 

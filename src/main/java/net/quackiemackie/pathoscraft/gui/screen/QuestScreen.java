@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
 import net.quackiemackie.pathoscraft.gui.parts.QuestActiveSlotButton;
 import net.quackiemackie.pathoscraft.gui.parts.QuestPageButton;
@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
@@ -239,10 +240,10 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         this.renderables.removeIf(renderable -> renderable instanceof QuestSlotButton);
 
         // Retrieve relevant quests for display
-        List<Quest> questsByType = QuestHandler.getQuestsByType(activeButton.getQuestType());
+        int questsByType = activeButton.getQuestType();
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
-        maxPages = questsByType.stream()
+        maxPages = QuestHandler.getQuests().stream()
                 .mapToInt(Quest::getQuestSlot)
                 .max()
                 .orElse(0) / 99 + 1;
@@ -260,7 +261,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         }
     }
 
-    public void addQuestButton(List<Quest> activeQuests, List<Quest> questsByType) {
+    public void addQuestButton(List<Quest> activeQuests, int questsByType) {
         questTabBuilder(activeQuests, questsByType);
     }
 
@@ -273,9 +274,12 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * Constructs the quest tabs by adding buttons for quests on the current page.
      *
      * @param activeQuests the list of quests that are currently active.
-     * @param questsByType the list of quests filtered by type based on the active tab.
+     * @param questType the type of quests to display.
      */
-    private void questTabBuilder(List<Quest> activeQuests, List<Quest> questsByType) {
+    private void questTabBuilder(List<Quest> activeQuests, int questType) {
+        List<Quest> questsByType = QuestHandler.getQuestsByType(questType);
+        Map<Integer, Quest> activeQuestMap = QuestHandler.getActiveQuestMap(activeQuests);
+
         for (Quest quest : questsByType) {
             int slotIndex = quest.getQuestSlot();
             int slotPage = slotIndex / 99 + 1;
@@ -285,13 +289,17 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                 int x = 8 + (pageIndex % 9) * 18;
                 int y = 18 + (pageIndex / 9) * 18;
 
+                Quest activeQuest = activeQuestMap.get(quest.getQuestId());
+                QuestSlotButton questButton;
                 ItemStack questItemStack = createQuestIconStack(quest);
 
-                if (activeQuests.contains(quest)) {
-                    questItemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                if (activeQuest != null && QuestHandler.isQuestCompleted(activeQuest)) {
+                    questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, activeQuest, e -> {});
+                } else {
+                    questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});
                 }
 
-                QuestSlotButton questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});
+                PathosCraft.LOGGER.info("Quest: {}", questButton.getQuest());
 
                 addHoverInfo(questButton, quest);
 
@@ -337,7 +345,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     }
 
     /**
-     * Creates an ItemStack representing the quest icon.
+     * Creates a quest icon from the quests json entry.
      *
      * @param quest the quest for which to create the icon.
      * @return the ItemStack representing the quest icon.

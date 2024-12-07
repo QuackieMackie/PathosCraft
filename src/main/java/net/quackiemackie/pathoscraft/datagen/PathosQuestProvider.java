@@ -80,6 +80,11 @@ public class PathosQuestProvider implements DataProvider {
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
+        quests.add(new Quest(7, "Optional Quest 2", "Description for test quest 7.", "minecraft:gold_ingot", 2, 0, 1,
+                List.of(new QuestObjective("collect", "minecraft:dirt", 5, defaultProgress)),
+                List.of(new QuestReward("give", "minecraft:diamond", 1))
+        ));
+
         List<CompletableFuture<?>> futures = new ArrayList<>();
         for (Quest quest : quests) {
             Path questPath = generateQuestPath(outputFolder, quest);

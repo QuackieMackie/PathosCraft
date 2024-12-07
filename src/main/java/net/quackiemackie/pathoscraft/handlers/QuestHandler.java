@@ -21,6 +21,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class QuestHandler {
     private static final List<Quest> quests = new ArrayList<>();
@@ -82,13 +84,36 @@ public class QuestHandler {
      * @return the list of quests with the specified type.
      */
     public static List<Quest> getQuestsByType(int questType) {
-        List<Quest> questsByType = new ArrayList<>();
-        for (Quest quest : quests) {
-            if (quest.getQuestType() == questType) {
-                questsByType.add(quest);
-            }
-        }
-        return questsByType;
+        return quests.stream()
+                .filter(quest -> quest.getQuestType() == questType)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Checks if a quest is completed based on its objectives.
+     *
+     * @param quest the quest to be checked
+     * @return true if all objectives are completed, false otherwise
+     */
+    public static boolean isQuestCompleted(Quest quest) {
+        return quest.getQuestObjectives().stream()
+                .allMatch(objective -> objective.getProgress() >= objective.getQuantity());
+    }
+
+    /**
+     * Converts a list of active quests into a map for quick lookup.
+     *
+     * This method creates a mapping of each quest's unique ID to the corresponding
+     * Quest object, allowing efficient retrieval of quests based on their ID.
+     * This is useful for scenarios where frequent lookups by quest ID are required,
+     * enhancing performance by avoiding repeated list searches.
+     *
+     * @param activeQuests the list of active Quest objects to be mapped
+     * @return a Map where each key is the quest ID and the value is the Quest object
+     */
+    public static Map<Integer, Quest> getActiveQuestMap(List<Quest> activeQuests) {
+        return activeQuests.stream()
+                .collect(Collectors.toMap(Quest::getQuestId, Function.identity()));
     }
 
     /**
@@ -195,6 +220,13 @@ public class QuestHandler {
         }
     }
 
+    /**
+     * Determines if collecting an item will update any active quest objectives for a player.
+     *
+     * @param player       the player who is performing the action
+     * @param itemRegistry the registry name of the item being evaluated
+     * @return true if collecting the item will progress any of the player's active quests, false otherwise
+     */
     public static boolean willUpdateQuestProgress(Player player, String itemRegistry) {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
@@ -210,6 +242,13 @@ public class QuestHandler {
         return false;
     }
 
+    /**
+     * Calculates the total number of a specific item needed to complete all relevant quest objectives for a player.
+     *
+     * @param player       the player whose quests are being checked
+     * @param itemRegistry the registry name of the item to check
+     * @return the total quantity of the item still needed to fulfill relevant quest objectives
+     */
     public static int getAmountForQuest(Player player, String itemRegistry) {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
         int totalRequiredQuantity = 0;

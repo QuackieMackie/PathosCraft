@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Represents a quest in the game.
@@ -117,5 +118,18 @@ public class Quest {
                 (questObjectives.isEmpty() ? "" : ", objectives=" + questObjectives) +
                 (questRewards.isEmpty() ? "" : ", rewards=" + questRewards) +
                 '}';
+    }
+
+    /**
+     * Filters the provided list of quests by the specified type.
+     *
+     * @param quests   the list of quests to filter.
+     * @param questType the type of quest to filter by.
+     * @return a list of quests that match the specified type.
+     */
+    public static List<Quest> filterByType(List<Quest> quests, int questType) {
+        return quests.stream()
+                .filter(quest -> quest.getQuestType() == questType)
+                .collect(Collectors.toList());
     }
 }

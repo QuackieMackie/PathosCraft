@@ -29,4 +29,9 @@ public class PathosAttachments {
             .serialize(Codec.list(Quest.CODEC))
             .copyOnDeath()
             .build());
+
+//    public static final Supplier<AttachmentType<List<Quest>>> COMPLETED_QUESTS = ATTACHMENT_TYPES.register("completed_quests", () -> AttachmentType.builder(DefaultQuestList)
+//            .serialize(Codec.list(Quest.CODEC))
+//            .copyOnDeath()
+//            .build());
 }

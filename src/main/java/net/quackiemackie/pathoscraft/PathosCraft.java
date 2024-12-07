@@ -37,6 +37,12 @@ public class PathosCraft {
     // - I want to add some kind of organising to active quests, not manually done in the code like before.
     //   The goal is for the player to be able to drag the quests in the active quests tab and swap them around to reorganise the array.
 
+    //TODO:
+    // If the quest is on the COMPLETED_QUESTS data attachment then it would render in a green tick, containing the same data instead of the quest_icon
+    // .
+    // If the quest gets clicked while in this 'ready to complete' state, it would fetch the rewards, and return a message for now.
+    // in the future it would drop the items at the players location (possibly deplying fireworks as well, or some kind of happy noise and particles.)
+
     public static final String MOD_ID = "pathoscraft";
     public static final Logger LOGGER = LogUtils.getLogger();
 

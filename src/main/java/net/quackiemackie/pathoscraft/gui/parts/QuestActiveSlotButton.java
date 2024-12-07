@@ -1,6 +1,5 @@
 package net.quackiemackie.pathoscraft.gui.parts;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.component.DataComponents;
@@ -10,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
+import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
@@ -60,12 +60,12 @@ public class QuestActiveSlotButton extends QuestSlotButton {
         if (activeQuests.contains(quest)) {
             activeQuests.remove(quest);
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+            itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         }
 
         PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
-        if (minecraft.screen instanceof QuestScreen) {
-            QuestScreen questScreen = (QuestScreen) minecraft.screen;
+        if (minecraft.screen instanceof QuestScreen questScreen) {
             questScreen.removeActiveQuestButtons();
             questScreen.addActiveQuestButton(activeQuests);
         }
@@ -73,12 +73,20 @@ public class QuestActiveSlotButton extends QuestSlotButton {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        Quest quest = this.getQuest();
+        boolean isQuestCompleted = QuestHandler.isQuestCompleted(quest);
+
         int itemX = this.getX() + (this.width / 2);
         int itemY = this.getY() + (this.height / 2);
+        int glowColorBackground;
+        int glowColorBorder;
 
-        itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        if (isQuestCompleted) {
+            glowColorBackground = 0x4000FF00; // Green for completed
+            glowColorBorder = 0x8000FF00;
+            renderGlow(guiGraphics, itemX, itemY, glowColorBackground, glowColorBorder);
+        }
         renderItem(itemStack, itemX, itemY, guiGraphics);
-        //renderBorder(guiGraphics);
 
         if (this.isHovered()) {
             if (!hoverInfo.isEmpty()) {
@@ -94,37 +102,5 @@ public class QuestActiveSlotButton extends QuestSlotButton {
      */
     public void addHoverInfo(Component info) {
         this.hoverInfo.add(info);
-    }
-
-    /**
-     * Renders the border around the button to visually indicate selection or focus.
-     *
-     * @param guiGraphics The graphics context used for rendering.
-     */
-    protected void renderBorder(GuiGraphics guiGraphics) {
-        super.renderBorder(guiGraphics);
-    }
-
-    /**
-     * Renders the ItemStack on the button.
-     *
-     * @param itemStack   The ItemStack to render.
-     * @param x           The x-coordinate where the item should be rendered.
-     * @param y           The y-coordinate where the item should be rendered.
-     * @param guiGraphics The graphics context used for rendering.
-     */
-    protected void renderItem(ItemStack itemStack, int x, int y, GuiGraphics guiGraphics) {
-        super.renderItem(itemStack, x, y, guiGraphics);
-    }
-
-    /**
-     * Renders a BlockItem on the button.
-     *
-     * @param itemStack   The BlockItem stack to render.
-     * @param poseStack   The pose stack for transformations.
-     * @param guiGraphics The graphics context used for rendering.
-     */
-    protected void renderBlockItem(ItemStack itemStack, PoseStack poseStack, GuiGraphics guiGraphics) {
-        super.renderBlockItem(itemStack, poseStack, guiGraphics);
     }
 }

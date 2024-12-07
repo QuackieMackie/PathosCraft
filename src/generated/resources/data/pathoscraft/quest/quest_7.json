@@ -1,0 +1,24 @@
+{
+  "quest_description": "Description for test quest 7.",
+  "quest_icon": "minecraft:gold_ingot",
+  "quest_id": 7,
+  "quest_name": "Optional Quest 2",
+  "quest_objectives": [
+    {
+      "action": "collect",
+      "progress": 0,
+      "quantity": 5,
+      "target": "minecraft:dirt"
+    }
+  ],
+  "quest_preceding": 0,
+  "quest_rewards": [
+    {
+      "action": "give",
+      "item": "minecraft:diamond",
+      "quantity": 1
+    }
+  ],
+  "quest_slot": 1,
+  "quest_type": 2
+}
