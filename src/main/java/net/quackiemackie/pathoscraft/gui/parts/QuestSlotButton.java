@@ -56,29 +56,99 @@ public class QuestSlotButton extends Button {
     }
 
     @Override
-    public void onPress() {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // Checks to see if the button is visible or mouse if hovering over it.
+        if (!this.visible || !this.isMouseOver(mouseX, mouseY)) {
+            return false;
+        }
+
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-
         List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
         Quest quest = this.getQuest();
 
+        PathosCraft.LOGGER.info("Clicked Quest ID: {}", quest.getQuestId());
+        return switch (button) {
+            case 0 -> {
+                handleLeftClick(activeQuests, player, minecraft);
+                yield true;
+            }
+            case 1 -> {
+                handleRightClick(activeQuests, player, minecraft);
+                yield true;
+            }
+            default -> false;
+        };
+    }
+
+//    @Override
+//    public void onPress() {
+//        Minecraft minecraft = Minecraft.getInstance();
+//        Player player = minecraft.player;
+//
+//        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+//        Quest quest = this.getQuest();
+//
+//        if (activeQuests.contains(quest)) {
+//            activeQuests.remove(quest);
+//            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+//        } else if (activeQuests.size() < QuestScreen.maxActiveQuests) {
+//            activeQuests.add(quest);
+//            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+//        } else {
+//            PathosCraft.LOGGER.info("Max quests ({}) selected.", QuestScreen.maxActiveQuests);
+//            return;
+//        }
+//
+//        PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
+//
+//        if (minecraft.screen instanceof QuestScreen questScreen) {
+//            questScreen.removeQuestButtons();
+//            questScreen.addQuestButton(activeQuests, questScreen.activeButton.getQuestType());
+//        }
+//    }
+
+    /**
+     * Handles removing a quest from the active list upon right-click.
+     *
+     * @brief When a quest is right-clicked, it is removed from the player's
+     *        active quest list, and both the client and server are updated
+     *        to reflect this change.
+     *        The UI is refreshed to display the
+     *        updated list of active quests.
+     */
+    private void handleRightClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         if (activeQuests.contains(quest)) {
             activeQuests.remove(quest);
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-        } else if (activeQuests.size() < QuestScreen.maxActiveQuests) {
-            activeQuests.add(quest);
-            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-        } else {
-            PathosCraft.LOGGER.info("Max quests ({}) selected.", QuestScreen.maxActiveQuests);
-            return;
         }
 
         PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
         if (minecraft.screen instanceof QuestScreen questScreen) {
-            questScreen.removeQuestButtons();
-            questScreen.addQuestButton(activeQuests, questScreen.activeButton.getQuestType());
+            questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+        }
+    }
+
+    /**
+     * Handles accepting rewards from completed quests upon left-click.
+     *
+     * @brief This method processes the action of accepting rewards for quests that
+     *        have been completed. It updates the completed quests data attachment and
+     *        sends the necessary payload to the server to execute the associated logic.
+     */
+    private void handleLeftClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
+        Quest quest = this.getQuest();
+
+        if (activeQuests.size() < QuestScreen.maxActiveQuests && !activeQuests.contains(quest)) {
+            activeQuests.add(quest);
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+        }
+
+        PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
+
+        if (minecraft.screen instanceof QuestScreen questScreen) {
+            questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
         }
     }
 

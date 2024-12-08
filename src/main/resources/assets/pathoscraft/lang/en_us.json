@@ -52,5 +52,6 @@
   "menu.widget.pathoscraft.quest_menu.main_quest_button": "Main Quests",
   "menu.widget.pathoscraft.quest_menu.side_quest_button": "Side Quests",
   "menu.widget.pathoscraft.quest_menu.optional_quest_button": "Optional Quests",
-  "menu.widget.pathoscraft.quest_menu.active_quest_button": "Active Quests"
+  "menu.widget.pathoscraft.quest_menu.active_quest_button": "Active Quests",
+  "menu.widget.pathoscraft.quest_menu.information_button.tooltip": "§5Quest System Guide:\n§aGreen: Quests with completed objectives.\n§6Orange: Quests on your active list.\n§8Grey: Quests that have been completed.\n\n§5Controls:\n• §7Left-click: Claim completed quests rewards and activate quests.\n• §7Right-click: Disable active quests.\n• §7Middle-click: Swap quests.\n\nTip: Hover over quests for details!"
 }
