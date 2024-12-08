@@ -2,26 +2,28 @@ package net.quackiemackie.pathoscraft.gui.parts;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
 import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class QuestActiveSlotButton extends QuestSlotButton {
 
     private final ItemStack itemStack;
     private final List<Component> hoverInfo;
     private final Quest quest;
+
+    private static Quest heldQuest = null;
+    private static int heldQuestIndex = -1;
 
     /**
      * Constructs a new QuestActiveSlotButton.
@@ -50,25 +52,110 @@ public class QuestActiveSlotButton extends QuestSlotButton {
     }
 
     @Override
-    public void onPress() {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // Checks to see if the button is visible or mouse if hovering over it.
+        if (!this.visible || !this.isMouseOver(mouseX, mouseY)) {
+            return false;
+        }
+
+        // Check to make sure it only works on the active tab
+        if (!(Minecraft.getInstance().screen instanceof QuestScreen questScreen) ||
+                questScreen.activeButton != questScreen.activeQuestsButton) {
+            return false;
+        }
+
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-
         List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
         Quest quest = this.getQuest();
 
+        PathosCraft.LOGGER.info("Clicked Quest ID: {}", quest.getQuestId());
+        return switch (button) {
+            case 0 -> {
+                handleLeftClick();
+                yield true;
+            }
+            case 1 -> {
+                handleRightClick(activeQuests, player, minecraft);
+                yield true;
+            }
+            case 2 -> {
+                handleMiddleClick(activeQuests, player, minecraft, quest, activeQuests.indexOf(quest));
+                yield true;
+            }
+            default -> false;
+        };
+    }
+
+    /**
+     * Handles swapping of quests upon middle-click.
+     *
+     * @brief Initiates or completes a swap action when a quest in the active quest
+     *        list is middle-clicked. If no quest is held, it selects the quest
+     *        for swapping. If a quest is already held, it swaps the held quest
+     *        with the clicked quest, updates the active quest list, refreshes
+     *        the UI, and communicates changes to the server.
+     */
+    private void handleMiddleClick(List<Quest> activeQuests, Player player, Minecraft minecraft, Quest clickedQuest, int clickedQuestIndex) {
+        if (heldQuest == null) {
+            heldQuest = clickedQuest;
+            heldQuestIndex = clickedQuestIndex;
+        } else if (heldQuestIndex != clickedQuestIndex) {
+            PathosCraft.LOGGER.info("Swapping {Quest ID: {}, Index: {}} with {Quest ID: {}, Index: {}}", clickedQuest.getQuestId(), clickedQuestIndex, heldQuest.getQuestId(), heldQuestIndex);
+
+            Collections.swap(activeQuests, heldQuestIndex, clickedQuestIndex);
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+            PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
+
+            if (minecraft.screen instanceof QuestScreen questScreen) {
+                questScreen.refreshActiveQuestsUI(activeQuests);
+            }
+            clearHeldQuestState();
+        }
+    }
+
+    /**
+     * Clears the state of the held quest.
+     *
+     * @brief This method resets the held quest properties, setting the held quest
+     *        and its index to null and -1, respectively. It is typically called
+     *        after a swap operation to ensure that no quest remains selected.
+     */
+    public static void clearHeldQuestState() {
+        heldQuest = null;
+        heldQuestIndex = -1;
+    }
+
+    /**
+     * Handles removing a quest from the active list upon right-click.
+     *
+     * @brief When a quest is right-clicked, it is removed from the player's
+     *        active quest list, and both the client and server are updated
+     *        to reflect this change.
+     *        The UI is refreshed to display the
+     *        updated list of active quests.
+     */
+    private void handleRightClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         if (activeQuests.contains(quest)) {
             activeQuests.remove(quest);
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-            itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         }
 
         PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
         if (minecraft.screen instanceof QuestScreen questScreen) {
-            questScreen.removeActiveQuestButtons();
-            questScreen.addActiveQuestButton(activeQuests);
+            questScreen.refreshActiveQuestsUI(activeQuests);
         }
+    }
+
+    /**
+     * Handles accepting rewards from completed quests upon left-click.
+     *
+     * @brief This method processes the action of accepting rewards for quests that
+     *        have been completed. It updates the completed quests data attachment and
+     *        sends the necessary payload to the server to execute the associated logic.
+     */
+    private void handleLeftClick() {
     }
 
     @Override

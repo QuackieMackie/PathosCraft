@@ -125,6 +125,24 @@ public class QuestSlotButton extends Button {
     }
 
     /**
+     * Renders the border around the button.
+     *
+     * @param guiGraphics The graphics context used for rendering.
+     */
+    protected void renderBorder(GuiGraphics guiGraphics) {
+        int borderColor = 0xFFFFFFFF;
+        int left = this.getX();
+        int top = this.getY();
+        int right = this.getX() + this.width;
+        int bottom = this.getY() + this.height;
+
+        guiGraphics.fill(left, top, right, top + 1, borderColor);
+        guiGraphics.fill(left, bottom - 1, right, bottom, borderColor);
+        guiGraphics.fill(left, top, left + 1, bottom, borderColor);
+        guiGraphics.fill(right - 1, top, right, bottom, borderColor);
+    }
+
+    /**
      * Renders the ItemStack on the button.
      *
      * @param itemStack   The ItemStack to render.

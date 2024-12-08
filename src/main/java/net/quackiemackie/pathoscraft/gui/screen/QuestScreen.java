@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
 import net.quackiemackie.pathoscraft.gui.parts.QuestActiveSlotButton;
 import net.quackiemackie.pathoscraft.gui.parts.QuestPageButton;
@@ -34,7 +33,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     QuestTabButton mainQuestButton;
     QuestTabButton sideQuestButton;
     QuestTabButton optionalQuestButton;
-    QuestTabButton activeQuestsButton;
+    public QuestTabButton activeQuestsButton;
     public QuestTabButton activeButton;
     public static final int maxActiveQuests = 45;
 
@@ -299,8 +298,6 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                     questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});
                 }
 
-                PathosCraft.LOGGER.info("Quest: {}", questButton.getQuest());
-
                 addHoverInfo(questButton, quest);
 
                 this.addRenderableWidget(questButton);
@@ -308,13 +305,20 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         }
     }
 
-    public void addActiveQuestButton(List<Quest> activeQuests) {
-        activeQuestTabBuilder(activeQuests);
-    }
-
-    public void removeActiveQuestButtons() {
+    /**
+     * Refreshes the active quests UI.
+     *
+     * @param activeQuests List of quests currently active for the player.
+     *
+     * @brief This method is responsible for updating the UI to reflect changes in the active quests.
+     *        It first removes all current quest buttons from the UI and then rebuilds them based
+     *        on the provided list of active quests. This ensures that any additions, removals,
+     *        or swaps in quests are accurately displayed to the player.
+     */
+    public void refreshActiveQuestsUI(List<Quest> activeQuests) {
         this.children().removeIf(child -> child instanceof QuestActiveSlotButton);
         this.renderables.removeIf(renderable -> renderable instanceof QuestActiveSlotButton);
+        activeQuestTabBuilder(activeQuests);
     }
 
     /**

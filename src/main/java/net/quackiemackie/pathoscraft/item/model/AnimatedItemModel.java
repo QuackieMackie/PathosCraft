@@ -7,9 +7,9 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class AnimatedItemModel extends GeoModel<AnimatedItem> {
 
-    private static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "geo/animated_item.geo.json");
+    private static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "geo/item/animated_item.geo.json");
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/item/animated_item.png");
-    private static final ResourceLocation ANIMATIONS = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "animations/animated_item.animation.json");
+    private static final ResourceLocation ANIMATIONS = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "animations/item/animated_item.animation.json");
 
     @Override
     public ResourceLocation getModelResource(AnimatedItem animatable) {

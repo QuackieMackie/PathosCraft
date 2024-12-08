@@ -7,9 +7,9 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class AstralLanternModel extends GeoModel<AstralLantern> {
 
-    private static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "geo/astral_lantern.geo.json");
+    private static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "geo/item/astral_lantern.geo.json");
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/item/astral_lantern.png");
-    private static final ResourceLocation ANIMATIONS = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "animations/astral_lantern.animation.json");
+    private static final ResourceLocation ANIMATIONS = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "animations/item/astral_lantern.animation.json");
 
     @Override
     public ResourceLocation getModelResource(AstralLantern animatable) {
