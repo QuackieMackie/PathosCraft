@@ -307,7 +307,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                 QuestSlotButton questButton;
                 ItemStack questItemStack = createQuestIconStack(quest);
 
-                if (activeQuest != null && QuestHandler.isQuestCompleted(activeQuest)) {
+                if (activeQuest != null && QuestHandler.isQuestObjectiveCompleted(activeQuest)) {
                     questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, activeQuest, e -> {});
                 } else {
                     questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});

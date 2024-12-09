@@ -81,33 +81,6 @@ public class QuestSlotButton extends Button {
         };
     }
 
-//    @Override
-//    public void onPress() {
-//        Minecraft minecraft = Minecraft.getInstance();
-//        Player player = minecraft.player;
-//
-//        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
-//        Quest quest = this.getQuest();
-//
-//        if (activeQuests.contains(quest)) {
-//            activeQuests.remove(quest);
-//            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-//        } else if (activeQuests.size() < QuestScreen.maxActiveQuests) {
-//            activeQuests.add(quest);
-//            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-//        } else {
-//            PathosCraft.LOGGER.info("Max quests ({}) selected.", QuestScreen.maxActiveQuests);
-//            return;
-//        }
-//
-//        PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
-//
-//        if (minecraft.screen instanceof QuestScreen questScreen) {
-//            questScreen.removeQuestButtons();
-//            questScreen.addQuestButton(activeQuests, questScreen.activeButton.getQuestType());
-//        }
-//    }
-
     /**
      * Handles removing a quest from the active list upon right-click.
      *
@@ -139,16 +112,17 @@ public class QuestSlotButton extends Button {
      */
     private void handleLeftClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         Quest quest = this.getQuest();
+        if (!QuestHandler.isQuestCompleted(player, quest) && !QuestHandler.isActiveQuest(player, quest)) {
+            if (activeQuests.size() < QuestScreen.maxActiveQuests && !activeQuests.contains(quest)) {
+                activeQuests.add(quest);
+                player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+            }
 
-        if (activeQuests.size() < QuestScreen.maxActiveQuests && !activeQuests.contains(quest)) {
-            activeQuests.add(quest);
-            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-        }
+            PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
-        PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
-
-        if (minecraft.screen instanceof QuestScreen questScreen) {
-            questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+            if (minecraft.screen instanceof QuestScreen questScreen) {
+                questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+            }
         }
     }
 
@@ -160,22 +134,24 @@ public class QuestSlotButton extends Button {
         Quest quest = this.getQuest();
 
         boolean isQuestActive = activeQuests.contains(quest);
-        boolean isQuestCompleted = QuestHandler.isQuestCompleted(quest);
+        boolean isQuestObjectiveCompleted = QuestHandler.isQuestObjectiveCompleted(quest);
+        boolean isQuestCompleted = QuestHandler.isQuestCompleted(player, quest);
 
         int itemX = this.getX() + (this.width / 2);
         int itemY = this.getY() + (this.height / 2);
-        int glowColorBackground;
-        int glowColorBorder;
+        int backgroundColor;
 
-        if (isQuestCompleted) {
-            glowColorBackground = 0x4000FF00; // Green for completed
-            glowColorBorder = 0x8000FF00;
-            renderGlow(guiGraphics, itemX, itemY, glowColorBackground, glowColorBorder);
+        if (isQuestObjectiveCompleted) {
+            backgroundColor = 0x5000FF00; // Green for objective completed
+            renderBackground(guiGraphics, itemX, itemY, backgroundColor);
         } else if (isQuestActive) {
-            glowColorBackground = 0x40FFA500; // Orange for active
-            glowColorBorder = 0x80FFA500;
-            renderGlow(guiGraphics, itemX, itemY, glowColorBackground, glowColorBorder);
+            backgroundColor = 0x50FFA500; // Orange for active
+            renderBackground(guiGraphics, itemX, itemY, backgroundColor);
+        } else if (isQuestCompleted) {
+            backgroundColor = 0x90000000; // Grey for completed
+            renderBackground(guiGraphics, itemX, itemY, backgroundColor);
         }
+
         renderItem(itemStack, itemX, itemY, guiGraphics);
 
         if (this.isHovered()) {
@@ -252,18 +228,15 @@ public class QuestSlotButton extends Button {
         bufferSource.endBatch();
     }
 
-    protected void renderGlow(GuiGraphics guiGraphics, int x, int y, int glowColorBackground, int glowColorBorder) {
+    protected void renderBackground(GuiGraphics guiGraphics, int x, int y, int color) {
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
+        int halfWidth = width / 2;
+        int halfHeight = height / 2;
 
-        int backgroundSize = 9;
-        int borderSize = 1;
+        poseStack.translate(0, 0, 50.0F);
 
-        // Fill background rectangle
-        guiGraphics.fill(x - backgroundSize, y - backgroundSize, x + backgroundSize, y + backgroundSize, glowColorBackground);
-
-        // Render glowing border
-        guiGraphics.fill(x - 8 - borderSize, y - 8 - borderSize, x + 8 + borderSize, y - 8, glowColorBorder);
-        guiGraphics.fill(x - 8 - borderSize, y + 8, x + 8 + borderSize, y + 8 + borderSize, glowColorBorder);
-        guiGraphics.fill(x - 8 - borderSize, y - 8, x - 8, y + 8, glowColorBorder);
-        guiGraphics.fill(x + 8, y - 8, x + 8 + borderSize, y + 8, glowColorBorder);
+        guiGraphics.fill(x - halfWidth, y - halfHeight, x + halfWidth, y + halfHeight, color);
+        poseStack.popPose();
     }
 }

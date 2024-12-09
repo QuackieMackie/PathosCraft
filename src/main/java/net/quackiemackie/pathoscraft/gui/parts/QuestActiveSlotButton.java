@@ -1,5 +1,6 @@
 package net.quackiemackie.pathoscraft.gui.parts;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -11,6 +12,7 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
 import net.quackiemackie.pathoscraft.handlers.QuestHandler;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuCompletedQuestsPayload;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
@@ -58,30 +60,31 @@ public class QuestActiveSlotButton extends QuestSlotButton {
             return false;
         }
 
-        // Check to make sure it only works on the active tab
-        if (!(Minecraft.getInstance().screen instanceof QuestScreen questScreen) ||
-                questScreen.activeButton != questScreen.activeQuestsButton) {
-            return false;
-        }
-
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> completedQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get()));
         Quest quest = this.getQuest();
 
         PathosCraft.LOGGER.info("Clicked Quest ID: {}", quest.getQuestId());
         return switch (button) {
             case 0 -> {
-                handleLeftClick();
+                clearHeldQuestState();
+                handleLeftClick(completedQuests, activeQuests, player, minecraft);
                 yield true;
             }
             case 1 -> {
+                clearHeldQuestState();
                 handleRightClick(activeQuests, player, minecraft);
                 yield true;
             }
             case 2 -> {
-                handleMiddleClick(activeQuests, player, minecraft, quest, activeQuests.indexOf(quest));
-                yield true;
+                // Check to make sure it only works on the active tab
+                if (minecraft.screen instanceof QuestScreen questScreen && questScreen.activeButton == questScreen.activeQuestsButton) {
+                    handleMiddleClick(activeQuests, player, minecraft, quest, activeQuests.indexOf(quest));
+                    yield true;
+                }
+                yield false;
             }
             default -> false;
         };
@@ -136,50 +139,87 @@ public class QuestActiveSlotButton extends QuestSlotButton {
      *        updated list of active quests.
      */
     private void handleRightClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
-        if (activeQuests.contains(quest)) {
-            activeQuests.remove(quest);
-            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-        }
+        if (!QuestHandler.isQuestCompleted(player, quest)) {
+            if (activeQuests.contains(quest)) {
+                activeQuests.remove(quest);
+                player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+            }
 
-        PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
+            PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
-        if (minecraft.screen instanceof QuestScreen questScreen) {
-            questScreen.refreshActiveQuestsUI(activeQuests);
+            if (minecraft.screen instanceof QuestScreen questScreen) {
+                questScreen.refreshActiveQuestsUI(activeQuests);
+            }
         }
     }
 
     /**
      * Handles accepting rewards from completed quests upon left-click.
      *
-     * @brief This method processes the action of accepting rewards for quests that
-     *        have been completed. It updates the completed quests data attachment and
+     * @brief This method processes the action of accepting rewards for a quest that
+     *        has been completed. It updates the completed quests data attachment and
      *        sends the necessary payload to the server to execute the associated logic.
      */
-    private void handleLeftClick() {
+    private void handleLeftClick(List<Quest> completedQuests, List<Quest> activeQuests,  Player player, Minecraft minecraft) {
+        if (QuestHandler.isQuestObjectiveCompleted(quest) && !QuestHandler.isQuestCompleted(player, quest)) {
+            if (!completedQuests.contains(quest)) {
+                completedQuests.add(quest);
+                activeQuests.remove(quest);
+                player.setData(PathosAttachments.COMPLETED_QUESTS.get(), completedQuests);
+                player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+            }
+
+            PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
+            PacketDistributor.sendToServer(new QuestMenuCompletedQuestsPayload(completedQuests));
+
+            if (minecraft.screen instanceof QuestScreen questScreen) {
+                if (questScreen.activeButton == questScreen.activeQuestsButton) {
+                    questScreen.refreshActiveQuestsUI(activeQuests);
+                } else {
+                    questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+                }
+            }
+        }
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         Quest quest = this.getQuest();
-        boolean isQuestCompleted = QuestHandler.isQuestCompleted(quest);
+        boolean isQuestObjectiveCompleted = QuestHandler.isQuestObjectiveCompleted(quest);
 
         int itemX = this.getX() + (this.width / 2);
         int itemY = this.getY() + (this.height / 2);
-        int glowColorBackground;
-        int glowColorBorder;
+        int backgroundColor;
 
-        if (isQuestCompleted) {
-            glowColorBackground = 0x4000FF00; // Green for completed
-            glowColorBorder = 0x8000FF00;
-            renderGlow(guiGraphics, itemX, itemY, glowColorBackground, glowColorBorder);
+        if (isQuestObjectiveCompleted) {
+            backgroundColor = 0x5000FF00; // Green for objective completed
+            renderBackground(guiGraphics, itemX, itemY, backgroundColor);
         }
         renderItem(itemStack, itemX, itemY, guiGraphics);
 
-        if (this.isHovered()) {
+        if (this.isHovered() && heldQuest == null) {
             if (!hoverInfo.isEmpty()) {
                 guiGraphics.renderTooltip(Minecraft.getInstance().font, hoverInfo, ItemStack.EMPTY.getTooltipImage(), mouseX, mouseY);
             }
         }
+
+        if (heldQuest != null && heldQuest == quest) {
+            renderHeldItem(itemStack, mouseX, mouseY, guiGraphics);
+        }
+    }
+
+    /**
+     * Renders the specified ItemStack at the current mouse cursor position, ensuring it appears above
+     * other UI components by adjusting its render layer.
+     */
+    private void renderHeldItem(ItemStack itemStack, int mouseX, int mouseY, GuiGraphics guiGraphics) {
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
+
+        poseStack.translate(mouseX - 8, mouseY - 8, 200.0F);
+        guiGraphics.renderItem(itemStack, 0, 0);
+
+        poseStack.popPose();
     }
 
     /**

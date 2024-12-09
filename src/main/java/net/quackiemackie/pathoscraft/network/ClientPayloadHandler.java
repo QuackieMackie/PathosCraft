@@ -7,6 +7,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.AstralFormStatusPayload;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuCompletedQuestsPayload;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 public class ClientPayloadHandler {
@@ -28,6 +29,17 @@ public class ClientPayloadHandler {
             Player player = context.player();
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), data.quests());
             PathosCraft.LOGGER.info("Updated the clients active quests for player {}: {}", player.getName().getString(), data.quests());
+        }).exceptionally(e -> {
+            context.disconnect(Component.translatable("networking.pathoscraft.client.failed", e.getMessage()));
+            return null;
+        });
+    }
+
+    public static void handleQuestMenuCompletedQuests(QuestMenuCompletedQuestsPayload data, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Player player = context.player();
+            player.setData(PathosAttachments.COMPLETED_QUESTS.get(), data.quests());
+            PathosCraft.LOGGER.info("Updated the clients completed quests for player {}: {}", player.getName().getString(), data.quests());
         }).exceptionally(e -> {
             context.disconnect(Component.translatable("networking.pathoscraft.client.failed", e.getMessage()));
             return null;

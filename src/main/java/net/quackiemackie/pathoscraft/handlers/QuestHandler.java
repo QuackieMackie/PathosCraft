@@ -3,17 +3,22 @@ package net.quackiemackie.pathoscraft.handlers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.quest.QuestObjective;
+import net.quackiemackie.pathoscraft.quest.QuestReward;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.io.IOException;
@@ -69,6 +74,8 @@ public class QuestHandler {
      *
      * @param questId the ID of the quest to find.
      * @return the quest with the specified ID, or null if not found.
+     *
+     * @type Helper
      */
     public static Quest getQuestById(int questId) {
         return quests.stream()
@@ -82,6 +89,8 @@ public class QuestHandler {
      *
      * @param questType the type of the quests to find.
      * @return the list of quests with the specified type.
+     *
+     * @type Helper
      */
     public static List<Quest> getQuestsByType(int questType) {
         return quests.stream()
@@ -94,10 +103,40 @@ public class QuestHandler {
      *
      * @param quest the quest to be checked
      * @return true if all objectives are completed, false otherwise
+     *
+     * @type Helper
      */
-    public static boolean isQuestCompleted(Quest quest) {
+    public static boolean isQuestObjectiveCompleted(Quest quest) {
         return quest.getQuestObjectives().stream()
                 .allMatch(objective -> objective.getProgress() >= objective.getQuantity());
+    }
+
+    /**
+     * Checks if the quest is already on the completed list.
+     *
+     * @param player the player whose completed quests are being checked
+     * @param quest the quest to be checked
+     * @return true if the quest is on the completed quest list, false otherwise
+     *
+     * @type Helper
+     */
+    public static boolean isQuestCompleted(Player player, Quest quest) {
+        List<Quest> completedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get());
+        return completedQuests.contains(quest);
+    }
+
+    /**
+     * Checks if the quest is part of the active list.
+     *
+     * @param player the player whose active quests are being checked
+     * @param quest the quest to be checked
+     * @return true if the quest is on the active quest list, false otherwise
+     *
+     * @type Helper
+     */
+    public static boolean isActiveQuest(Player player, Quest quest) {
+        List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
+        return activeQuests.contains(quest);
     }
 
     /**
@@ -110,6 +149,8 @@ public class QuestHandler {
      *
      * @param activeQuests the list of active Quest objects to be mapped
      * @return a Map where each key is the quest ID and the value is the Quest object
+     *
+     * @type Helper
      */
     public static Map<Integer, Quest> getActiveQuestMap(List<Quest> activeQuests) {
         return activeQuests.stream()
@@ -122,6 +163,8 @@ public class QuestHandler {
      * @param player        the player who picked up the item
      * @param itemRegistry  the registry name of the picked-up item
      * @return true if the item is relevant to an active quest, false otherwise
+     *
+     * @type Event Helper
      */
     public static boolean isRelevantQuestItem(Player player, String itemRegistry) {
         // Retrieve the player's active quests
@@ -147,6 +190,8 @@ public class QuestHandler {
      * @param activeQuests the list of active quests of the player
      * @param objective    the specific quest objective that's being updated
      * @param quest        the quest to which the objective belongs
+     *
+     * @type Helper
      */
     private static void updateProgress(Player player, ServerPlayer serverPlayer, List<Quest> activeQuests, QuestObjective objective, Quest quest) {
         PathosCraft.LOGGER.info("Progress updated: {Quest ID: {}, Progression: {}}", quest.getQuestId(), objective.getProgress());
@@ -159,6 +204,8 @@ public class QuestHandler {
      *
      * @param player       the player who killed the target
      * @param killedTarget the identifier of the target that was killed
+     *
+     * @type Event Helper
      */
     public static void updateQuestKillProgress(Player player, String killedTarget) {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
@@ -191,6 +238,8 @@ public class QuestHandler {
      * @param player       the player whose quest progress will be updated
      * @param pickedUpItem the item that was picked up
      * @param quantity     the quantity of the item that was picked up
+     *
+     * @type Event Helper
      */
     public static void updateQuestPickupProgress(Player player, String pickedUpItem, int quantity) {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
@@ -226,6 +275,8 @@ public class QuestHandler {
      * @param player       the player who is performing the action
      * @param itemRegistry the registry name of the item being evaluated
      * @return true if collecting the item will progress any of the player's active quests, false otherwise
+     *
+     * @type Event Helper
      */
     public static boolean willUpdateQuestProgress(Player player, String itemRegistry) {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
@@ -248,6 +299,8 @@ public class QuestHandler {
      * @param player       the player whose quests are being checked
      * @param itemRegistry the registry name of the item to check
      * @return the total quantity of the item still needed to fulfill relevant quest objectives
+     *
+     * @type Event Helper
      */
     public static int getAmountForQuest(Player player, String itemRegistry) {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
@@ -266,5 +319,60 @@ public class QuestHandler {
         }
 
         return totalRequiredQuantity;
+    }
+
+    /**
+     * Returns items to the player if the quest has half-completed collect objectives.
+     *
+     * @param player the player to receive the items
+     * @param quest the quest being removed
+     *
+     * @type Payload
+     */
+    public static void returnItems(Player player, Quest quest) {
+        for (QuestObjective objective : quest.getQuestObjectives()) {
+            if ("collect".equals(objective.getAction())) {
+                int itemsToReturn = objective.getProgress();
+                if (itemsToReturn > 0) {
+                    giveItemsToPlayer(player, objective.getTarget(), itemsToReturn);
+                }
+            }
+        }
+    }
+
+    /**
+     * Gives the reward items to the player.
+     *
+     * @param player the player to receive the items
+     * @param quest the quest being claimed
+     *
+     * @type Payload
+     */
+    public static void giveRewardsToPlayer(Player player, Quest quest) {
+        for (QuestReward reward : quest.getQuestRewards()) {
+            giveItemsToPlayer(player, reward.getItem(), reward.getQuantity());
+        }
+    }
+
+    /**
+     * Gives the specified quantity of the item to the player.
+     *
+     * @param player the player receiving the items
+     * @param itemName the name of the item
+     * @param quantity the number of items to be given
+     *
+     * @type Helper
+     */
+    public static void giveItemsToPlayer(Player player, String itemName, int quantity) {
+        try {
+            ResourceLocation itemRegistryName = ResourceLocation.parse(itemName);
+            Item item = BuiltInRegistries.ITEM.get(itemRegistryName);
+
+            ItemStack itemStack = new ItemStack(item, quantity);
+            player.getInventory().add(itemStack);
+            PathosCraft.LOGGER.info("Returned {} of item: {} to the player.", quantity, itemName);
+        } catch (ResourceLocationException e) {
+            PathosCraft.LOGGER.error("Failed to parse item name {}: {}", itemName, e.getMessage());
+        }
     }
 }

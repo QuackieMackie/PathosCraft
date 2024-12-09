@@ -1,22 +1,23 @@
 package net.quackiemackie.pathoscraft.item.advanced;
 
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.network.payload.QuestMenuCompletedQuestsPayload;
+import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.quackiemackie.pathoscraft.registers.PathosDataComponents;
-import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JumpWand extends Item {
@@ -26,23 +27,26 @@ public class JumpWand extends Item {
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext context){
+    public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         Player player = context.getPlayer();
 
-        if (!level.isClientSide && !player.getData(PathosAttachments.IN_ASTRAL_FORM)) {
-            AstralFormHandler.enterAstralForm(player);
-
-            context.getItemInHand().hurtAndBreak(1, ((ServerLevel) level), context.getPlayer(), item ->
-                    context.getPlayer().onEquippedItemBroken(item, EquipmentSlot.MAINHAND));
-
-            level.playSound(null, context.getClickedPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
-            ((ServerLevel) level).sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY(), player.getZ(), 50, 0.5, 0.5, 0.5, 0.2);
-
-            context.getItemInHand().set(PathosDataComponents.COORDINATES, context.getClickedPos());
+        if (!level.isClientSide && player != null) {
+            clearPlayerDataAttachment(player);
+            sendClearDataPayload(player);
         }
 
         return super.useOn(context);
+    }
+
+    private void clearPlayerDataAttachment(Player player) {
+        ((IAttachmentHolder) player).setData(PathosAttachments.COMPLETED_QUESTS.get(), new ArrayList<>());
+        PathosCraft.LOGGER.info("Cleared data attachment for player {}", player.getName().getString());
+    }
+
+    private void sendClearDataPayload(Player player) {
+        List<Quest> completedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get());
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new QuestMenuCompletedQuestsPayload(completedQuests));
     }
 
     @Override

@@ -34,14 +34,6 @@ public class PathosCraft {
     // - When quests are in place, the quest name and description need to be translatable.
     // - I want to add a toggle method for quests, so when the mod launches, I am able to toggle whether the quests from the mod load or only external data packs load.
     // - When quests are completed add an option to keep or remove the items, so quests could take items permanently to complete or they'd return them after completing.
-    // - I want to add some kind of organising to active quests, not manually done in the code like before.
-    //   The goal is for the player to be able to drag the quests in the active quests tab and swap them around to reorganise the array.
-
-    //TODO:
-    // If the quest is on the COMPLETED_QUESTS data attachment then it would render in a green tick, containing the same data instead of the quest_icon
-    // .
-    // If the quest gets clicked while in this 'ready to complete' state, it would fetch the rewards, and return a message for now.
-    // in the future it would drop the items at the players location (possibly deplying fireworks as well, or some kind of happy noise and particles.)
 
     public static final String MOD_ID = "pathoscraft";
     public static final Logger LOGGER = LogUtils.getLogger();
