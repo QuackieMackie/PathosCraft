@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
  * Represents a quest in the game.
  */
 public class Quest {
+    public static final int MAX_ACTIVE_QUESTS = 45;
 
     public static final Codec<Quest> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("quest_id").forGetter(Quest::getQuestId),
@@ -20,6 +21,7 @@ public class Quest {
             Codec.INT.fieldOf("quest_type").forGetter(Quest::getQuestType),
             Codec.INT.optionalFieldOf("quest_preceding", 0).forGetter(Quest::getPrecedingQuest),
             Codec.INT.fieldOf("quest_slot").forGetter(Quest::getQuestSlot),
+            Codec.INT.fieldOf("quest_active_slot").orElse(-1).forGetter(Quest::getQuestActiveSlot),
             QuestObjective.CODEC.listOf().fieldOf("quest_objectives").forGetter(Quest::getQuestObjectives),
             QuestReward.CODEC.listOf().fieldOf("quest_rewards").forGetter(Quest::getQuestRewards)
     ).apply(instance, Quest::new));
@@ -31,6 +33,7 @@ public class Quest {
     private final int questType;
     private final int questPreceding;
     private final int questSlot;
+    private int questActiveSlot;
     private final List<QuestObjective> questObjectives;
     private final List<QuestReward> questRewards;
 
@@ -47,7 +50,7 @@ public class Quest {
      * @param questObjectives  a list of objectives required to complete the quest.
      * @param questRewards     a list of rewards given upon completing the quest.
      */
-    public Quest(int questId, String questName, String questDescription, String questIcon, int questType, int questPreceding, int questSlot, List<QuestObjective> questObjectives, List<QuestReward> questRewards) {
+    public Quest(int questId, String questName, String questDescription, String questIcon, int questType, int questPreceding, int questSlot, int activeQuestSlot, List<QuestObjective> questObjectives, List<QuestReward> questRewards) {
         this.questId = questId;
         this.questName = questName;
         this.questDescription = questDescription;
@@ -55,6 +58,7 @@ public class Quest {
         this.questType = questType;
         this.questPreceding = questPreceding;
         this.questSlot = questSlot;
+        this.questActiveSlot = activeQuestSlot;
         this.questObjectives = questObjectives;
         this.questRewards = questRewards;
     }
@@ -87,6 +91,14 @@ public class Quest {
         return this.questSlot;
     }
 
+    public int getQuestActiveSlot() {
+        return this.questActiveSlot;
+    }
+
+    public void setQuestActiveSlot(int questActiveSlot) {
+        this.questActiveSlot = questActiveSlot;
+    }
+
     public List<QuestObjective> getQuestObjectives() {
         return this.questObjectives;
     }
@@ -115,6 +127,7 @@ public class Quest {
                 ", name='" + questName + '\'' +
                 ", description='" + questDescription + '\'' +
                 ", type=" + questType +
+                ", activeSlot=" + questActiveSlot +
                 (questObjectives.isEmpty() ? "" : ", objectives=" + questObjectives) +
                 (questRewards.isEmpty() ? "" : ", rewards=" + questRewards) +
                 '}';

@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
 import net.quackiemackie.pathoscraft.gui.parts.*;
-import net.quackiemackie.pathoscraft.handlers.QuestHandler;
+import net.quackiemackie.pathoscraft.handlers.quest.QuestHandler;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.quest.QuestObjective;
 import net.quackiemackie.pathoscraft.quest.QuestReward;
@@ -32,7 +32,6 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     QuestTabButton optionalQuestButton;
     public QuestTabButton activeQuestsButton;
     public QuestTabButton activeButton;
-    public static final int maxActiveQuests = 45;
 
     QuestPageButton previousPageButton;
     QuestPageButton nextPageButton;
@@ -343,15 +342,20 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * @param activeQuests the list of active quests.
      */
     private void activeQuestTabBuilder(List<Quest> activeQuests) {
-        for (int i = 0; i < activeQuests.size() && i < maxActiveQuests; i++) {
-            Quest quest = activeQuests.get(i);
-
+        for (Quest quest : activeQuests) {
             if (quest == null) {
                 continue;
             }
 
-            int x = 8 + (i % 9) * 18;
-            int y = 18 + (i / 9) * 18;
+            int questActiveSlot = quest.getQuestActiveSlot();
+
+            if (questActiveSlot < 0 || questActiveSlot >= Quest.MAX_ACTIVE_QUESTS) {
+                System.err.println("Invalid quest active slot: " + questActiveSlot + " for quest " + quest.getQuestName());
+                continue;
+            }
+
+            int x = 8 + (questActiveSlot % 9) * 18;
+            int y = 18 + (questActiveSlot / 9) * 18;
 
             ItemStack questItemStack = createQuestIconStack(quest);
 

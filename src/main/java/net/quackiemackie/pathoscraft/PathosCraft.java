@@ -9,7 +9,7 @@ import net.quackiemackie.pathoscraft.entity.renderer.AstralFormRenderer;
 import net.quackiemackie.pathoscraft.entity.renderer.SpiderMountRenderer;
 import net.quackiemackie.pathoscraft.event.GeneralEntityEvents;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
-import net.quackiemackie.pathoscraft.handlers.QuestHandler;
+import net.quackiemackie.pathoscraft.handlers.quest.QuestHandler;
 import net.quackiemackie.pathoscraft.registers.*;
 import org.slf4j.Logger;
 

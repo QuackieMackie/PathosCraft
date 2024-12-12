@@ -10,11 +10,11 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuCompletedQuestsPayload;
+import net.quackiemackie.pathoscraft.network.payload.quest.active.SyncActiveQuests;
+import net.quackiemackie.pathoscraft.network.payload.quest.completed.SyncCompletedQuests;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
-import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
+import net.quackiemackie.pathoscraft.handlers.abilities.AstralFormHandler;
 
 import java.util.List;
 
@@ -44,16 +44,14 @@ public class PlayerEvents {
         if (player instanceof ServerPlayer serverPlayer) {
             if (serverPlayer.hasData(PathosAttachments.ACTIVE_QUESTS.get())) {
                 List<Quest> activeQuests = ((IAttachmentHolder) serverPlayer).getData(PathosAttachments.ACTIVE_QUESTS.get());
-                PacketDistributor.sendToPlayer(serverPlayer, new QuestMenuActiveQuestsPayload(activeQuests));
-                PathosCraft.LOGGER.info("Active Quests: {}", activeQuests);
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncActiveQuests(activeQuests));
             } else {
                 PathosCraft.LOGGER.error("Issue with active quests, it is empty.");
             }
 
             if (serverPlayer.hasData(PathosAttachments.COMPLETED_QUESTS.get())) {
                 List<Quest> completedQuests = ((IAttachmentHolder) serverPlayer).getData(PathosAttachments.COMPLETED_QUESTS.get());
-                PacketDistributor.sendToPlayer(serverPlayer, new QuestMenuCompletedQuestsPayload(completedQuests));
-                PathosCraft.LOGGER.info("Completed Quests: {}", completedQuests);
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncCompletedQuests(completedQuests));
             } else {
                 PathosCraft.LOGGER.error("Issue with completed quests, it is empty.");
             }

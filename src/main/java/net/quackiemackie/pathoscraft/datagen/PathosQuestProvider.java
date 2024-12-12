@@ -19,7 +19,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class PathosQuestProvider implements DataProvider {
 
-    private static final int defaultProgress = 0;
+    private static final int DEFAULT_PROGRESS = 0;
+    private static final int ACTIVE_QUEST_SLOT = 0;
 
     private final PackOutput output;
     private static final Gson GSON = new GsonBuilder()
@@ -45,43 +46,43 @@ public class PathosQuestProvider implements DataProvider {
     private CompletableFuture<?> generateQuests(CachedOutput cache, Path outputFolder) {
         List<Quest> quests = new ArrayList<>();
 
-        quests.add(new Quest(1, "Main quest 1", "Description for test quest.", "minecraft:dirt", 0, 0, 0,
-                List.of(new QuestObjective("collect", "minecraft:dirt", 10, defaultProgress)),
+        quests.add(new Quest(1, "Main quest 1", "Description for test quest.", "minecraft:dirt", 0, 0, 0, ACTIVE_QUEST_SLOT,
+                List.of(new QuestObjective("collect", "minecraft:dirt", 10, DEFAULT_PROGRESS)),
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
-        quests.add(new Quest(2, "Main quest 2", "Description for test quest 2.", "minecraft:stone", 0, 1, 1,
-                List.of(new QuestObjective("kill", "minecraft:zombie", 10, defaultProgress),
-                        new QuestObjective("collect", "pathoscraft:raw_sadness", 5, defaultProgress)),
+        quests.add(new Quest(2, "Main quest 2", "Description for test quest 2.", "minecraft:stone", 0, 1, 1, ACTIVE_QUEST_SLOT,
+                List.of(new QuestObjective("kill", "minecraft:zombie", 10, DEFAULT_PROGRESS),
+                        new QuestObjective("collect", "pathoscraft:raw_sadness", 5, DEFAULT_PROGRESS)),
                 List.of(new QuestReward("give", "minecraft:gold_ingot", 1))
         ));
 
-        quests.add(new Quest(3, "Main quest 3", "Description for test quest 3.", "minecraft:diamond_block", 0, 2, 2,
-                List.of(new QuestObjective("kill", "minecraft:skeleton", 10, defaultProgress),
-                        new QuestObjective("collect", "pathoscraft:raw_sadness", 5, defaultProgress)),
+        quests.add(new Quest(3, "Main quest 3", "Description for test quest 3.", "minecraft:diamond_block", 0, 2, 2, ACTIVE_QUEST_SLOT,
+                List.of(new QuestObjective("kill", "minecraft:skeleton", 10, DEFAULT_PROGRESS),
+                        new QuestObjective("collect", "pathoscraft:raw_sadness", 5, DEFAULT_PROGRESS)),
                 List.of(new QuestReward("give", "minecraft:gold_ingot", 1))
         ));
 
-        quests.add(new Quest(4, "Main quest 4", "Description for test quest 4.", "minecraft:apple", 0, 3, 3,
-                List.of(new QuestObjective("kill", "minecraft:skeleton", 10, defaultProgress),
-                        new QuestObjective("collect", "minecraft:apple", 5, defaultProgress)),
+        quests.add(new Quest(4, "Main quest 4", "Description for test quest 4.", "minecraft:apple", 0, 3, 3, ACTIVE_QUEST_SLOT,
+                List.of(new QuestObjective("kill", "minecraft:skeleton", 10, DEFAULT_PROGRESS),
+                        new QuestObjective("collect", "minecraft:apple", 5, DEFAULT_PROGRESS)),
                 List.of(new QuestReward("give", "minecraft:gold_ingot", 1))
         ));
 
-        quests.add(new Quest(5, "Side Quest 1", "Description for test quest 5.", "minecraft:gold_block", 1, 0, 0,
-                List.of(new QuestObjective("kill", "minecraft:ghast", 10, defaultProgress),
-                        new QuestObjective("collect", "minecraft:dirt", 5, defaultProgress)),
+        quests.add(new Quest(5, "Side Quest 1", "Description for test quest 5.", "minecraft:gold_block", 1, 0, 0, ACTIVE_QUEST_SLOT,
+                List.of(new QuestObjective("kill", "minecraft:ghast", 10, DEFAULT_PROGRESS),
+                        new QuestObjective("collect", "minecraft:dirt", 5, DEFAULT_PROGRESS)),
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
-        quests.add(new Quest(6, "Optional Quest 1", "Description for test quest 6.", "pathoscraft:raw_sadness", 2, 0, 0,
-                List.of(new QuestObjective("kill", "minecraft:chicken", 10, defaultProgress),
-                        new QuestObjective("kill", "minecraft:pig", 5, defaultProgress)),
+        quests.add(new Quest(6, "Optional Quest 1", "Description for test quest 6.", "pathoscraft:raw_sadness", 2, 0, 0, ACTIVE_QUEST_SLOT,
+                List.of(new QuestObjective("kill", "minecraft:chicken", 10, DEFAULT_PROGRESS),
+                        new QuestObjective("kill", "minecraft:pig", 5, DEFAULT_PROGRESS)),
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
-        quests.add(new Quest(7, "Optional Quest 2", "Description for test quest 7.", "minecraft:gold_ingot", 2, 0, 1,
-                List.of(new QuestObjective("collect", "minecraft:dirt", 5, defaultProgress)),
+        quests.add(new Quest(7, "Optional Quest 2", "Description for test quest 7.", "minecraft:gold_ingot", 2, 0, 1, ACTIVE_QUEST_SLOT,
+                List.of(new QuestObjective("collect", "minecraft:dirt", 5, DEFAULT_PROGRESS)),
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 

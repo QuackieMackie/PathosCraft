@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.handlers;
+package net.quackiemackie.pathoscraft.handlers.quest;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
+import net.quackiemackie.pathoscraft.network.payload.quest.active.UpdateProgressActiveQuest;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.quest.QuestObjective;
 import net.quackiemackie.pathoscraft.quest.QuestReward;
@@ -121,7 +121,7 @@ public class QuestHandler {
      * @type Helper
      */
     public static boolean isQuestCompleted(Player player, Quest quest) {
-        List<Quest> completedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get());
+        List<Quest> completedQuests = player.getData(PathosAttachments.COMPLETED_QUESTS.get());
         return completedQuests.contains(quest);
     }
 
@@ -186,17 +186,24 @@ public class QuestHandler {
      * Updates the player's progress on a specific quest objective and notifies the client.
      *
      * @param player       the player whose progress is being updated
-     * @param serverPlayer the server-side representation of the player
-     * @param activeQuests the list of active quests of the player
      * @param objective    the specific quest objective that's being updated
      * @param quest        the quest to which the objective belongs
      *
      * @type Helper
      */
-    private static void updateProgress(Player player, ServerPlayer serverPlayer, List<Quest> activeQuests, QuestObjective objective, Quest quest) {
-        PathosCraft.LOGGER.info("Progress updated: {Quest ID: {}, Progression: {}}", quest.getQuestId(), objective.getProgress());
+    private static void updateProgress(Player player, QuestObjective objective, Quest quest) {
+        PathosCraft.LOGGER.info("Quest Progress Updated: {Quest ID: {}, Objective Progress: {}/{}}", quest.getQuestId(), objective.getProgress(), objective.getQuantity());
+        List<Quest> activeQuests = new ArrayList<>(player.getData(PathosAttachments.ACTIVE_QUESTS.get()));
+
+        for (int i = 0; i < activeQuests.size(); i++) {
+            Quest activeQuest = activeQuests.get(i);
+            if (activeQuest.getQuestId() == quest.getQuestId()) {
+                activeQuests.set(i, quest);
+                break;
+            }
+        }
         player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-        PacketDistributor.sendToPlayer(serverPlayer, new QuestMenuActiveQuestsPayload(activeQuests));
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new UpdateProgressActiveQuest(quest));
     }
 
     /**
@@ -219,17 +226,17 @@ public class QuestHandler {
 
                     // Only update progress if the current progress is less than the required quantity
                     if (currentProgress < objective.getQuantity()) {
-                        ServerPlayer serverPlayer = (ServerPlayer) player;
 
                         // Increment the progress by one
                         objective.setProgress(currentProgress + 1);
 
                         // Update progress and notify the client
-                        updateProgress(player, serverPlayer, activeQuests, objective, quest);
+                        updateProgress(player, objective, quest);
                     }
                 }
             }
         }
+        PathosCraft.LOGGER.info("Quest Progress Updated: {Killed Target: {}}", killedTarget);
     }
 
     /**
@@ -257,7 +264,7 @@ public class QuestHandler {
                         objective.setProgress(currentProgress + progressIncrement);
                         remainingQuantity -= progressIncrement;
 
-                        updateProgress(player, (ServerPlayer) player, activeQuests, objective, quest);
+                        updateProgress(player, objective, quest);
 
                         // Exit the loop if there are no remaining items
                         if (remainingQuantity <= 0) {

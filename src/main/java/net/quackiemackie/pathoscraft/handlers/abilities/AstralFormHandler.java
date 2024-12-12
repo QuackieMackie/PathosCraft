@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.handlers;
+package net.quackiemackie.pathoscraft.handlers.abilities;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
-import net.quackiemackie.pathoscraft.network.payload.AstralFormStatusPayload;
+import net.quackiemackie.pathoscraft.network.payload.abilities.astralForm.AstralFormStatus;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.quackiemackie.pathoscraft.entity.PathosEntities;
@@ -84,7 +84,7 @@ public class AstralFormHandler {
         isInWarningDistance = false;
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new AstralFormStatusPayload(inAstralForm));
+            PacketDistributor.sendToPlayer(serverPlayer, new AstralFormStatus(inAstralForm));
         }
     }
 

@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuCompletedQuestsPayload;
+import net.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.quackiemackie.pathoscraft.registers.PathosDataComponents;
@@ -46,7 +46,7 @@ public class JumpWand extends Item {
 
     private void sendClearDataPayload(Player player) {
         List<Quest> completedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get());
-        PacketDistributor.sendToPlayer((ServerPlayer) player, new QuestMenuCompletedQuestsPayload(completedQuests));
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new ClearCompletedQuests(completedQuests));
     }
 
     @Override

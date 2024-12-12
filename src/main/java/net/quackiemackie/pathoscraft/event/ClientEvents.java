@@ -11,8 +11,8 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.handlers.AstralFormHandler;
-import net.quackiemackie.pathoscraft.network.payload.AstralFormKeyPressPayload;
+import net.quackiemackie.pathoscraft.handlers.abilities.AstralFormHandler;
+import net.quackiemackie.pathoscraft.network.payload.keybinds.AstralFormKeyPress;
 import net.quackiemackie.pathoscraft.registers.PathosKeybinding;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.quackiemackie.pathoscraft.registers.PathosClientRenders;
@@ -32,7 +32,7 @@ public class ClientEvents {
             player.displayClientMessage(actionBarMessage, true);
 
             if (PathosKeybinding.ASTRAL_FORM_EXIT.consumeClick()) {
-                PacketDistributor.sendToServer(new AstralFormKeyPressPayload());
+                PacketDistributor.sendToServer(new AstralFormKeyPress());
             }
         }
     }

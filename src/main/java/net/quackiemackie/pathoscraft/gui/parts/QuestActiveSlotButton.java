@@ -10,9 +10,10 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
-import net.quackiemackie.pathoscraft.handlers.QuestHandler;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuCompletedQuestsPayload;
+import net.quackiemackie.pathoscraft.handlers.quest.QuestHandler;
+import net.quackiemackie.pathoscraft.network.payload.quest.active.RemoveActiveQuest;
+import net.quackiemackie.pathoscraft.network.payload.quest.active.SwapActiveQuests;
+import net.quackiemackie.pathoscraft.network.payload.quest.completed.AddCompletedQuest;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
@@ -66,22 +67,24 @@ public class QuestActiveSlotButton extends QuestSlotButton {
         List<Quest> completedQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get()));
         Quest quest = this.getQuest();
 
-        PathosCraft.LOGGER.info("Clicked Quest ID: {}", quest.getQuestId());
         return switch (button) {
             case 0 -> {
                 clearHeldQuestState();
-                handleLeftClick(completedQuests, activeQuests, player, minecraft);
+                handleLeftClick(completedQuests, activeQuests, player);
+                refreshUIAfterQuestChange(activeQuests);
                 yield true;
             }
             case 1 -> {
                 clearHeldQuestState();
-                handleRightClick(activeQuests, player, minecraft);
+                handleRightClick(activeQuests, player);
+                refreshUIAfterQuestChange(activeQuests);
                 yield true;
             }
             case 2 -> {
                 // Check to make sure it only works on the active tab
                 if (minecraft.screen instanceof QuestScreen questScreen && questScreen.activeButton == questScreen.activeQuestsButton) {
-                    handleMiddleClick(activeQuests, player, minecraft, quest, activeQuests.indexOf(quest));
+                    handleMiddleClick(activeQuests, quest, activeQuests.indexOf(quest), player);
+                    refreshUIAfterQuestChange(activeQuests);
                     yield true;
                 }
                 yield false;
@@ -99,20 +102,26 @@ public class QuestActiveSlotButton extends QuestSlotButton {
      *        with the clicked quest, updates the active quest list, refreshes
      *        the UI, and communicates changes to the server.
      */
-    private void handleMiddleClick(List<Quest> activeQuests, Player player, Minecraft minecraft, Quest clickedQuest, int clickedQuestIndex) {
+    private void handleMiddleClick(List<Quest> activeQuests, Quest clickedQuest, int clickedQuestIndex, Player player) {
         if (heldQuest == null) {
             heldQuest = clickedQuest;
             heldQuestIndex = clickedQuestIndex;
         } else if (heldQuestIndex != clickedQuestIndex) {
-            PathosCraft.LOGGER.info("Swapping {Quest ID: {}, Index: {}} with {Quest ID: {}, Index: {}}", clickedQuest.getQuestId(), clickedQuestIndex, heldQuest.getQuestId(), heldQuestIndex);
+            PathosCraft.LOGGER.info("Client: Requesting server to swap {Quest ID: {}, Index: {}} with {Quest ID: {}, Index: {}}", clickedQuest.getQuestId(), clickedQuestIndex, heldQuest.getQuestId(), heldQuestIndex);
 
             Collections.swap(activeQuests, heldQuestIndex, clickedQuestIndex);
-            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-            PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
 
-            if (minecraft.screen instanceof QuestScreen questScreen) {
-                questScreen.refreshActiveQuestsUI(activeQuests);
-            }
+            int tempSlot = heldQuest.getQuestActiveSlot();
+            heldQuest.setQuestActiveSlot(clickedQuest.getQuestActiveSlot());
+            clickedQuest.setQuestActiveSlot(tempSlot);
+
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+
+            List<Quest> swappableQuests = List.of(heldQuest, clickedQuest);
+            PacketDistributor.sendToServer(new SwapActiveQuests(swappableQuests));
+
+            PathosCraft.LOGGER.info("Client {swappableQuests: [{}]}", swappableQuests);
+
             clearHeldQuestState();
         }
     }
@@ -138,18 +147,23 @@ public class QuestActiveSlotButton extends QuestSlotButton {
      *        The UI is refreshed to display the
      *        updated list of active quests.
      */
-    private void handleRightClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
-        if (!QuestHandler.isQuestCompleted(player, quest)) {
-            if (activeQuests.contains(quest)) {
-                activeQuests.remove(quest);
-                player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+    private void handleRightClick(List<Quest> activeQuests, Player player) {
+        Quest quest = this.getQuest();
+
+        if (QuestHandler.isQuestCompleted(player, quest)) {
+            return;
+        }
+
+        if (activeQuests.contains(quest)) {
+            activeQuests.remove(quest);
+
+            for (int i = 0; i < activeQuests.size(); i++) {
+                activeQuests.get(i).setQuestActiveSlot(i);
             }
 
-            PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
 
-            if (minecraft.screen instanceof QuestScreen questScreen) {
-                questScreen.refreshActiveQuestsUI(activeQuests);
-            }
+            PacketDistributor.sendToServer(new RemoveActiveQuest(quest));
         }
     }
 
@@ -160,25 +174,14 @@ public class QuestActiveSlotButton extends QuestSlotButton {
      *        has been completed. It updates the completed quests data attachment and
      *        sends the necessary payload to the server to execute the associated logic.
      */
-    private void handleLeftClick(List<Quest> completedQuests, List<Quest> activeQuests,  Player player, Minecraft minecraft) {
+    private void handleLeftClick(List<Quest> completedQuests, List<Quest> activeQuests,  Player player) {
         if (QuestHandler.isQuestObjectiveCompleted(quest) && !QuestHandler.isQuestCompleted(player, quest)) {
-            if (!completedQuests.contains(quest)) {
-                completedQuests.add(quest);
-                activeQuests.remove(quest);
-                player.setData(PathosAttachments.COMPLETED_QUESTS.get(), completedQuests);
-                player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-            }
+            completedQuests.add(quest);
+            activeQuests.remove(quest);
+            player.setData(PathosAttachments.COMPLETED_QUESTS.get(), completedQuests);
+            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
 
-            PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
-            PacketDistributor.sendToServer(new QuestMenuCompletedQuestsPayload(completedQuests));
-
-            if (minecraft.screen instanceof QuestScreen questScreen) {
-                if (questScreen.activeButton == questScreen.activeQuestsButton) {
-                    questScreen.refreshActiveQuestsUI(activeQuests);
-                } else {
-                    questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
-                }
-            }
+            PacketDistributor.sendToServer(new AddCompletedQuest(quest));
         }
     }
 

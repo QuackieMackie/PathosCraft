@@ -1,4 +1,5 @@
 {
+  "quest_active_slot": 0,
   "quest_description": "Description for test quest 2.",
   "quest_icon": "minecraft:stone",
   "quest_id": 2,

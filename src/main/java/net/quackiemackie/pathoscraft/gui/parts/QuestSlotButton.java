@@ -15,8 +15,9 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
-import net.quackiemackie.pathoscraft.handlers.QuestHandler;
-import net.quackiemackie.pathoscraft.network.payload.QuestMenuActiveQuestsPayload;
+import net.quackiemackie.pathoscraft.handlers.quest.QuestHandler;
+import net.quackiemackie.pathoscraft.network.payload.quest.active.AddActiveQuest;
+import net.quackiemackie.pathoscraft.network.payload.quest.active.RemoveActiveQuest;
 import net.quackiemackie.pathoscraft.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
@@ -65,16 +66,16 @@ public class QuestSlotButton extends Button {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
-        Quest quest = this.getQuest();
 
-        PathosCraft.LOGGER.info("Clicked Quest ID: {}", quest.getQuestId());
         return switch (button) {
             case 0 -> {
                 handleLeftClick(activeQuests, player, minecraft);
+                refreshUIAfterQuestChange(activeQuests);
                 yield true;
             }
             case 1 -> {
                 handleRightClick(activeQuests, player, minecraft);
+                refreshUIAfterQuestChange(activeQuests);
                 yield true;
             }
             default -> false;
@@ -91,16 +92,16 @@ public class QuestSlotButton extends Button {
      *        updated list of active quests.
      */
     private void handleRightClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
-        if (activeQuests.contains(quest)) {
-            activeQuests.remove(quest);
-            player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-        }
-
-        PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
-
+        Quest quest = this.getQuest();
         if (minecraft.screen instanceof QuestScreen questScreen) {
-            questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+            if (activeQuests.contains(quest)) {
+                activeQuests.remove(quest);
+                player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+                questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+            }
         }
+
+        PacketDistributor.sendToServer(new RemoveActiveQuest(quest));
     }
 
     /**
@@ -112,15 +113,42 @@ public class QuestSlotButton extends Button {
      */
     private void handleLeftClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         Quest quest = this.getQuest();
-        if (!QuestHandler.isQuestCompleted(player, quest) && !QuestHandler.isActiveQuest(player, quest)) {
-            if (activeQuests.size() < QuestScreen.maxActiveQuests && !activeQuests.contains(quest)) {
-                activeQuests.add(quest);
-                player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+        if (minecraft.screen instanceof QuestScreen questScreen) {
+            if (!QuestHandler.isQuestCompleted(player, quest) && !QuestHandler.isActiveQuest(player, quest)) {
+                boolean slotAssigned = false;
+
+                for (int i = 0; i < Quest.MAX_ACTIVE_QUESTS; i++) {
+                    final int currentSlot = i;
+                    boolean isSlotInUse = activeQuests.stream()
+                            .anyMatch(activeQuest -> activeQuest.getQuestActiveSlot() == currentSlot);
+
+                    if (!isSlotInUse) {
+                        quest.setQuestActiveSlot(currentSlot);
+                        slotAssigned = true;
+                        break;
+                    }
+                }
+
+                if (slotAssigned) {
+                    activeQuests.add(quest);
+                    player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+                    questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+                    PathosCraft.LOGGER.info("Quest {} assigned to slot {}", quest.getQuestId(), quest.getQuestActiveSlot());
+                } else {
+                    PathosCraft.LOGGER.warn("No available slots for Quest {}", quest.getQuestId());
+                }
             }
+        }
 
-            PacketDistributor.sendToServer(new QuestMenuActiveQuestsPayload(activeQuests));
+        PacketDistributor.sendToServer(new AddActiveQuest(quest));
+    }
 
-            if (minecraft.screen instanceof QuestScreen questScreen) {
+    void refreshUIAfterQuestChange(List<Quest> activeQuests) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.screen instanceof QuestScreen questScreen) {
+            if (questScreen.activeButton == questScreen.activeQuestsButton) {
+                questScreen.refreshActiveQuestsUI(activeQuests);
+            } else {
                 questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
             }
         }
