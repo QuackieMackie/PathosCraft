@@ -31,6 +31,11 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 public class PathosCraft {
 
     //TODO:
+    // - Current Errors:
+    //  - When a quest is completed it doesn't re organise the active quest list.
+    // - Error catching:
+    //  - Currently I can set the same slots for quests. I want to add a check when loaded the server would check for any of these issues.
+    //    It would need to filter by type, then look for slot duplicates.
     // - When quests are in place, the quest name and description need to be translatable.
     // - I want to add a toggle method for quests, so when the mod launches, I am able to toggle whether the quests from the mod load or only external data packs load.
     // - When quests are completed add an option to keep or remove the items, so quests could take items permanently to complete or they'd return them after completing.

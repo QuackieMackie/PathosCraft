@@ -1,6 +1,5 @@
 package net.quackiemackie.pathoscraft.network;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -64,6 +63,13 @@ public class ClientPayloadHandler {
         PathosCraft.LOGGER.info("Sync Completed quests: {Player: {}, Quests: {}}", player.getName().getString(), data.quests());
     }
 
+    /**
+     * Handles the clearing of completed quests for the client-side player. This method synchronizes
+     * the completed quests data received in the payload with the client-side state and logs the update.
+     *
+     * @param data    The payload containing the updated list of completed quests to clear.
+     * @param context The context providing access to the player and the environment in which the payload is processed.
+     */
     public static void handleClearCompletedQuests(SyncCompletedQuests data, IPayloadContext context) {
         Player player = context.player();
         player.setData(PathosAttachments.COMPLETED_QUESTS.get(), data.quests());

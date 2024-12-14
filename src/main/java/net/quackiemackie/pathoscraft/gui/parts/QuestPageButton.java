@@ -4,23 +4,35 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
 
 public class QuestPageButton extends AbstractButton {
     private final boolean flipped;
+    private final QuestScreen questScreen;
 
-    public QuestPageButton(int x, int y, int width, int height, Component message, boolean flipped) {
+    public QuestPageButton(int x, int y, int width, int height, Component message, boolean flipped, QuestScreen questScreen) {
         super(x, y, width, height, message);
         this.flipped = flipped;
-    }
-
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-        // Method placeholder for narration updates
+        this.questScreen = questScreen;
     }
 
     @Override
     public void onPress() {
-        // This will be handled by QuestScreen
+        if (flipped) {
+            if (questScreen.currentPage > 1) {
+                questScreen.currentPage--;
+                questScreen.initQuestSlotButtons();
+            }
+        } else {
+            if (questScreen.currentPage < questScreen.maxPages) {
+                questScreen.currentPage++;
+                questScreen.initQuestSlotButtons();
+            }
+        }
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
     }
 
     @Override

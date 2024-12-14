@@ -55,10 +55,6 @@ public class QuestObjective {
         this.progress = progress;
     }
 
-    public void incrementProgress(int amount) {
-        this.progress += amount;
-    }
-
     @Override
     public String toString() {
         return "Objective: {" +

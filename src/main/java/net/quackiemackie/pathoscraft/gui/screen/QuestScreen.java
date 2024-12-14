@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static net.quackiemackie.pathoscraft.handlers.quest.QuestHandler.getQuestsByType;
+
 public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
     QuestTabButton mainQuestButton;
@@ -36,7 +38,9 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     QuestPageButton previousPageButton;
     QuestPageButton nextPageButton;
     public int currentPage = 1;
-    private int maxPages = 1;
+    public int maxPages = 1;
+    private final int MAX_QUESTS_PER_PAGE = 99;
+
 
     private static final ResourceLocation questTexture = ResourceLocation.parse("pathoscraft:textures/screen/quest_menu.png");
     private static final ResourceLocation activeQuestTexture = ResourceLocation.parse("pathoscraft:textures/screen/active_quest_menu.png");
@@ -108,18 +112,13 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
     @Override
     public void init() {
-        // Dynamically calculate imageWidth and imageHeight based on content
         calculateDimensions();
         super.init();
 
-        // Initialize buttons
         initTabButtons();
+        initInfoButtons();
         initPageButtons();
 
-        // Initialize information button
-        initInfoButtons();
-
-        // Initialize quest slot buttons
         initQuestSlotButtons();
     }
 
@@ -173,33 +172,17 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         this.addRenderableWidget(activeQuestsButton);
     }
 
+    private int calculateMaxPagesForTab(QuestTabButton button) {
+        int totalQuests = getQuestsByType(button.getQuestType()).size();
+        return (int) Math.ceil((double) totalQuests / MAX_QUESTS_PER_PAGE);
+    }
+
     /**
      * Initialize and adds the page buttons to the screen.
      */
     private void initPageButtons() {
-        // Initialize and add previous page button
-        previousPageButton = new QuestPageButton(this.leftPos + 30, this.topPos + this.imageHeight + 2,
-                20, 20, Component.literal("<"), true) {
-            @Override
-            public void onPress() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    initQuestSlotButtons();
-                }
-            }
-        };
-
-        // Initialize and add next page button
-        nextPageButton = new QuestPageButton(this.leftPos + this.imageWidth - 50, this.topPos + this.imageHeight + 2,
-                20, 20, Component.literal(">"), false) {
-            @Override
-            public void onPress() {
-                if (currentPage < maxPages) {
-                    currentPage++;
-                    initQuestSlotButtons();
-                }
-            }
-        };
+        previousPageButton = new QuestPageButton(this.leftPos + 30, this.topPos + this.imageHeight + 2, 20, 20, Component.literal("<"), true, this);
+        nextPageButton = new QuestPageButton(this.leftPos + this.imageWidth - 50, this.topPos + this.imageHeight + 2, 20, 20, Component.literal(">"), false, this);
 
         if (activeButton != activeQuestsButton) {
             this.addRenderableWidget(previousPageButton);
@@ -237,7 +220,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * Initializes and adds quest slot buttons to the screen based on the active quest type.
      * This includes setting up buttons for main, side, and optional quests, as well as active quests.
      */
-    private void initQuestSlotButtons() {
+    public void initQuestSlotButtons() {
         Player player = Minecraft.getInstance().player;
         int questType = activeButton.getQuestType();
 
@@ -246,13 +229,11 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         this.renderables.removeIf(renderable -> renderable instanceof QuestSlotButton);
 
         // Retrieve relevant quests for display
-        int questsByType = activeButton.getQuestType();
+        List<Quest> filteredQuests = getQuestsByType(questType); // Fetch quests of the current type
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
-        maxPages = QuestHandler.getQuests().stream()
-                .mapToInt(Quest::getQuestSlot)
-                .max()
-                .orElse(0) / 99 + 1;
+        // Update maxPages using the filtered quests and calculate dynamically
+        maxPages = (int) Math.ceil((double) filteredQuests.size() / MAX_QUESTS_PER_PAGE);
 
         // Adjust page buttons' enabled states
         if (activeButton != activeQuestsButton) {
@@ -261,7 +242,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         }
 
         if (questType == 0 || questType == 1 || questType == 2) {
-            questTabBuilder(activeQuests, questsByType);
+            questTabBuilder(filteredQuests, activeQuests);
         } else if (questType == 3) {
             activeQuestTabBuilder(activeQuests);
         }
@@ -277,45 +258,47 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      *        on the provided list of active quests. This ensures that any additions, removals,
      *        or swaps in quests are accurately displayed to the player.
      */
-    public void refreshQuestsUI(List<Quest> activeQuests, int questsByType) {
+    public void refreshQuestsUI(List<Quest> activeQuests, int questType) {
         this.children().removeIf(child -> child instanceof QuestSlotButton);
         this.renderables.removeIf(renderable -> renderable instanceof QuestSlotButton);
-        questTabBuilder(activeQuests, questsByType);
+
+        List<Quest> filteredQuests = getQuestsByType(questType);
+
+        questTabBuilder(filteredQuests, activeQuests);
     }
 
     /**
      * Constructs the quest tabs by adding buttons for quests on the current page.
      *
+     * @param filteredQuests the list of filtered quests.
      * @param activeQuests the list of quests that are currently active.
-     * @param questType the type of quests to display.
      */
-    private void questTabBuilder(List<Quest> activeQuests, int questType) {
-        List<Quest> questsByType = QuestHandler.getQuestsByType(questType);
+    private void questTabBuilder(List<Quest> filteredQuests, List<Quest> activeQuests) {
         Map<Integer, Quest> activeQuestMap = QuestHandler.getActiveQuestMap(activeQuests);
 
-        for (Quest quest : questsByType) {
-            int slotIndex = quest.getQuestSlot();
-            int slotPage = slotIndex / 99 + 1;
+        int start = (currentPage - 1) * MAX_QUESTS_PER_PAGE;
+        int end = Math.min(start + MAX_QUESTS_PER_PAGE, filteredQuests.size());
 
-            if (slotPage == currentPage) {
-                int pageIndex = slotIndex % 99;
-                int x = 8 + (pageIndex % 9) * 18;
-                int y = 18 + (pageIndex / 9) * 18;
+        for (int index = start; index < end; index++) {
+            Quest quest = filteredQuests.get(index);
+            int pageIndex = index % MAX_QUESTS_PER_PAGE;
+            int x = 8 + (pageIndex % 9) * 18;
+            int y = 18 + (pageIndex / 9) * 18;
 
-                Quest activeQuest = activeQuestMap.get(quest.getQuestId());
-                QuestSlotButton questButton;
-                ItemStack questItemStack = createQuestIconStack(quest);
+            // Get quest from active list or default to existing quest
+            Quest activeQuest = activeQuestMap.get(quest.getQuestId());
+            QuestSlotButton questButton;
 
-                if (activeQuest != null && QuestHandler.isQuestObjectiveCompleted(activeQuest)) {
-                    questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, activeQuest, e -> {});
-                } else {
-                    questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});
-                }
-
-                addHoverInfo(questButton, quest);
-
-                this.addRenderableWidget(questButton);
+            // Create quest button based on its state (active/completed/inactive)
+            ItemStack questItemStack = createQuestIconStack(quest);
+            if (activeQuest != null && QuestHandler.isQuestObjectiveCompleted(activeQuest)) {
+                questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, activeQuest, e -> {});
+            } else {
+                questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});
             }
+
+            addHoverInfo(questButton, quest);
+            this.addRenderableWidget(questButton);
         }
     }
 
@@ -415,7 +398,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
             questButton.addHoverInfo(Component.literal("  §8- §c" + reward.getQuantity() + " " + itemName));
         }
         questButton.addHoverInfo(Component.literal(""));
-        questButton.addHoverInfo(Component.literal("§7Type: §f" + (displayQuest.getQuestType() == 0 ? "Main Quest" : "Side Quest")));
+        questButton.addHoverInfo(Component.literal("§7Type: §f" + (displayQuest.getQuestType() == 0 ? "Main Quest" : displayQuest.getQuestType() == 1 ? "Side Quest" : displayQuest.getQuestType() == 2 ? "Optional Quest" : "Unknown")));
         questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + displayQuest.getQuestId()));
     }
 }
