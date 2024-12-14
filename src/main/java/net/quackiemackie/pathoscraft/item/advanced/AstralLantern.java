@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.quackiemackie.pathoscraft.handlers.abilities.AstralFormHandler;
+import net.quackiemackie.pathoscraft.util.handlers.abilities.AstralFormHandler;
 import net.quackiemackie.pathoscraft.item.renderer.AstralLanternRenderer;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.quackiemackie.pathoscraft.registers.PathosDataComponents;

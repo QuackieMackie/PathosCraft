@@ -5,7 +5,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
 
 import java.util.ArrayList;
 import java.util.List;

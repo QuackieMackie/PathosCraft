@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.registers;
+package net.quackiemackie.pathoscraft.util.abilities.astralForm;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.quackiemackie.pathoscraft.PathosCraft;
 
-public class PathosClientRenders {
+public class AstralFormOverlay {
     private static final ResourceLocation WARNING_OVERLAY_TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/gui/astral_warning_overlay.png");
     public static long astralFormRenderStartTime = 0;
 

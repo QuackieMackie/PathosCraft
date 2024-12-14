@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.handlers.abilities;
+package net.quackiemackie.pathoscraft.util.handlers.abilities;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

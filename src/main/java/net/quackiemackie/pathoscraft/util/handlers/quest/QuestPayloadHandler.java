@@ -1,9 +1,9 @@
-package net.quackiemackie.pathoscraft.handlers.quest;
+package net.quackiemackie.pathoscraft.util.handlers.quest;
 
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.ArrayList;
@@ -184,6 +184,11 @@ public class QuestPayloadHandler {
         QuestHandler.giveRewardsToPlayer(player, quest);
 
         activeQuests.remove(quest);
+
+        for (int i = 0; i < activeQuests.size(); i++) {
+            activeQuests.get(i).setQuestActiveSlot(i);
+        }
+
         player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
 
         completedQuests.add(quest);

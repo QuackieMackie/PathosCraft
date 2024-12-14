@@ -14,18 +14,16 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
 import net.quackiemackie.pathoscraft.gui.parts.*;
-import net.quackiemackie.pathoscraft.handlers.quest.QuestHandler;
-import net.quackiemackie.pathoscraft.quest.Quest;
-import net.quackiemackie.pathoscraft.quest.QuestObjective;
-import net.quackiemackie.pathoscraft.quest.QuestReward;
+import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.QuestObjective;
+import net.quackiemackie.pathoscraft.util.quest.QuestReward;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static net.quackiemackie.pathoscraft.handlers.quest.QuestHandler.getQuestsByType;
 
 public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
@@ -173,7 +171,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     }
 
     private int calculateMaxPagesForTab(QuestTabButton button) {
-        int totalQuests = getQuestsByType(button.getQuestType()).size();
+        int totalQuests = QuestHandler.getQuestsByType(button.getQuestType()).size();
         return (int) Math.ceil((double) totalQuests / MAX_QUESTS_PER_PAGE);
     }
 
@@ -229,7 +227,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         this.renderables.removeIf(renderable -> renderable instanceof QuestSlotButton);
 
         // Retrieve relevant quests for display
-        List<Quest> filteredQuests = getQuestsByType(questType); // Fetch quests of the current type
+        List<Quest> filteredQuests = QuestHandler.getQuestsByType(questType);
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
         // Update maxPages using the filtered quests and calculate dynamically
@@ -262,7 +260,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         this.children().removeIf(child -> child instanceof QuestSlotButton);
         this.renderables.removeIf(renderable -> renderable instanceof QuestSlotButton);
 
-        List<Quest> filteredQuests = getQuestsByType(questType);
+        List<Quest> filteredQuests = QuestHandler.getQuestsByType(questType);
 
         questTabBuilder(filteredQuests, activeQuests);
     }

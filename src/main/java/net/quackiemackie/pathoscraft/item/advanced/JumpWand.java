@@ -13,7 +13,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
-import net.quackiemackie.pathoscraft.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.quackiemackie.pathoscraft.registers.PathosDataComponents;
 

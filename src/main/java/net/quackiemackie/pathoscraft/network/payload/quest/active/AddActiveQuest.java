@@ -6,7 +6,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
 
 public record AddActiveQuest(Quest quest) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<AddActiveQuest> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "add_active_quest"));

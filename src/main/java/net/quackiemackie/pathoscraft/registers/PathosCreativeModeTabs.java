@@ -57,6 +57,8 @@ public class PathosCreativeModeTabs {
                         output.accept(PathosItems.SADNESS_SHOVEL.get());
                         output.accept(PathosItems.SADNESS_HOE.get());
 
+                        output.accept(PathosItems.BASIC_FISHING_ROD.get());
+
                         output.accept(PathosItems.ANIMATED_ITEM.get());
                         output.accept(PathosItems.ASTRAL_LANTERN.get());
                         output.accept(PathosItems.CREATURE_CRYSTAL.get());

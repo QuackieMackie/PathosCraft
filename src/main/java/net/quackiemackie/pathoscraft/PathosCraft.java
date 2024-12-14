@@ -9,7 +9,7 @@ import net.quackiemackie.pathoscraft.entity.renderer.AstralFormRenderer;
 import net.quackiemackie.pathoscraft.entity.renderer.SpiderMountRenderer;
 import net.quackiemackie.pathoscraft.event.GeneralEntityEvents;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
-import net.quackiemackie.pathoscraft.handlers.quest.QuestHandler;
+import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
 import net.quackiemackie.pathoscraft.registers.*;
 import org.slf4j.Logger;
 
@@ -31,8 +31,6 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 public class PathosCraft {
 
     //TODO:
-    // - Current Errors:
-    //  - When a quest is completed it doesn't re organise the active quest list.
     // - Error catching:
     //  - Currently I can set the same slots for quests. I want to add a check when loaded the server would check for any of these issues.
     //    It would need to filter by type, then look for slot duplicates.

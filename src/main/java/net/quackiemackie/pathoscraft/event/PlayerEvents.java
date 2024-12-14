@@ -12,9 +12,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.SyncActiveQuests;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.SyncCompletedQuests;
-import net.quackiemackie.pathoscraft.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
-import net.quackiemackie.pathoscraft.handlers.abilities.AstralFormHandler;
+import net.quackiemackie.pathoscraft.util.handlers.abilities.AstralFormHandler;
 
 import java.util.List;
 

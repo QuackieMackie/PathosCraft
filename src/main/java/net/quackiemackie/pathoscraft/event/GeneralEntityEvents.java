@@ -9,7 +9,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
 import net.quackiemackie.pathoscraft.entity.ai.goal.TargetAstralFormGoal;
-import net.quackiemackie.pathoscraft.handlers.abilities.AstralFormHandler;
+import net.quackiemackie.pathoscraft.util.handlers.abilities.AstralFormHandler;
 
 @EventBusSubscriber(modid = PathosCraft.MOD_ID)
 public class GeneralEntityEvents {

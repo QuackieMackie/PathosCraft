@@ -4,7 +4,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.handlers.quest.QuestPayloadHandler;
+import net.quackiemackie.pathoscraft.util.handlers.quest.QuestPayloadHandler;
 import net.quackiemackie.pathoscraft.network.payload.abilities.astralForm.AstralFormStatus;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.SyncActiveQuests;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.UpdateProgressActiveQuest;

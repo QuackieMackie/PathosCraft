@@ -8,9 +8,9 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.quest.Quest;
-import net.quackiemackie.pathoscraft.quest.QuestObjective;
-import net.quackiemackie.pathoscraft.quest.QuestReward;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.QuestObjective;
+import net.quackiemackie.pathoscraft.util.quest.QuestReward;
 
 import java.nio.file.Path;
 import java.util.ArrayList;

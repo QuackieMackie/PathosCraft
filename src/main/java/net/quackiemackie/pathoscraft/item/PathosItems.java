@@ -21,6 +21,7 @@ public class PathosItems {
     public static final DeferredItem<AxeItem> SADNESS_AXE = ITEMS.register("sadness_axe", () -> new AxeItem(PathosToolTiers.SADNESS, new Item.Properties().attributes(AxeItem.createAttributes(PathosToolTiers.SADNESS, 5, -1.4F))));
     public static final DeferredItem<ShovelItem> SADNESS_SHOVEL = ITEMS.register("sadness_shovel", () -> new ShovelItem(PathosToolTiers.SADNESS, new Item.Properties().attributes(ShovelItem.createAttributes(PathosToolTiers.SADNESS, 5, -1.4F))));
     public static final DeferredItem<HoeItem> SADNESS_HOE = ITEMS.register("sadness_hoe", () -> new HoeItem(PathosToolTiers.SADNESS, new Item.Properties().attributes(HoeItem.createAttributes(PathosToolTiers.SADNESS, 5, -1.4F))));
+    public static final DeferredItem<BasicFishingRod> BASIC_FISHING_ROD = ITEMS.register("basic_fishing_rod", () -> new BasicFishingRod(new Item.Properties()));
     //Edible / Drinkable
     public static final DeferredItem<Item> MANA_HERB = ITEMS.register("mana_herb", () -> new Item(new Item.Properties().food(PathosFoodProperties.MANA_HERB)));
     public static final DeferredItem<Item> MANA_POTION = ITEMS.register("mana_potion", () -> new ManaPotion(new Item.Properties().food(PathosFoodProperties.MANA_POTION)));

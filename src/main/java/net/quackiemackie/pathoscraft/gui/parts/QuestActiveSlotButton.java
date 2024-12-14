@@ -10,11 +10,11 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
-import net.quackiemackie.pathoscraft.handlers.quest.QuestHandler;
+import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.RemoveActiveQuest;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.SwapActiveQuests;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.AddCompletedQuest;
-import net.quackiemackie.pathoscraft.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.*;
@@ -178,6 +178,11 @@ public class QuestActiveSlotButton extends QuestSlotButton {
         if (QuestHandler.isQuestObjectiveCompleted(quest) && !QuestHandler.isQuestCompleted(player, quest)) {
             completedQuests.add(quest);
             activeQuests.remove(quest);
+
+            for (int i = 0; i < activeQuests.size(); i++) {
+                activeQuests.get(i).setQuestActiveSlot(i);
+            }
+
             player.setData(PathosAttachments.COMPLETED_QUESTS.get(), completedQuests);
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
 

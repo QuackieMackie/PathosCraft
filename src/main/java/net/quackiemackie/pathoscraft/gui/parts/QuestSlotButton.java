@@ -15,10 +15,10 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
-import net.quackiemackie.pathoscraft.handlers.quest.QuestHandler;
+import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.AddActiveQuest;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.RemoveActiveQuest;
-import net.quackiemackie.pathoscraft.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.ArrayList;

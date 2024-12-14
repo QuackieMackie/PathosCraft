@@ -11,11 +11,11 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.handlers.abilities.AstralFormHandler;
+import net.quackiemackie.pathoscraft.util.handlers.abilities.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.keybinds.AstralFormKeyPress;
 import net.quackiemackie.pathoscraft.registers.PathosKeybinding;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
-import net.quackiemackie.pathoscraft.registers.PathosClientRenders;
+import net.quackiemackie.pathoscraft.util.abilities.astralForm.AstralFormOverlay;
 
 @EventBusSubscriber(modid = PathosCraft.MOD_ID)
 public class ClientEvents {
@@ -45,9 +45,9 @@ public class ClientEvents {
         if (AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && holder.getData(PathosAttachments.IN_ASTRAL_FORM.get())) {
             DeltaTracker deltaTracker = event.getPartialTick();
             float partialTicks = deltaTracker.getGameTimeDeltaPartialTick(Minecraft.getInstance().isPaused());
-            PathosClientRenders.renderAstralWarningOverlay(event.getGuiGraphics(), partialTicks);
-        } else if (!AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && !holder.getData(PathosAttachments.IN_ASTRAL_FORM.get()) && PathosClientRenders.astralFormRenderStartTime == 0){
-            PathosClientRenders.resetStartTime();
+            AstralFormOverlay.renderAstralWarningOverlay(event.getGuiGraphics(), partialTicks);
+        } else if (!AstralFormHandler.shouldShowAstralWarningOverlay() && player instanceof IAttachmentHolder holder && !holder.getData(PathosAttachments.IN_ASTRAL_FORM.get()) && AstralFormOverlay.astralFormRenderStartTime == 0){
+            AstralFormOverlay.resetStartTime();
         }
     }
 }

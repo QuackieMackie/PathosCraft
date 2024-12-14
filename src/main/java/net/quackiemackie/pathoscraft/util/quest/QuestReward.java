@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.quest;
+package net.quackiemackie.pathoscraft.util.quest;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

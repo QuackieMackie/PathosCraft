@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.handlers.quest;
+package net.quackiemackie.pathoscraft.util.handlers.quest;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -16,9 +16,9 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.UpdateProgressActiveQuest;
-import net.quackiemackie.pathoscraft.quest.Quest;
-import net.quackiemackie.pathoscraft.quest.QuestObjective;
-import net.quackiemackie.pathoscraft.quest.QuestReward;
+import net.quackiemackie.pathoscraft.util.quest.Quest;
+import net.quackiemackie.pathoscraft.util.quest.QuestObjective;
+import net.quackiemackie.pathoscraft.util.quest.QuestReward;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.io.IOException;
