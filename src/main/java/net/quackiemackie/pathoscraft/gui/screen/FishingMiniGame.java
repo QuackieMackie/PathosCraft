@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.gui.parts.miniGames.FishingInformationButton;
 import net.quackiemackie.pathoscraft.gui.parts.miniGames.FishingSequenceButton;
 import org.lwjgl.glfw.GLFW;
 
@@ -21,6 +22,8 @@ public class FishingMiniGame extends Screen {
     private static final int INITIAL_SEQUENCE_SIZE = 5;
     private static final int SEQUENCE_SIZE_INCREMENT = 2;
     private static final String[] BUTTONS = {"W", "A", "S", "D", "Space"};
+
+    private boolean waitingToStart = true;
 
     private final List<String> sequence = new ArrayList<>();
     private final List<FishingSequenceButton> buttonWidgets = new ArrayList<>();
@@ -93,9 +96,6 @@ public class FishingMiniGame extends Screen {
     @Override
     protected void init() {
         super.init();
-        if (startTime == 0) {
-            this.startTime = System.currentTimeMillis();
-        }
         this.updateVisibleWidgets();
     }
 
@@ -135,7 +135,7 @@ public class FishingMiniGame extends Screen {
 
         // If no lives remain, end the game
         if (remainingLives <= 0) {
-            finishGame(false);
+            finishGame(false, false);
         }
     }
 
@@ -144,7 +144,7 @@ public class FishingMiniGame extends Screen {
      */
     private void completeRound() {
         if (currentRound >= MAX_ROUNDS) {
-            finishGame(true);
+            finishGame(true, false);
         } else {
             currentRound++;
             currentIndex = 0;
@@ -157,14 +157,20 @@ public class FishingMiniGame extends Screen {
     /**
      * Finishes the game and informs the player of the results.
      */
-    private void finishGame(boolean success) {
+    private void finishGame(boolean success, boolean earlyQuit) {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.setScreen(null);
 
-        if (success) {
+        if (earlyQuit) {
+            // Logic for quitting early with the current score
+            PathosCraft.LOGGER.info("You quit early! Final score: {}", score);
+            minecraft.player.sendSystemMessage(Component.literal("You quit early, final score: " + score));
+        } else if (success) {
+            // Logic for successful completion
             PathosCraft.LOGGER.info("You've won! Total score: {}", score);
             minecraft.player.sendSystemMessage(Component.literal("You've won! Total score: " + score));
         } else {
+            // Logic for failure
             PathosCraft.LOGGER.info("Game over! Total score: {}", score);
             minecraft.player.sendSystemMessage(Component.literal("Game over! Total score: " + score));
         }
@@ -175,31 +181,36 @@ public class FishingMiniGame extends Screen {
      */
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        if (startTime == 0) {
-            this.startTime = System.currentTimeMillis();
-        }
+        long elapsedTime = waitingToStart ? 0 : System.currentTimeMillis() - startTime;
+        long remainingTime = TOTAL_TIME - elapsedTime;
 
+        // Render the screen elements
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
+        if (waitingToStart) {
+            guiGraphics.drawString(this.font, Component.translatable("screen.widget.pathoscraft.fishing_mini_game.start_message"), this.width / 2 - this.font.width(Component.translatable("screen.widget.pathoscraft.fishing_mini_game.start_message")) / 2, this.height / 2 - 20, 0xFFFFFF);
+            FishingInformationButton infoButton = new FishingInformationButton(10, 10);
+            this.addRenderableWidget(infoButton);
+        }
 
         //guiGraphics.fill(this.width / 2 - 1, 0, this.width / 2 + 1, this.height, 0xFFFF0000); // Vertical red line
         //guiGraphics.fill(0, this.height / 2 - 1, this.width, this.height / 2 + 1, 0xFFFF0000); // Horizontal red line
 
-        // Render timer and check for expiration
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        long remainingTime = TOTAL_TIME - elapsedTime;
-        if (remainingTime <= 0) {
-            finishGame(false);
-            return;
-        }
+        // Render the progress bar only (but time doesn't progress while waiting)
         renderProgressBar(guiGraphics, remainingTime);
 
         // Render lives as hearts
         renderLives(guiGraphics);
 
-        // Display score and round
-        guiGraphics.drawString(this.font, "Score: " + score, 10, 10, 0xFFFFFF);
-        guiGraphics.drawString(this.font, "Round: " + currentRound, 10, 25, 0xFFFFFF);
-        guiGraphics.drawString(this.font, ">", this.width / 2 - 60, this.height / 2 - 4,0xFFFFFF00);
+        // Display score and round at all times
+        guiGraphics.drawString(this.font, "Score: " + score, 10, this.height - 50, 0xFFFFFF);
+        guiGraphics.drawString(this.font, "Round: " + currentRound, 10, this.height - 35, 0xFFFFFF);
+        guiGraphics.drawString(this.font, "Match this key >", this.width / 2 - 135, this.height / 2 - 4, 0xFFFFFF00);
+
+        // Handle timeout (once waitingToStart is false)
+        if (!waitingToStart && remainingTime <= 0) {
+            finishGame(false, false);
+        }
     }
 
     /**
@@ -220,17 +231,21 @@ public class FishingMiniGame extends Screen {
      * Renders the player's remaining lives as hearts on the screen.
      */
     private void renderLives(GuiGraphics guiGraphics) {
-        int heartWidth = 8;
+        int heartSize = 28;
         int spacing = 5;
-        int totalWidth = (heartWidth + spacing) * MAX_LIVES - spacing;
+        int totalWidth = (heartSize + spacing) * MAX_LIVES - spacing;
 
         int startX = (this.width - totalWidth) / 2;
-        int startY = this.height - 40;
+        int startY = this.height - 45;
 
         for (int i = 0; i < MAX_LIVES; i++) {
-            int x = startX + i * (heartWidth + spacing);
+            int x = startX + i * (heartSize + spacing);
             int heartColor = (i < remainingLives) ? 0xFFFF0000 : 0xFF555555; // Full heart: red, Empty heart: gray
-            guiGraphics.drawString(Minecraft.getInstance().font, "❤", x, startY, heartColor);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(x, startY, 0);
+            guiGraphics.pose().scale(heartSize / 8.0f, heartSize / 8.0f, 1.0f);
+            guiGraphics.drawString(minecraft.font, "❤", 0, 0, heartColor);
+            guiGraphics.pose().popPose();
         }
     }
 
@@ -239,16 +254,45 @@ public class FishingMiniGame extends Screen {
      */
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        String pressed = getKeyName(keyCode);
+
+        if (keyCode == GLFW.GLFW_KEY_E || keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            finishGame(false, true);
+            return true;
+        }
+
+        if (waitingToStart) {
+            if (pressed.isEmpty()) {
+                return false;
+            }
+            waitingToStart = false;
+            this.startTime = System.currentTimeMillis();
+
+            String expected = sequence.get(currentIndex);
+            if (pressed.equals(expected)) {
+                processSuccessfulKeyPress();
+            } else {
+                processFailedAttempt();
+            }
+
+            return true;
+        }
+
         if (timerExpired || completed) {
             return false;
         }
+
+        if (pressed.isEmpty()) {
+            return false;
+        }
+
         String expected = sequence.get(currentIndex);
-        String pressed = getKeyName(keyCode);
         if (pressed.equals(expected)) {
             processSuccessfulKeyPress();
         } else {
             processFailedAttempt();
         }
+
         return true;
     }
 

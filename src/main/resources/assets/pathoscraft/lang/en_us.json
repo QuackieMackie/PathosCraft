@@ -54,5 +54,8 @@
   "menu.widget.pathoscraft.quest_menu.side_quest_button": "Side Quests",
   "menu.widget.pathoscraft.quest_menu.optional_quest_button": "Optional Quests",
   "menu.widget.pathoscraft.quest_menu.active_quest_button": "Active Quests",
-  "menu.widget.pathoscraft.quest_menu.information_button.tooltip": "§5Quest System Guide:\n§aGreen: Quests with completed objectives.\n§6Orange: Quests on your active list.\n§8Grey: Quests that have been completed.\n\n§5Controls:\n• §7Left-click: Claim completed quests rewards and activate quests.\n• §7Right-click: Disable active quests.\n• §7Middle-click: Swap quests.\n\nTip: Hover over quests for details!"
+  "menu.widget.pathoscraft.quest_menu.information_button.tooltip": "§5Quest System Guide:\n§aGreen: Quests with completed objectives.\n§6Orange: Quests on your active list.\n§8Grey: Quests that have been completed.\n\n§5Controls:\n• §7Left-click: Claim completed quests rewards and activate quests.\n• §7Right-click: Disable active quests.\n• §7Middle-click: Swap quests.\n\nTip: Hover over quests for details!",
+
+  "screen.widget.pathoscraft.fishing_mini_game.start_message": "Press any key to start!",
+  "screen.widget.pathoscraft.fishing_mini_game.instructions": "§5Fishing Mini-Game Instructions§r\n§aGoal: Match the sequence of keys displayed on the screen to catch the fish!§r\n§6Each correct key press brings you closer to completing the round.§r\n§8Each round gets progressively harder with longer sequences.§r\n\n§5How to Play:§r\n§7Start: Press any key to begin the game.§r\n§7Key Matching: Pay attention to the displayed sequence. Press the correct keys in order to advance.§r\n\n§2Scoring:§r\n§7Earn points for every correct match, try to beat your high score!"
 }
