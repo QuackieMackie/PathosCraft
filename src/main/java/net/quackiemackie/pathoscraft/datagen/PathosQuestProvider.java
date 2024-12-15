@@ -86,21 +86,21 @@ public class PathosQuestProvider implements DataProvider {
                 List.of(new QuestReward("give", "minecraft:diamond", 1))
         ));
 
-        for (int i = 0; i < 1000; i++) {
-            int questId = 101 + i;
-            String questName = "Optional Quest " + (i + 1);
-            String description = "Description for optional quest " + (i + 1) + ".";
-            String iconItem = (i % 2 == 0) ? "pathoscraft:raw_sadness" : "minecraft:emerald";
-            int slot = 2 + i;
-
-            List<QuestObjective> objectives = new ArrayList<>();
-            objectives.add(new QuestObjective("collect", "minecraft:dirt", (i + 1), DEFAULT_PROGRESS));
-
-            List<QuestReward> rewards = new ArrayList<>();
-            rewards.add(new QuestReward("give", (i % 2 == 0) ? "minecraft:diamond" : "minecraft:gold_ingot", (i % 5) + 1));
-
-            quests.add(new Quest(questId, questName, description, iconItem, 2, 0, slot, ACTIVE_QUEST_SLOT, objectives, rewards));
-        }
+//        for (int i = 0; i < 1000; i++) {
+//            int questId = 101 + i;
+//            String questName = "Optional Quest " + (i + 1);
+//            String description = "Description for optional quest " + (i + 1) + ".";
+//            String iconItem = (i % 2 == 0) ? "pathoscraft:raw_sadness" : "minecraft:emerald";
+//            int slot = 2 + i;
+//
+//            List<QuestObjective> objectives = new ArrayList<>();
+//            objectives.add(new QuestObjective("collect", "minecraft:dirt", (i + 1), DEFAULT_PROGRESS));
+//
+//            List<QuestReward> rewards = new ArrayList<>();
+//            rewards.add(new QuestReward("give", (i % 2 == 0) ? "minecraft:diamond" : "minecraft:gold_ingot", (i % 5) + 1));
+//
+//            quests.add(new Quest(questId, questName, description, iconItem, 2, 0, slot, ACTIVE_QUEST_SLOT, objectives, rewards));
+//        }
 
         List<CompletableFuture<?>> futures = new ArrayList<>();
         for (Quest quest : quests) {

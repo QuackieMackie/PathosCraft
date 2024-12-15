@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.gui.parts;
+package net.quackiemackie.pathoscraft.gui.parts.quest;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;

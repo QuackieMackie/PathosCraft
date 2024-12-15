@@ -13,7 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
-import net.quackiemackie.pathoscraft.gui.parts.*;
+import net.quackiemackie.pathoscraft.gui.parts.quest.*;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
 import net.quackiemackie.pathoscraft.util.quest.Quest;
 import net.quackiemackie.pathoscraft.util.quest.QuestObjective;

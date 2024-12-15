@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.gui.parts;
+package net.quackiemackie.pathoscraft.gui.parts.quest;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,14 +35,6 @@ public class QuestTabButton extends AbstractButton {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public boolean isFlipped() {
-        return flipped;
-    }
-
-    public void setFlipped(boolean flipped) {
-        this.flipped = flipped;
     }
 
     @Override
