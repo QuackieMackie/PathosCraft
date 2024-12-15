@@ -19,7 +19,13 @@ These are a few things I plan on adding into this mod.
 - **Villages and NPCs**: NPCs, each with their own stories and quests.
 - **Currency System**: In-game currency to trade and interact with NPCs and unique vendors.
 - **Entities**: New and quirky monsters or friends who can keep you company on your journey or hinder it.
-- **Bosses**: Challenging bosses that force you to bring your full might to battle it.
+- **Bosses**: Challenging bosses that force you to bring your full might to battle it. 
+- **Mini-Games**: Fun mini-games tied to core and custom gameplay mechanics:
+  - **Fishing**: A sequence-based challenge where players follow a series of prompts on-screen in the correct order to reel in their catch, and possibly bonus rewards. The sequence grows longer and more complex as the game progresses, rewarding players who can react quickly and accurately under pressure.
+  - **Lumbering**: *(N/A – Undecided)*
+  - **Mining**: *(N/A – Undecided)*
+  - **Farming**: *(N/A – Undecided)*
+  - **And More...**
 
 I'm using this project to teach myself Java, and because I was curious how far I can take this vision.
 \- QuackieMackie
