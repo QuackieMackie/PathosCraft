@@ -19,23 +19,24 @@ public class FishingMiniGame extends Screen {
 
     private static final int MAX_LIVES = 3;
     private static final long TOTAL_TIME = 10_000;
-    private static final int MAX_ROUNDS = 5;
+    private static final int MAX_ROUNDS = 6;
     private static final int MAX_VISIBLE_BUTTONS = 5;
     private static final int INITIAL_SEQUENCE_SIZE = 5;
     private static final int SEQUENCE_SIZE_INCREMENT = 2;
     private static final String[] BUTTONS = {"W", "A", "S", "D", "Space"};
 
     private boolean waitingToStart = true;
-
-    private final List<String> sequence = new ArrayList<>();
-    private final List<FishingSequenceButton> buttonWidgets = new ArrayList<>();
-    private int currentIndex = 0;
-    private int remainingLives = MAX_LIVES;
-    private int score = 0;
-    private int currentRound = 1;
     private boolean timerExpired = false;
     private boolean completed = false;
     private long startTime = 0;
+
+    private int currentRound = 1;
+    private int currentIndex = 0;
+    private int remainingLives = MAX_LIVES;
+    private int score = 0;
+
+    private final List<String> sequence = new ArrayList<>();
+    private final List<FishingSequenceButton> buttonWidgets = new ArrayList<>();
 
     public FishingMiniGame() {
         super(Component.literal("fishing mini game"));
@@ -73,16 +74,15 @@ public class FishingMiniGame extends Screen {
         buttonWidgets.clear();
         this.clearWidgets();
 
-        int buttonWidth = 100;
-        int buttonHeight = 20;
+        int buttonWidth = this.width / 8;
+        int buttonHeight = this.height / 20;
         int buttonSpacing = buttonHeight + 5;
-
-        // Always center the top button
-        int centerY = (this.height / 2) - 10;
         int centerX = (this.width / 2) - (buttonWidth / 2);
 
+        int topButtonY = this.height / 2 - (buttonHeight / 2);
+
         for (int i = 0; i < visibleSequence.size(); i++) {
-            int buttonY = centerY + (i * buttonSpacing);
+            int buttonY = topButtonY + (i * buttonSpacing);
 
             String button = visibleSequence.get(i);
             FishingSequenceButton widget = new FishingSequenceButton(centerX, buttonY, buttonWidth, buttonHeight, Component.literal(button));
@@ -134,6 +134,8 @@ public class FishingMiniGame extends Screen {
     private void processFailedAttempt() {
         // Deduct a life
         remainingLives--;
+
+        score -= 5;
 
         // If no lives remain, end the game
         if (remainingLives <= 0) {
@@ -192,7 +194,13 @@ public class FishingMiniGame extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         if (waitingToStart) {
-            guiGraphics.drawString(this.font, Component.translatable("screen.widget.pathoscraft.fishing_mini_game.start_message"), this.width / 2 - this.font.width(Component.translatable("screen.widget.pathoscraft.fishing_mini_game.start_message")) / 2, this.height / 2 - 20, 0xFFFFFF);
+            if (!buttonWidgets.isEmpty()) {
+                FishingSequenceButton topButton = buttonWidgets.get(0);
+                Component startMessage = Component.translatable("screen.widget.pathoscraft.fishing_mini_game.start_message");
+                int messageX = this.width / 2 - this.font.width(startMessage) / 2;
+                int messageY = topButton.getY() - this.font.lineHeight - 5;
+                guiGraphics.drawString(this.font, startMessage, messageX, messageY, 0xFFFFFF);
+            }
             FishingInformationButton infoButton = new FishingInformationButton(10, 10);
             this.addRenderableWidget(infoButton);
         }
@@ -207,9 +215,21 @@ public class FishingMiniGame extends Screen {
         renderLives(guiGraphics);
 
         // Display score and round at all times
-        guiGraphics.drawString(this.font, "Score: " + score, 10, this.height - 50, 0xFFFFFF);
-        guiGraphics.drawString(this.font, "Round: " + currentRound, 10, this.height - 35, 0xFFFFFF);
-        guiGraphics.drawString(this.font, "Match this key >", this.width / 2 - 135, this.height / 2 - 4, 0xFFFFFF00);
+        int progressBarHeight = progressBarHeight();
+        int progressBarY = this.height - progressBarHeight;
+
+        int scoreY = progressBarY - this.font.lineHeight - 5;
+        int roundY = scoreY - this.font.lineHeight - 5;
+
+        guiGraphics.drawString(this.font, "Score: " + score, 10, scoreY, 0xFFFFFF);
+        guiGraphics.drawString(this.font, "Round: " + currentRound, 10, roundY, 0xFFFFFF);
+        if (!buttonWidgets.isEmpty()) {
+            FishingSequenceButton topButton = buttonWidgets.get(0);
+            String matchMessage = "Match this key >";
+            int messageX = topButton.getX() - this.font.width(matchMessage) - 5;
+            int messageY = topButton.getY() + (topButton.getHeight() / 2) - (this.font.lineHeight / 2);
+            guiGraphics.drawString(this.font, matchMessage, messageX, messageY, 0xFFFFFF00);
+        }
 
         // Handle timeout (once waitingToStart is false)
         if (!waitingToStart && remainingTime <= 0) {
@@ -222,8 +242,8 @@ public class FishingMiniGame extends Screen {
      */
     private void renderProgressBar(GuiGraphics guiGraphics, long remainingTime) {
         int progressBarWidth = (int) (this.width * (remainingTime / (float) TOTAL_TIME));
-        int progressBarHeight = 10;
-        int progressBarX = (this.width - this.width) / 2;
+        int progressBarHeight = progressBarHeight();
+        int progressBarX = 0;
         int progressBarY = this.height - progressBarHeight;
         int red = (int) ((1 - remainingTime / (float) TOTAL_TIME) * 255);
         int green = (int) ((remainingTime / (float) TOTAL_TIME) * 255);
@@ -231,16 +251,24 @@ public class FishingMiniGame extends Screen {
         guiGraphics.fill(progressBarX, progressBarY, progressBarX + progressBarWidth, progressBarY + progressBarHeight, progressColor);
     }
 
+    private int progressBarHeight() {
+        int progressBarHeight;
+        return progressBarHeight = (int) (this.height * 0.04);
+    }
+
     /**
      * Renders the player's remaining lives as hearts on the screen.
      */
     private void renderLives(GuiGraphics guiGraphics) {
-        int heartSize = 28;
-        int spacing = 5;
+        int heartSize = this.width / 20;
+        int spacing = heartSize / 5;
         int totalWidth = (heartSize + spacing) * MAX_LIVES - spacing;
 
+        int progressBarHeight = progressBarHeight();
+        int progressBarY = this.height - progressBarHeight;
+
+        int startY = progressBarY - heartSize - 10;
         int startX = (this.width - totalWidth) / 2;
-        int startY = this.height - 45;
 
         for (int i = 0; i < MAX_LIVES; i++) {
             int x = startX + i * (heartSize + spacing);
