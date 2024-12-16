@@ -2,7 +2,7 @@ package net.quackiemackie.pathoscraft.entity.model;
 
 import net.minecraft.resources.ResourceLocation;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
+import net.quackiemackie.pathoscraft.entity.entity.AstralFormEntity;
 import software.bernie.geckolib.model.GeoModel;
 
 public class AstralFormModel extends GeoModel<AstralFormEntity> {

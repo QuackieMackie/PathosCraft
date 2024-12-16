@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
+import net.quackiemackie.pathoscraft.entity.entity.AstralFormEntity;
 import net.quackiemackie.pathoscraft.network.payload.abilities.astralForm.AstralFormStatus;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;

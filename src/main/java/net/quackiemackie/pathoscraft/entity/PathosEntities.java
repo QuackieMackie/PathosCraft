@@ -6,8 +6,8 @@ import net.minecraft.world.entity.MobCategory;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
-import net.quackiemackie.pathoscraft.entity.entitys.SpiderMountEntity;
+import net.quackiemackie.pathoscraft.entity.entity.AstralFormEntity;
+import net.quackiemackie.pathoscraft.entity.entity.SpiderMountEntity;
 
 public class PathosEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, PathosCraft.MOD_ID);

@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.entity.entitys;
+package net.quackiemackie.pathoscraft.entity.entity;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;

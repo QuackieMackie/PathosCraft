@@ -4,8 +4,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
-import net.quackiemackie.pathoscraft.entity.entitys.SpiderMountEntity;
+import net.quackiemackie.pathoscraft.entity.entity.AstralFormEntity;
+import net.quackiemackie.pathoscraft.entity.entity.SpiderMountEntity;
 import net.quackiemackie.pathoscraft.entity.PathosEntities;
 
 @EventBusSubscriber(modid = PathosCraft.MOD_ID, bus = EventBusSubscriber.Bus.MOD)

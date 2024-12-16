@@ -3,7 +3,7 @@ package net.quackiemackie.pathoscraft.entity.ai.goal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.phys.AABB;
-import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
+import net.quackiemackie.pathoscraft.entity.entity.AstralFormEntity;
 
 import java.util.List;
 

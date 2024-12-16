@@ -7,7 +7,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.entity.entitys.AstralFormEntity;
+import net.quackiemackie.pathoscraft.entity.entity.AstralFormEntity;
 import net.quackiemackie.pathoscraft.entity.ai.goal.TargetAstralFormGoal;
 import net.quackiemackie.pathoscraft.util.handlers.abilities.AstralFormHandler;
 

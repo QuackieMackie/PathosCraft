@@ -99,7 +99,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, Component.translatable("menu.title.pathoscraft.quest_menu"), 8, 6, 0xFFFFFFFF);
+        guiGraphics.drawString(this.font, Component.translatable("screen.title.pathoscraft.quest_menu"), 8, 6, 0xFFFFFFFF);
     }
 
     @Override
@@ -142,22 +142,22 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      */
     private void initTabButtons() {
         // Initialize and add main quest button
-        mainQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 105, 95, 20, Component.translatable("menu.widget.pathoscraft.quest_menu.main_quest_button"), true, 0, button -> {
+        mainQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 105, 95, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.main_quest_button"), true, 0, button -> {
             setActiveButton(mainQuestButton);
         }, false);
 
         // Initialize and add side quest button
-        sideQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 75, 95, 20, Component.translatable("menu.widget.pathoscraft.quest_menu.side_quest_button"), false, 1, button -> {
+        sideQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 75, 95, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.side_quest_button"), false, 1, button -> {
             setActiveButton(sideQuestButton);
         }, false);
 
         // Initialize and add optional quest button
-        optionalQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 45, 95, 20, Component.translatable("menu.widget.pathoscraft.quest_menu.optional_quest_button"), false, 2, button -> {
+        optionalQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 45, 95, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.optional_quest_button"), false, 2, button -> {
             setActiveButton(optionalQuestButton);
         }, false);
 
         // Initialize and add active quests button
-        activeQuestsButton = new QuestTabButton(this.width / 2 + 87, this.height / 2 - 105, 95, 20, Component.translatable("menu.widget.pathoscraft.quest_menu.active_quest_button"), false, 3, button -> {
+        activeQuestsButton = new QuestTabButton(this.width / 2 + 87, this.height / 2 - 105, 95, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.active_quest_button"), false, 3, button -> {
             setActiveButton(activeQuestsButton);
         }, true);
 

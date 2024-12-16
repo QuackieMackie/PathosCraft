@@ -33,15 +33,6 @@ public class QuestInformationButton extends Button {
     }
 
     /**
-     * Adds information to be displayed when hovering over the button.
-     *
-     * @param info The hover information to add.
-     */
-    private void addHoverInfo(Component info) {
-        this.hoverInfo.add(info);
-    }
-
-    /**
      * Toggles the visibility of the hover information.
      */
     private void toggleInfoVisibility() {
@@ -62,7 +53,7 @@ public class QuestInformationButton extends Button {
         if (shouldHighlight) {
             List<FormattedCharSequence> tooltip = new ArrayList<>();
 
-            String[] lines = Component.translatable("menu.widget.pathoscraft.quest_menu.information_button.tooltip").getString().split("\n");
+            String[] lines = Component.translatable("screen.widget.pathoscraft.quest_menu.information_button.tooltip").getString().split("\n");
 
             for (String line : lines) {
                 tooltip.add(Component.literal(line).getVisualOrderText());

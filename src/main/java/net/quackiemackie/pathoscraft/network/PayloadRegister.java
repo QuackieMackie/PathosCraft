@@ -2,12 +2,12 @@ package net.quackiemackie.pathoscraft.network;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.quackiemackie.pathoscraft.network.payload.IPayloadHandler;
 import net.quackiemackie.pathoscraft.network.payload.keybinds.AstralFormKeyPress;
 import net.quackiemackie.pathoscraft.network.payload.abilities.astralForm.AstralFormStatus;
+import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.FinishedFishingMiniGame;
+import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.StartFishingMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.*;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.AddCompletedQuest;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
@@ -23,34 +23,25 @@ public class PayloadRegister {
     public static void register(final RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar("1").executesOn(HandlerThread.MAIN);
 
-        registrar.playBidirectional(AstralFormStatus.TYPE, AstralFormStatus.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(ClientPayloadHandler::handleAstralFormStatus, IPayloadHandler.noOperation()));
+        // Abilities
+        registrar.commonToClient(AstralFormStatus.TYPE, AstralFormStatus.STREAM_CODEC, ClientPayloadHandler::handleAstralFormStatus);
 
-        registrar.playBidirectional(AstralFormKeyPress.TYPE, AstralFormKeyPress.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(IPayloadHandler.noOperation(), ServerPayloadHandler::handleAstralFormKeyPress));
+        // Key binds
+        registrar.commonToServer(AstralFormKeyPress.TYPE, AstralFormKeyPress.STREAM_CODEC, ServerPayloadHandler::handleAstralFormKeyPress);
 
-        registrar.playBidirectional(AddActiveQuest.TYPE, AddActiveQuest.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(IPayloadHandler.noOperation(), ServerPayloadHandler::handleAddActiveQuest));
+        // Quests
+        registrar.commonToServer(AddActiveQuest.TYPE, AddActiveQuest.STREAM_CODEC, ServerPayloadHandler::handleAddActiveQuest);
+        registrar.commonToServer(RemoveActiveQuest.TYPE, RemoveActiveQuest.STREAM_CODEC, ServerPayloadHandler::handleRemoveActiveQuest);
+        registrar.commonToServer(SwapActiveQuests.TYPE, SwapActiveQuests.STREAM_CODEC, ServerPayloadHandler::handleSwapActiveQuest);
+        registrar.commonToClient(UpdateProgressActiveQuest.TYPE, UpdateProgressActiveQuest.STREAM_CODEC, ClientPayloadHandler::handleUpdateProgressActiveQuest);
+        registrar.commonToClient(SyncActiveQuests.TYPE, SyncActiveQuests.STREAM_CODEC, ClientPayloadHandler::handleSyncActiveQuests);
 
-        registrar.playBidirectional(RemoveActiveQuest.TYPE, RemoveActiveQuest.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(IPayloadHandler.noOperation(), ServerPayloadHandler::handleRemoveActiveQuest));
+        registrar.commonToServer(AddCompletedQuest.TYPE, AddCompletedQuest.STREAM_CODEC, ServerPayloadHandler::handleAddCompletedQuest);
+        registrar.commonToClient(ClearCompletedQuests.TYPE, ClearCompletedQuests.STREAM_CODEC, ClientPayloadHandler::handleSyncCompletedQuests);
+        registrar.commonToClient(SyncCompletedQuests.TYPE, SyncCompletedQuests.STREAM_CODEC, ClientPayloadHandler::handleClearCompletedQuests);
 
-        registrar.playBidirectional(SwapActiveQuests.TYPE, SwapActiveQuests.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(IPayloadHandler.noOperation(), ServerPayloadHandler::handleSwapActiveQuest));
-
-        registrar.playBidirectional(UpdateProgressActiveQuest.TYPE, UpdateProgressActiveQuest.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(ClientPayloadHandler::handleUpdateProgressActiveQuest, IPayloadHandler.noOperation()));
-
-        registrar.playBidirectional(SyncActiveQuests.TYPE, SyncActiveQuests.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(ClientPayloadHandler::handleSyncActiveQuests, IPayloadHandler.noOperation()));
-
-        registrar.playBidirectional(AddCompletedQuest.TYPE, AddCompletedQuest.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(IPayloadHandler.noOperation(), ServerPayloadHandler::handleAddCompletedQuest));
-
-        registrar.playBidirectional(ClearCompletedQuests.TYPE, ClearCompletedQuests.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(ClientPayloadHandler::handleSyncCompletedQuests, IPayloadHandler.noOperation()));
-
-        registrar.playBidirectional(SyncCompletedQuests.TYPE, SyncCompletedQuests.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(ClientPayloadHandler::handleClearCompletedQuests, IPayloadHandler.noOperation()));
+        // Mini Games
+        registrar.commonToClient(StartFishingMiniGame.TYPE, StartFishingMiniGame.STREAM_CODEC, ClientPayloadHandler::handleStartMiniGame);
+        registrar.commonToServer(FinishedFishingMiniGame.TYPE, FinishedFishingMiniGame.STREAM_CODEC, ServerPayloadHandler::handleFinishedFishingMiniGame);
     }
 }

@@ -4,8 +4,10 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.FinishedFishingMiniGame;
 import net.quackiemackie.pathoscraft.util.handlers.abilities.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.keybinds.AstralFormKeyPress;
+import net.quackiemackie.pathoscraft.util.handlers.minigames.FishingHandler;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestPayloadHandler;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.AddActiveQuest;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.RemoveActiveQuest;
@@ -95,5 +97,10 @@ public class ServerPayloadHandler {
         QuestPayloadHandler.addCompletedQuest(completedQuests, activeQuests, data.quest(), player);
 
         PathosCraft.LOGGER.info("Completed quest added: {Player: {}, Quest: {}}", player.getName().getString(), data.quest());
+    }
+
+    public static void handleFinishedFishingMiniGame(FinishedFishingMiniGame data, IPayloadContext context) {
+        PathosCraft.LOGGER.info("Score: {}, Player: {}", data.score(), context.player().getName().getString());
+        FishingHandler.rewardCompletedMiniGame(context.player());
     }
 }

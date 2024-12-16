@@ -4,9 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.parts.miniGames.FishingInformationButton;
 import net.quackiemackie.pathoscraft.gui.parts.miniGames.FishingSequenceButton;
+import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.FinishedFishingMiniGame;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -174,6 +176,8 @@ public class FishingMiniGame extends Screen {
             PathosCraft.LOGGER.info("Game over! Total score: {}", score);
             minecraft.player.sendSystemMessage(Component.literal("Game over! Total score: " + score));
         }
+
+        PacketDistributor.sendToServer(new FinishedFishingMiniGame(score));
     }
 
     /**

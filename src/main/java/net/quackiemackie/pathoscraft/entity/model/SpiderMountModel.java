@@ -2,7 +2,7 @@ package net.quackiemackie.pathoscraft.entity.model;
 
 import net.minecraft.resources.ResourceLocation;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.entity.entitys.SpiderMountEntity;
+import net.quackiemackie.pathoscraft.entity.entity.SpiderMountEntity;
 import software.bernie.geckolib.model.GeoModel;
 
 public class SpiderMountModel extends GeoModel<SpiderMountEntity> {
