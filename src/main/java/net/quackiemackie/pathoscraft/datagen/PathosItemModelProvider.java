@@ -35,19 +35,25 @@ public class PathosItemModelProvider extends ItemModelProvider {
         handheldItem(PathosItems.SADNESS_SHOVEL.get());
         handheldItem(PathosItems.SADNESS_HOE.get());
 
-        handheld_rod(PathosItems.BASIC_FISHING_ROD.get());
+        generateFishingRodModels(PathosItems.BASIC_FISHING_ROD.get());
 
         handheldItem(PathosItems.QUEST_BOOK.get());
         handheldItem(PathosItems.CREATURE_CRYSTAL.get());
+        handheldItem(PathosItems.TEST_ITEM.get());
     }
 
-    public void handheld_rod(ResourceLocation item) {
-        getBuilder(item.toString())
+    public void generateFishingRodModels(Item item) {
+        ResourceLocation itemKey = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item));
+
+        getBuilder(itemKey.getPath())
                 .parent(new ModelFile.UncheckedModelFile("item/handheld_rod"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
-    }
+                .texture("layer0", modLoc("item/" + itemKey.getPath()))
+                .override()
+                .predicate(ResourceLocation.withDefaultNamespace("cast"), 1)
+                .model(new ModelFile.UncheckedModelFile(modLoc("item/" + itemKey.getPath() + "_cast")));
 
-    public void handheld_rod(Item item) {
-        handheld_rod(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)));
+        getBuilder(itemKey.getPath() + "_cast")
+                .parent(new ModelFile.UncheckedModelFile(modLoc("item/" + itemKey.getPath())))
+                .texture("layer0", modLoc("item/" + itemKey.getPath() + "_cast"));
     }
 }

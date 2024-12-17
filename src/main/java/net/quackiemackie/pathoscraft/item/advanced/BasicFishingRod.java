@@ -28,6 +28,4 @@ public class BasicFishingRod extends FishingRodItem {
     public boolean canPerformAction(ItemStack stack, net.neoforged.neoforge.common.ItemAbility itemAbility) {
         return super.canPerformAction(stack, itemAbility);
     }
-
-
 }

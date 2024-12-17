@@ -1,0 +1,6 @@
+{
+  "parent": "pathoscraft:item/basic_fishing_rod",
+  "textures": {
+    "layer0": "pathoscraft:item/basic_fishing_rod_cast"
+  }
+}

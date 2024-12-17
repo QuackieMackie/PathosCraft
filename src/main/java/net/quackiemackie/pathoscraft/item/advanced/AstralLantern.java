@@ -14,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.quackiemackie.pathoscraft.util.handlers.abilities.AstralFormHandler;
 import net.quackiemackie.pathoscraft.item.renderer.AstralLanternRenderer;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
-import net.quackiemackie.pathoscraft.registers.PathosDataComponents;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -79,8 +78,6 @@ public class AstralLantern extends Item implements GeoItem {
 
             level.playSound(null, context.getClickedPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
             ((ServerLevel) level).sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY(), player.getZ(), 50, 0.5, 0.5, 0.5, 0.2);
-
-            context.getItemInHand().set(PathosDataComponents.COORDINATES, context.getClickedPos());
         }
 
         return super.useOn(context);

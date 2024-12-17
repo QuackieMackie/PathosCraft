@@ -84,6 +84,7 @@ public class PathosCreativeModeTabs {
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(PathosItems.QUEST_BOOK.get());
                         output.accept(PathosItems.CREATURE_CRYSTAL.get());
+                        output.accept(PathosItems.TEST_ITEM.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_food_creative_tab"))
                     .build());

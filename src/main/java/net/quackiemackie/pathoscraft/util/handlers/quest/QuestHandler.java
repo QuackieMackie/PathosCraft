@@ -23,9 +23,7 @@ import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,6 +42,8 @@ public class QuestHandler {
 
         quests.clear();
 
+        Map<Integer, Set<Integer>> usedSlotsByType = new HashMap<>();
+
         for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
             ResourceLocation resourceLocation = entry.getKey();
             Resource resource = entry.getValue();
@@ -52,6 +52,13 @@ public class QuestHandler {
                 Quest quest = Quest.CODEC.parse(JsonOps.INSTANCE, jsonElement)
                         .result()
                         .orElseThrow(() -> new IllegalStateException("Failed to parse quest: " + jsonElement));
+
+                // Check for duplicate slot
+                usedSlotsByType.putIfAbsent(quest.getQuestType(), new HashSet<>());
+                if (!usedSlotsByType.get(quest.getQuestType()).add(quest.getQuestSlot())) {
+                    throw new IllegalStateException(String.format("Duplicate slot %d found for quest type '%s' in file '%s'", quest.getQuestSlot(), quest.getQuestType(), resourceLocation));
+                }
+
                 quests.add(quest);
             } catch (IOException e) {
                 PathosCraft.LOGGER.error("Failed to load quest from file: {}{}", resourceLocation, e.getMessage());

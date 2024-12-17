@@ -1,52 +1,17 @@
 package net.quackiemackie.pathoscraft.item.advanced;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
-import net.quackiemackie.pathoscraft.util.quest.Quest;
-import net.quackiemackie.pathoscraft.registers.PathosAttachments;
 import net.quackiemackie.pathoscraft.registers.PathosDataComponents;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class JumpWand extends Item {
 
     public JumpWand(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
-        Player player = context.getPlayer();
-
-        if (!level.isClientSide && player != null) {
-            clearPlayerDataAttachment(player);
-            sendClearDataPayload(player);
-        }
-
-        return super.useOn(context);
-    }
-
-    private void clearPlayerDataAttachment(Player player) {
-        ((IAttachmentHolder) player).setData(PathosAttachments.COMPLETED_QUESTS.get(), new ArrayList<>());
-        PathosCraft.LOGGER.info("Cleared data attachment for player {}", player.getName().getString());
-    }
-
-    private void sendClearDataPayload(Player player) {
-        List<Quest> completedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get());
-        PacketDistributor.sendToPlayer((ServerPlayer) player, new ClearCompletedQuests(completedQuests));
     }
 
     @Override
