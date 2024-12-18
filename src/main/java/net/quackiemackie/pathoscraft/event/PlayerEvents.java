@@ -3,16 +3,20 @@ package net.quackiemackie.pathoscraft.event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.item.advanced.BasicFishingRod;
+import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.StartExcavationMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.StartFishingMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.SyncActiveQuests;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.SyncCompletedQuests;
@@ -73,6 +77,19 @@ public class PlayerEvents {
             if (minecraft.player != null && minecraft.player.equals(player)) {
                 PacketDistributor.sendToPlayer((ServerPlayer) player, StartFishingMiniGame.INSTANCE);
             }
+        }
+    }
+
+    //TODO:
+    // Need to replace this with an actual method that checks if it's an ore, this would also mean updating the
+    // `StartExcavationMiniGame` to handle the ore to render in the correct texture on the client.
+    @SubscribeEvent
+    public static void onPlayerMine(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getState().getBlock();
+
+        if (block.equals(Blocks.STONE)) {
+            PacketDistributor.sendToPlayer((ServerPlayer) player, StartExcavationMiniGame.INSTANCE);
         }
     }
 }

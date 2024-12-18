@@ -4,7 +4,9 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.StartExcavationMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.StartFishingMiniGame;
+import net.quackiemackie.pathoscraft.util.handlers.minigames.ExcavationHandler;
 import net.quackiemackie.pathoscraft.util.handlers.minigames.FishingHandler;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestPayloadHandler;
 import net.quackiemackie.pathoscraft.network.payload.abilities.astralForm.AstralFormStatus;
@@ -78,7 +80,27 @@ public class ClientPayloadHandler {
         PathosCraft.LOGGER.info("Cleared Completed quests: {Player: {}, Quests: {}}", player.getName().getString(), data.quests());
     }
 
-    public static void handleStartMiniGame(StartFishingMiniGame data, IPayloadContext context) {
+    /**
+     * Handles the initiation of the fishing mini-game on the client-side. This method
+     * is triggered when a StartFishingMiniGame payload is received, initiating the
+     * fishing mini-game interface for the player.
+     *
+     * @param data    The payload containing the data required to start the fishing mini-game.
+     * @param context The context providing access to the player and the environment in which the payload is processed.
+     */
+    public static void handleStartFishingMiniGame(StartFishingMiniGame data, IPayloadContext context) {
         FishingHandler.startMiniGame(context.player());
+    }
+
+    /**
+     * Handles the initiation of the excavation mini-game on the client-side. This method
+     * is triggered when a StartExcavationMiniGame payload is received and initiates the
+     * excavation mini-game interface for the player.
+     *
+     * @param data    The payload containing the data required to start the excavation mini-game.
+     * @param context The context providing access to the player and the environment in which the payload is processed.
+     */
+    public static void handleStartExcavationMiniGame(StartExcavationMiniGame data, IPayloadContext context) {
+        ExcavationHandler.startMiniGame(context.player());
     }
 }

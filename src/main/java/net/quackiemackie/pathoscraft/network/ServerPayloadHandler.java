@@ -4,9 +4,11 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.FinishedExcavationMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.FinishedFishingMiniGame;
 import net.quackiemackie.pathoscraft.util.handlers.abilities.AstralFormHandler;
 import net.quackiemackie.pathoscraft.network.payload.keybinds.AstralFormKeyPress;
+import net.quackiemackie.pathoscraft.util.handlers.minigames.ExcavationHandler;
 import net.quackiemackie.pathoscraft.util.handlers.minigames.FishingHandler;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestPayloadHandler;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.AddActiveQuest;
@@ -99,8 +101,31 @@ public class ServerPayloadHandler {
         PathosCraft.LOGGER.info("Completed quest added: {Player: {}, Quest: {}}", player.getName().getString(), data.quest());
     }
 
+    /**
+     * Handles the completion of the fishing mini-game by logging the player's score
+     * and rewarding the player based on their achievements in the mini-game.
+     *
+     * @param data    the payload containing the score achieved in the fishing mini-game.
+     * @param context the payload context containing the player who finished the mini-game
+     *                and associated data.
+     */
     public static void handleFinishedFishingMiniGame(FinishedFishingMiniGame data, IPayloadContext context) {
         PathosCraft.LOGGER.info("Score: {}, Player: {}", data.score(), context.player().getName().getString());
-        FishingHandler.rewardCompletedMiniGame(context.player());
+        FishingHandler.rewardCompletedMiniGame(data.score(), context.player());
+    }
+
+    /**
+     * Handles the completion of the excavation mini-game by logging the details
+     * of the player and the ore they found. Rewards the player based on the amount
+     * of ore discovered during the mini-game.
+     *
+     * @param data    the payload containing information about the completed excavation mini-game,
+     *                including the number of ores found by the player.
+     * @param context the payload context containing details about the player who completed
+     *                the excavation mini-game and their associated data.
+     */
+    public static void handleFinishedExcavationMiniGame(FinishedExcavationMiniGame data, IPayloadContext context) {
+        PathosCraft.LOGGER.info("Found Ore: {}, Player: {}", data.foundOre(), context.player().getName().getString());
+        ExcavationHandler.rewardCompletedMiniGame(data.foundOre(), context.player());
     }
 }

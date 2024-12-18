@@ -6,6 +6,8 @@ import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.quackiemackie.pathoscraft.network.payload.keybinds.AstralFormKeyPress;
 import net.quackiemackie.pathoscraft.network.payload.abilities.astralForm.AstralFormStatus;
+import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.FinishedExcavationMiniGame;
+import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.StartExcavationMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.FinishedFishingMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.StartFishingMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.*;
@@ -41,7 +43,9 @@ public class PayloadRegister {
         registrar.commonToClient(SyncCompletedQuests.TYPE, SyncCompletedQuests.STREAM_CODEC, ClientPayloadHandler::handleClearCompletedQuests);
 
         // Mini Games
-        registrar.commonToClient(StartFishingMiniGame.TYPE, StartFishingMiniGame.STREAM_CODEC, ClientPayloadHandler::handleStartMiniGame);
+        registrar.commonToClient(StartFishingMiniGame.TYPE, StartFishingMiniGame.STREAM_CODEC, ClientPayloadHandler::handleStartFishingMiniGame);
         registrar.commonToServer(FinishedFishingMiniGame.TYPE, FinishedFishingMiniGame.STREAM_CODEC, ServerPayloadHandler::handleFinishedFishingMiniGame);
+        registrar.commonToClient(StartExcavationMiniGame.TYPE, StartExcavationMiniGame.STREAM_CODEC, ClientPayloadHandler::handleStartExcavationMiniGame);
+        registrar.commonToServer(FinishedExcavationMiniGame.TYPE, FinishedExcavationMiniGame.STREAM_CODEC, ServerPayloadHandler::handleFinishedExcavationMiniGame);
     }
 }

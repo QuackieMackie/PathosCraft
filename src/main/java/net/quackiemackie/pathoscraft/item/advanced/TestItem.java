@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
-import net.quackiemackie.pathoscraft.util.handlers.minigames.FishingHandler;
+import net.quackiemackie.pathoscraft.util.handlers.minigames.ExcavationHandler;
 import net.quackiemackie.pathoscraft.util.quest.Quest;
 
 import java.util.ArrayList;
@@ -25,8 +25,8 @@ public class TestItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        FishingHandler.startMiniGame(player);
-
+        //FishingHandler.startMiniGame(player);
+        ExcavationHandler.startMiniGame(player);
         if (!level.isClientSide && player != null) {
             clearPlayerDataAttachment(player);
             sendClearDataPayload(player);
