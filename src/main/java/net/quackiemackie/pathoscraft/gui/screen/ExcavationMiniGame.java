@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.parts.miniGames.ExcavationButton;
+import net.quackiemackie.pathoscraft.gui.parts.miniGames.InformationButton;
 import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.FinishedExcavationMiniGame;
 import org.lwjgl.glfw.GLFW;
 
@@ -18,9 +19,6 @@ import java.util.Random;
 
 //TODO
 // Depending on what ore is used as the texture, or what block is broken, it would render in similar minecraft ores.
-// .
-// Replace the live counter with something visual, I think stone pickaxes down the side. As they get lost the pickaxes
-// would break, and disappear or appear broken.
 
 public class ExcavationMiniGame extends Screen {
 
@@ -29,6 +27,9 @@ public class ExcavationMiniGame extends Screen {
     private static final int MAX_ORES = 5; // Maximum number of ores on the board
 
     private static final ResourceLocation SADNESS_TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/item/raw_sadness.png");
+    private static final ResourceLocation STONE_PICKAXE_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/item/stone_pickaxe.png");
+    private static final ResourceLocation BROKEN_STONE_PICKAXE_TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/minigame/broken_stone_pickaxe.png");
+
     private final String[][] board = new String[GRID_SIZE][GRID_SIZE];
     private final boolean[][] revealedStates = new boolean[GRID_SIZE][GRID_SIZE];
     private final List<ExcavationButton> buttons = new ArrayList<>();
@@ -39,7 +40,7 @@ public class ExcavationMiniGame extends Screen {
     private boolean pauseState = false;
 
     public ExcavationMiniGame() {
-        super(Component.literal("Excavation Mini-Game"));
+        super(Component.translatable("screen.widget.pathoscraft.excavation_mini_game.title"));
         generateBoard();
     }
 
@@ -174,16 +175,18 @@ public class ExcavationMiniGame extends Screen {
         int foundOres = getFoundOres();
         pauseState = true; // Pause the game
 
-        // Send messages based on game outcome
         if (earlyQuit) {
             PathosCraft.LOGGER.info("You quit early!");
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("You quit early! Ores found: " + foundOres));
+            Minecraft.getInstance().player.sendSystemMessage(
+                    Component.translatable("screen.widget.pathoscraft.excavation_mini_game.quit_early", foundOres));
         } else if (success) {
             PathosCraft.LOGGER.info("Congratulations, you won!");
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("Congratulations, you won! Total ores found: " + foundOres));
+            Minecraft.getInstance().player.sendSystemMessage(
+                    Component.translatable("screen.widget.pathoscraft.excavation_mini_game.congratulations", foundOres));
         } else {
             PathosCraft.LOGGER.info("Better luck next time!");
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("Better luck next time! Total ores found: " + foundOres));
+            Minecraft.getInstance().player.sendSystemMessage(
+                    Component.translatable("screen.widget.pathoscraft.excavation_mini_game.better_luck", foundOres));
         }
 
         PacketDistributor.sendToServer(new FinishedExcavationMiniGame(foundOres));
@@ -203,8 +206,12 @@ public class ExcavationMiniGame extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         renderOreTextures(guiGraphics);
-        // Display lives remaining
-        guiGraphics.drawString(minecraft.font, "Lives: " + remainingLives, 10, 10, 0xFFFFFF);
+        renderLives(guiGraphics);
+
+        InformationButton infoButton = new InformationButton(10, 10);
+        String[] instructions = Component.translatable("screen.widget.pathoscraft.excavation_mini_game.instructions").getString().split("\n");
+        infoButton.setHoverInfo(instructions);
+        this.addRenderableWidget(infoButton);
 
         // Display pause or game-over messages
         if (pauseState) {
@@ -216,31 +223,31 @@ public class ExcavationMiniGame extends Screen {
 
             int foundOres = getFoundOres();
             if (gameOver) {
-                // Display game result based on success or failure
                 if (remainingLives > 0 || remainingOres == 0) {
-                    resultMessage = "Amazing! You found " + foundOres + " veins of ore!";
+                    resultMessage = Component.translatable("screen.widget.pathoscraft.excavation_mini_game.amazing", foundOres).getString();
                     resultColor = Color.GREEN.getRGB();
                 } else if (foundOres >= 1) {
-                    resultMessage = "Not bad, you found " + foundOres + " veins of ore!";
+                    resultMessage = Component.translatable("screen.widget.pathoscraft.excavation_mini_game.not_bad", foundOres).getString();
                     resultColor = Color.ORANGE.getRGB();
                 } else {
-                    resultMessage = "Better luck next time!";
+                    resultMessage = Component.translatable("screen.widget.pathoscraft.excavation_mini_game.better_luck_next_time").getString();
                     resultColor = Color.RED.getRGB();
                 }
 
-                String exitPrompt = "Press 'E' or 'Escape' to exit and claim your rewards.";
+                String exitPrompt = Component.translatable("screen.widget.pathoscraft.excavation_mini_game.exit_prompt",
+                minecraft.options.keyInventory.getKey().getDisplayName().getString()).getString();
 
                 // Render result message
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(centerX, centerY - 20, 0);
-                guiGraphics.pose().scale(1.8f, 1.8f, 1.0f); // Fixed scaling
+                guiGraphics.pose().scale(1.8f, 1.8f, 1.0f);
                 guiGraphics.drawString(minecraft.font, resultMessage, -(minecraft.font.width(resultMessage) / 2), 0, resultColor);
                 guiGraphics.pose().popPose();
 
-                // Render prompt message
+                // Render the "exit" prompt
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(centerX, centerY + 20, 0);
-                guiGraphics.pose().scale(1.4f, 1.4f, 1.0f); // Fixed scaling
+                guiGraphics.pose().scale(1.4f, 1.4f, 1.0f);
                 guiGraphics.drawString(minecraft.font, exitPrompt, -(minecraft.font.width(exitPrompt) / 2), 0, resultColor);
                 guiGraphics.pose().popPose();
             }
@@ -271,9 +278,8 @@ public class ExcavationMiniGame extends Screen {
      * Renders the textures for revealed "ore" tiles on the game board.
      *
      * This method uses the grid layout and the revealed states of the game tiles
-     * to identify and render "ore" textures at their corresponding positions on
-     * the graphical interface. Textures for "ore" tiles are centered within
-     * their respective grid cells.
+     * to identify and render the "ore" textures at their corresponding positions
+     * after the animation for each tile has played.
      *
      * @param guiGraphics The graphical context used for rendering the textures.
      */
@@ -284,42 +290,61 @@ public class ExcavationMiniGame extends Screen {
         int startX = (this.width - (GRID_SIZE * buttonSize)) / 2;
         int startY = (this.height - (GRID_SIZE * buttonSize)) / 2;
 
-        for (int row = 0; row < GRID_SIZE; row++) {
-            for (int col = 0; col < GRID_SIZE; col++) {
-                if (revealedStates[row][col] && board[row][col].equals("ore")) {
-                    int x = startX + col * buttonSize;
-                    int y = startY + row * buttonSize;
-                    int centerX = x + (buttonSize - textureWidth) / 2;
-                    int centerY = y + (buttonSize - textureHeight) / 2;
+        for (ExcavationButton button : buttons) {
+            if (button.isAnimationCompleted() && "ore".equals(button.getType())) {
+                int x = startX + button.getCol() * buttonSize;
+                int y = startY + button.getRow() * buttonSize;
+                int centerX = x + (buttonSize - textureWidth) / 2;
+                int centerY = y + (buttonSize - textureHeight) / 2;
 
-                    guiGraphics.blit(SADNESS_TEXTURE, centerX, centerY, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
-                }
+                guiGraphics.blit(SADNESS_TEXTURE, centerX, centerY, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
             }
         }
     }
 
     /**
-     * Handles key press events during the Excavation Mini-Game. Determines behavior
-     * based on whether the game is in a paused state or not, and the specific key
-     * pressed (such as 'E' or 'ESCAPE').
+     * Renders the player's remaining lives as stone pickaxes along the left side of the screen.
+     * When a life is lost, the corresponding pickaxe is replaced with a broken pickaxe texture.
      *
-     * When the game is paused, pressing 'E' or 'ESCAPE' exits the screen. When the
-     * game is not paused, pressing these keys ends the game with an early quit status.
+     * Lives are displayed vertically, with the first life starting from the top left of the screen.
      *
-     * @param keyCode   The numerical code of the key that was pressed.
-     * @param scanCode  The scan code representing the physical key location on the keyboard.
-     * @param modifiers Bitmask indicating any modifier keys (e.g., Shift, Ctrl) held during the key press.
-     * @return true if the key press was handled by this method; otherwise, false if passed to the parent class.
+     * @param guiGraphics The graphics context used to render the pickaxes.
+     */
+    private void renderLives(GuiGraphics guiGraphics) {
+        int pickaxeSize = height / 15;
+        int margin = pickaxeSize / 4;
+        int startX = 10;
+        int startY = 30;
+
+        for (int i = 0; i < MAX_LIVES; i++) {
+            ResourceLocation texture = (i < remainingLives) ? STONE_PICKAXE_TEXTURE : BROKEN_STONE_PICKAXE_TEXTURE;
+            int yOffset = startY + i * (pickaxeSize + margin);
+            guiGraphics.blit(texture, startX, yOffset, 0, 0, pickaxeSize, pickaxeSize, pickaxeSize, pickaxeSize);
+        }
+    }
+
+    /**
+     * Handles key press events for the Excavation Mini-Game screen.
+     * Depending on the game state, this method allows the user to exit
+     * the screen or finish the game early when certain keys are pressed.
+     *
+     * @param keyCode   The key code of the pressed key.
+     * @param scanCode  The scan code of the pressed key.
+     * @param modifiers The bitmask of modifier keys pressed (e.g., Shift, Ctrl).
+     * @return true if the key press was handled; false otherwise.
      */
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (pauseState && (keyCode == GLFW.GLFW_KEY_E || keyCode == GLFW.GLFW_KEY_ESCAPE)) {
-            Minecraft.getInstance().setScreen(null); // Exit the screen when paused
+        int inventoryKeyCode = minecraft.options.keyInventory.getKey().getValue();
+
+        if (pauseState && (keyCode == inventoryKeyCode || keyCode == GLFW.GLFW_KEY_ESCAPE)) {
+            minecraft.setScreen(null); // Exit the screen when paused
             return true;
         }
 
-        if (!pauseState && (keyCode == GLFW.GLFW_KEY_E || keyCode == GLFW.GLFW_KEY_ESCAPE)) {
+        if (!pauseState && (keyCode == inventoryKeyCode || keyCode == GLFW.GLFW_KEY_ESCAPE)) {
             finishGame(false, true); // Mark as early quit
+            minecraft.setScreen(null);
             return true;
         }
 

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.gui.parts.miniGames.FishingInformationButton;
+import net.quackiemackie.pathoscraft.gui.parts.miniGames.InformationButton;
 import net.quackiemackie.pathoscraft.gui.parts.miniGames.FishingSequenceButton;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.FinishedFishingMiniGame;
 import org.lwjgl.glfw.GLFW;
@@ -39,7 +39,7 @@ public class FishingMiniGame extends Screen {
     private final List<FishingSequenceButton> buttonWidgets = new ArrayList<>();
 
     public FishingMiniGame() {
-        super(Component.literal("fishing mini game"));
+        super(Component.translatable("screen.widget.pathoscraft.fishing_mini_game.title"));
         generateSequence();
     }
 
@@ -168,15 +168,15 @@ public class FishingMiniGame extends Screen {
         if (earlyQuit) {
             // Logic for quitting early with the current score
             PathosCraft.LOGGER.info("You quit early! Final score: {}", score);
-            minecraft.player.sendSystemMessage(Component.literal("You quit early, final score: " + score));
+            minecraft.player.sendSystemMessage(Component.translatable("screen.widget.pathoscraft.fishing_mini_game.quit_early", score));
         } else if (success) {
             // Logic for successful completion
             PathosCraft.LOGGER.info("You've won! Total score: {}", score);
-            minecraft.player.sendSystemMessage(Component.literal("You've won! Total score: " + score));
+            minecraft.player.sendSystemMessage(Component.translatable("screen.widget.pathoscraft.fishing_mini_game.success", score));
         } else {
             // Logic for failure
             PathosCraft.LOGGER.info("Game over! Total score: {}", score);
-            minecraft.player.sendSystemMessage(Component.literal("Game over! Total score: " + score));
+            minecraft.player.sendSystemMessage(Component.translatable("screen.widget.pathoscraft.fishing_mini_game.failure", score));
         }
 
         PacketDistributor.sendToServer(new FinishedFishingMiniGame(score));
@@ -201,7 +201,10 @@ public class FishingMiniGame extends Screen {
                 int messageY = topButton.getY() - this.font.lineHeight - 5;
                 guiGraphics.drawString(this.font, startMessage, messageX, messageY, 0xFFFFFF);
             }
-            FishingInformationButton infoButton = new FishingInformationButton(10, 10);
+
+            InformationButton infoButton = new InformationButton(10, 10);
+            String[] instructions = Component.translatable("screen.widget.pathoscraft.fishing_mini_game.instructions").getString().split("\n");
+            infoButton.setHoverInfo(instructions);
             this.addRenderableWidget(infoButton);
         }
 
@@ -221,11 +224,11 @@ public class FishingMiniGame extends Screen {
         int scoreY = progressBarY - this.font.lineHeight - 5;
         int roundY = scoreY - this.font.lineHeight - 5;
 
-        guiGraphics.drawString(this.font, "Score: " + score, 10, scoreY, 0xFFFFFF);
-        guiGraphics.drawString(this.font, "Round: " + currentRound, 10, roundY, 0xFFFFFF);
+        guiGraphics.drawString(this.font, Component.translatable("screen.widget.pathoscraft.fishing_mini_game.score", score).getString(), 10, scoreY, 0xFFFFFF);
+        guiGraphics.drawString(this.font, Component.translatable("screen.widget.pathoscraft.fishing_mini_game.round", currentRound).getString(), 10, roundY, 0xFFFFFF);
         if (!buttonWidgets.isEmpty()) {
             FishingSequenceButton topButton = buttonWidgets.get(0);
-            String matchMessage = "Match this key >";
+            String matchMessage = Component.translatable("screen.widget.pathoscraft.fishing_mini_game.match_key").getString();
             int messageX = topButton.getX() - this.font.width(matchMessage) - 5;
             int messageY = topButton.getY() + (topButton.getHeight() / 2) - (this.font.lineHeight / 2);
             guiGraphics.drawString(this.font, matchMessage, messageX, messageY, 0xFFFFFF00);
@@ -287,8 +290,9 @@ public class FishingMiniGame extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         String pressed = getKeyName(keyCode);
+        int inventoryKeyCode = minecraft.options.keyInventory.getKey().getValue();
 
-        if (keyCode == GLFW.GLFW_KEY_E || keyCode == GLFW.GLFW_KEY_ESCAPE) {
+        if (keyCode == inventoryKeyCode || keyCode == GLFW.GLFW_KEY_ESCAPE) {
             finishGame(false, true);
             return true;
         }

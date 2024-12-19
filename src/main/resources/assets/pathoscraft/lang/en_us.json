@@ -57,6 +57,24 @@
   "screen.widget.pathoscraft.quest_menu.active_quest_button": "Active Quests",
   "screen.widget.pathoscraft.quest_menu.information_button.tooltip": "§5Quest System Guide:\n§aGreen: Quests with completed objectives.\n§6Orange: Quests on your active list.\n§8Grey: Quests that have been completed.\n\n§5Controls:\n• §7Left-click: Claim completed quests rewards and activate quests.\n• §7Right-click: Disable active quests.\n• §7Middle-click: Swap quests.\n\nTip: Hover over quests for details!",
 
+  "screen.widget.pathoscraft.fishing_mini_game.title": "Fishing Mini Game",
+  "screen.widget.pathoscraft.fishing_mini_game.match_key": "Match this key >",
+  "screen.widget.pathoscraft.fishing_mini_game.score": "Score: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.round": "Round: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.quit_early": "You quit early, final score: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.success": "You've won! Total score: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.failure": "Game over! Total score: %s",
   "screen.widget.pathoscraft.fishing_mini_game.start_message": "Press any key to start!",
-  "screen.widget.pathoscraft.fishing_mini_game.instructions": "§5Fishing Mini-Game Instructions§r\n§aGoal: Match the sequence of keys displayed on the screen to catch the fish!§r\n§6Each correct key press brings you closer to completing the round.§r\n§8Each round gets progressively harder with longer sequences.§r\n\n§5How to Play:§r\n§7Start: Press any key to begin the game.§r\n§7Key Matching: Pay attention to the displayed sequence. Press the correct keys in order to advance.§r\n\n§2Scoring:§r\n§7Earn points for every correct match, try to beat your high score!"
+  "screen.widget.pathoscraft.fishing_mini_game.instructions": "§5Fishing Mini-Game Instructions§r\n§aGoal: Match the sequence of keys displayed on the screen to catch the fish!§r\n§6Each correct key press brings you closer to completing the round.§r\n§8Each round gets progressively harder with longer sequences.§r\n\n§5How to Play:§r\n§7Start: Press any key to begin the game.§r\n§7Key Matching: Pay attention to the displayed sequence. Press the correct keys in order to advance.§r\n\n§2Scoring:§r\n§7Earn points for every correct match, try to beat your high score!",
+
+  "screen.widget.pathoscraft.excavation_mini_game.title": "Excavation Mini-Game",
+  "screen.widget.pathoscraft.excavation_mini_game.quit_early": "You quit early! Ores found: %s",
+  "screen.widget.pathoscraft.excavation_mini_game.congratulations": "Congratulations, you won! Total ores found: %s",
+  "screen.widget.pathoscraft.excavation_mini_game.better_luck": "Better luck next time! Total ores found: %s",
+  "screen.widget.pathoscraft.excavation_mini_game.lives": "Lives: %s",
+  "screen.widget.pathoscraft.excavation_mini_game.amazing": "Amazing! You found %s veins of ore!",
+  "screen.widget.pathoscraft.excavation_mini_game.not_bad": "Not bad, you found %s veins of ore!",
+  "screen.widget.pathoscraft.excavation_mini_game.better_luck_next_time": "Better luck next time!",
+  "screen.widget.pathoscraft.excavation_mini_game.exit_prompt": "Press '%s' or 'ESC' to exit and claim your rewards.",
+  "screen.widget.pathoscraft.excavation_mini_game.instructions": "§5Excavation Mini-Game Instructions§r\n§aGoal: Uncover valuable rewards by mining squares on the grid!§r\n§6Be strategic: Each square could contain a hidden reward or nothing at all.§r\n§8Your pickaxes represent your lives—run out of pickaxes, and the game ends.§r\n\n§5How to Play:§r\n§7Grid: Click squares on the grid to mine.§r\n§7Rewards: Uncover hidden rewards like ore or treasure to collect them.§r\n§7Empty Squares: If the square is empty, your pickaxe breaks and you lose a life.§r\n\n§2Rewards:§r\n§7Keep whatever rewards you uncover.§r"
 }

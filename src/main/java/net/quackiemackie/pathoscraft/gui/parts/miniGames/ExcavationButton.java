@@ -5,15 +5,28 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.quackiemackie.pathoscraft.PathosCraft;
 
 import java.util.function.Consumer;
 
 public class ExcavationButton extends AbstractButton {
 
+    private static final ResourceLocation CRACK_ATLAS_TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/minigame/stone_cracks.png");
+    private static final ResourceLocation HIDDEN_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/stone.png");
+    private static final ResourceLocation REVEALED_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/deepslate.png");
+
+    private static final int FRAME_COUNT = 4;
+    private static final int FRAME_HEIGHT = 16;
+    private static final int ATLAS_WIDTH = 16;
+    private static final int FRAME_DELAY_THRESHOLD = 4;
+    private int frameDelay = 0;
+
     private final int row;
     private final int col;
     private final String type;
     private boolean isRevealed = false;
+    private boolean isAnimating = false;
+    private int frameCounter = 0;
     private final Consumer<ExcavationButton> onPressCallback;
 
     public ExcavationButton(int x, int y, int width, int height, String type, int row, int col, Consumer<ExcavationButton> onPressCallback) {
@@ -39,16 +52,39 @@ public class ExcavationButton extends AbstractButton {
         guiGraphics.fill(getX() - borderThickness, getY(), getX(), getY() + this.height, borderColor);
         guiGraphics.fill(getX() + this.width, getY(), getX() + this.width + borderThickness, getY() + this.height, borderColor);
 
-        if (isRevealed) {
-            guiGraphics.blit(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/deepslate.png"), getX(), getY(), 0, 0, this.width, this.height, 16, 16);
+        // Check if animating, and render textures accordingly
+        if (isAnimating) {
+            int sourceY = frameCounter * 16; // Vertical position in the atlas for the current frame
+            int sourceWidth = 16;
+            int sourceHeight = 16;
+
+            // Render the current frame, dynamically scaling to the button size
+            guiGraphics.blit(CRACK_ATLAS_TEXTURE, getX(), getY(), this.width, this.height,
+                    0, sourceY,    // Source top-left corner in the atlas (u, v)
+                    sourceWidth, sourceHeight, // Source size (fixed dimensions of each frame)
+                    ATLAS_WIDTH, FRAME_HEIGHT * FRAME_COUNT // Total atlas dimensions
+            );
+
+            // Handle animation frame transitions
+            frameDelay++;
+            if (frameDelay >= FRAME_DELAY_THRESHOLD) {
+                frameDelay = 0;
+                frameCounter++;
+
+                if (frameCounter >= FRAME_COUNT) {
+                    isAnimating = false;
+                    isRevealed = true;
+                }
+            }
+        } else if (isRevealed) {
+            guiGraphics.blit(REVEALED_TEXTURE, getX(), getY(), 0, 0, this.width, this.height, this.width, this.height);
         } else {
-            guiGraphics.blit(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/stone.png"), getX(), getY(), 0, 0, this.width, this.height, 16, 16);
+            guiGraphics.blit(HIDDEN_TEXTURE, getX(), getY(), 0, 0, this.width, this.height, this.width, this.height);
         }
     }
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-
     }
 
     /**
@@ -59,8 +95,10 @@ public class ExcavationButton extends AbstractButton {
      * is "ore," the message will display "Ore"; otherwise, it will display "Empty."
      */
     public void reveal() {
-        isRevealed = true;
-        setMessage(Component.literal(type.equals("ore") ? "Ore" : "Empty"));
+        if (isRevealed || isAnimating) return;
+        isAnimating = true;
+        frameCounter = 0;
+        frameDelay = 0;
     }
 
     /**
@@ -97,5 +135,14 @@ public class ExcavationButton extends AbstractButton {
      */
     public String getType() {
         return type;
+    }
+
+    /**
+     * Checks whether the animation for the current button has finished.
+     *
+     * @return true if the animation is completed, false otherwise.
+     */
+    public boolean isAnimationCompleted() {
+        return !isAnimating && isRevealed;
     }
 }

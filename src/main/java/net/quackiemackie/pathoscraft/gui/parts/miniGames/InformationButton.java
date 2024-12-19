@@ -11,18 +11,18 @@ import net.minecraft.util.Mth;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FishingInformationButton extends Button {
+public class InformationButton extends Button {
 
     private final List<Component> hoverInfo;
     private boolean isInfoVisible = false;
 
     /**
-     * Constructs a new FishingInformationButton.
+     * Constructs a new InformationButton.
      *
      * @param x The x-coordinate of the button.
      * @param y The y-coordinate of the button.
      */
-    public FishingInformationButton(int x, int y) {
+    public InformationButton(int x, int y) {
         super(x, y, 16, 16, Component.literal("I"), button -> {}, DEFAULT_NARRATION);
         this.hoverInfo = new ArrayList<>();
     }
@@ -33,12 +33,15 @@ public class FishingInformationButton extends Button {
     }
 
     /**
-     * Adds information to be displayed when hovering over the button.
+     * Adds hover information directly from an array of strings.
      *
-     * @param info The hover information to add.
+     * @param lines The hover information provided as strings.
      */
-    private void addHoverInfo(Component info) {
-        this.hoverInfo.add(info);
+    public void setHoverInfo(String[] lines) {
+        this.hoverInfo.clear();
+        for (String line : lines) {
+            this.hoverInfo.add(Component.literal(line));
+        }
     }
 
     /**
@@ -52,8 +55,8 @@ public class FishingInformationButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         Minecraft minecraft = Minecraft.getInstance();
         boolean shouldHighlight = this.isHovered() || isInfoVisible;
-        ResourceLocation sprite = shouldHighlight ? SPRITES.get(true, true) : SPRITES.enabled();
 
+        ResourceLocation sprite = shouldHighlight ? SPRITES.get(true, true) : SPRITES.enabled();
         guiGraphics.blitSprite(sprite, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
         int textColor = getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24;
@@ -61,11 +64,8 @@ public class FishingInformationButton extends Button {
 
         if (shouldHighlight) {
             List<FormattedCharSequence> tooltip = new ArrayList<>();
-
-            String[] lines = Component.translatable("screen.widget.pathoscraft.fishing_mini_game.instructions").getString().split("\n");
-
-            for (String line : lines) {
-                tooltip.add(Component.literal(line).getVisualOrderText());
+            for (Component component : hoverInfo) {
+                tooltip.add(component.getVisualOrderText());
             }
 
             int tooltipX = this.getX() + this.getWidth();
