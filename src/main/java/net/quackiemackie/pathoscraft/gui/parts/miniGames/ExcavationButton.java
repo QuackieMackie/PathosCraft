@@ -18,15 +18,17 @@ public class ExcavationButton extends AbstractButton {
     private static final int FRAME_COUNT = 4;
     private static final int FRAME_HEIGHT = 16;
     private static final int ATLAS_WIDTH = 16;
-    private static final int FRAME_DELAY_THRESHOLD = 4;
-    private int frameDelay = 0;
+    private boolean isAnimating = false;
+    private int frameCounter = 0;
+
+    private long lastFrameTime = System.currentTimeMillis();
+    private static final int FRAME_TIME_MS = 100;
+
+    private boolean isRevealed = false;
 
     private final int row;
     private final int col;
     private final String type;
-    private boolean isRevealed = false;
-    private boolean isAnimating = false;
-    private int frameCounter = 0;
     private final Consumer<ExcavationButton> onPressCallback;
 
     public ExcavationButton(int x, int y, int width, int height, String type, int row, int col, Consumer<ExcavationButton> onPressCallback) {
@@ -35,6 +37,7 @@ public class ExcavationButton extends AbstractButton {
         this.row = row;
         this.col = col;
         this.onPressCallback = onPressCallback;
+        PathosCraft.LOGGER.info("Button Created, Row: {}, Col: {}", row, col);
     }
 
     @Override
@@ -54,21 +57,9 @@ public class ExcavationButton extends AbstractButton {
 
         // Check if animating, and render textures accordingly
         if (isAnimating) {
-            int sourceY = frameCounter * 16; // Vertical position in the atlas for the current frame
-            int sourceWidth = 16;
-            int sourceHeight = 16;
-
-            // Render the current frame, dynamically scaling to the button size
-            guiGraphics.blit(CRACK_ATLAS_TEXTURE, getX(), getY(), this.width, this.height,
-                    0, sourceY,    // Source top-left corner in the atlas (u, v)
-                    sourceWidth, sourceHeight, // Source size (fixed dimensions of each frame)
-                    ATLAS_WIDTH, FRAME_HEIGHT * FRAME_COUNT // Total atlas dimensions
-            );
-
-            // Handle animation frame transitions
-            frameDelay++;
-            if (frameDelay >= FRAME_DELAY_THRESHOLD) {
-                frameDelay = 0;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastFrameTime >= FRAME_TIME_MS) {
+                lastFrameTime = currentTime;
                 frameCounter++;
 
                 if (frameCounter >= FRAME_COUNT) {
@@ -76,6 +67,13 @@ public class ExcavationButton extends AbstractButton {
                     isRevealed = true;
                 }
             }
+
+            // Render the current frame, dynamically scaling to the button size
+            guiGraphics.blit(CRACK_ATLAS_TEXTURE, getX(), getY(), this.width, this.height,
+                    0, (frameCounter * 16), // Source top-left corner in the atlas (u, v)
+                    ATLAS_WIDTH, FRAME_HEIGHT, // Source size (fixed dimensions of each frame)
+                    ATLAS_WIDTH, FRAME_HEIGHT * FRAME_COUNT // Total atlas dimensions
+            );
         } else if (isRevealed) {
             guiGraphics.blit(REVEALED_TEXTURE, getX(), getY(), 0, 0, this.width, this.height, this.width, this.height);
         } else {
@@ -98,7 +96,6 @@ public class ExcavationButton extends AbstractButton {
         if (isRevealed || isAnimating) return;
         isAnimating = true;
         frameCounter = 0;
-        frameDelay = 0;
     }
 
     /**
