@@ -28,6 +28,9 @@
   "block.pathoscraft.deepslate_sunny_ore": "Deepslate Sunny Ore",
   "block.pathoscraft.repair_block": "Repair Block",
 
+  "enchantment.pathoscraft.excavation_minigame": "Excavation mini-game",
+  "enchantment.pathoscraft.fishing_minigame": "Fishing mini-game",
+
   "creative_tab.pathoscraft.blocks": "Building Blocks",
   "creative_tab.pathoscraft.ingredients": "Ingredients",
   "creative_tab.pathoscraft.tools": "Tools",

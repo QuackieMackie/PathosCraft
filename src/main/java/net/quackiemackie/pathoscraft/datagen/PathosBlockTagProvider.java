@@ -3,6 +3,7 @@ package net.quackiemackie.pathoscraft.datagen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.quackiemackie.pathoscraft.PathosCraft;
@@ -44,5 +45,17 @@ public class PathosBlockTagProvider extends BlockTagsProvider {
         tag(PathosTags.Blocks.INCORRECT_FOR_SADNESS_TOOL)
                 .addTag(BlockTags.INCORRECT_FOR_IRON_TOOL)
                 .remove(PathosTags.Blocks.NEEDS_SADNESS_TOOL);
+
+        tag(PathosTags.Blocks.SADNESS_ORE)
+                .add(PathosBlocks.SADNESS_ORE.get())
+                .add(PathosBlocks.DEEPSLATE_SADNESS_ORE.get());
+        tag(PathosTags.Blocks.SUNNY_ORE)
+                .add(PathosBlocks.SUNNY_ORE.get())
+                .add(PathosBlocks.DEEPSLATE_SUNNY_ORE.get());
+
+        tag(PathosTags.Blocks.EXCAVATION_MINIGAME_ORES)
+                .addTag(Tags.Blocks.ORES)
+                .addTag(PathosTags.Blocks.SADNESS_ORE)
+                .addTag(PathosTags.Blocks.SUNNY_ORE);
     }
 }

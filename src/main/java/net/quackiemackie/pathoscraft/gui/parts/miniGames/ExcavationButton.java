@@ -18,11 +18,10 @@ public class ExcavationButton extends AbstractButton {
     private static final int FRAME_COUNT = 4;
     private static final int FRAME_HEIGHT = 16;
     private static final int ATLAS_WIDTH = 16;
+    private static final int FRAME_TIME_MS = 75;
+    private long lastFrameTime = System.currentTimeMillis();
     private boolean isAnimating = false;
     private int frameCounter = 0;
-
-    private long lastFrameTime = System.currentTimeMillis();
-    private static final int FRAME_TIME_MS = 100;
 
     private boolean isRevealed = false;
 
@@ -94,8 +93,10 @@ public class ExcavationButton extends AbstractButton {
      */
     public void reveal() {
         if (isRevealed || isAnimating) return;
+        isRevealed = true;
         isAnimating = true;
         frameCounter = 0;
+        lastFrameTime = System.currentTimeMillis();
     }
 
     /**
@@ -105,6 +106,14 @@ public class ExcavationButton extends AbstractButton {
      */
     public boolean isRevealed() {
         return isRevealed;
+    }
+
+    /**
+     * Directly sets the button as revealed, skipping animation.
+     */
+    public void setRevealed(boolean revealed) {
+        this.isRevealed = revealed;
+        this.isAnimating = false;
     }
 
     /**

@@ -104,7 +104,7 @@ public class ExcavationMiniGame extends Screen {
 
                 // Restore revealed state if needed
                 if (revealedStates[row][col]) {
-                    button.reveal();
+                    button.setRevealed(true);
                 }
 
                 this.addRenderableWidget(button);
@@ -189,7 +189,10 @@ public class ExcavationMiniGame extends Screen {
                     Component.translatable("screen.widget.pathoscraft.excavation_mini_game.better_luck", foundOres));
         }
 
-        PacketDistributor.sendToServer(new FinishedExcavationMiniGame(foundOres));
+        //Only send payload if found ores = over 0
+        if (foundOres > 0) {
+            PacketDistributor.sendToServer(new FinishedExcavationMiniGame(foundOres));
+        }
     }
 
     /**

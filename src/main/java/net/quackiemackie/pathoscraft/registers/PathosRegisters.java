@@ -3,6 +3,7 @@ package net.quackiemackie.pathoscraft.registers;
 import net.neoforged.bus.api.IEventBus;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.block.PathosBlocks;
+import net.quackiemackie.pathoscraft.enchantment.PathosEnchantmentEffects;
 import net.quackiemackie.pathoscraft.entity.PathosEntities;
 import net.quackiemackie.pathoscraft.gui.PathosMenu;
 import net.quackiemackie.pathoscraft.item.PathosItems;
@@ -24,6 +25,7 @@ public class PathosRegisters {
         registerSafe(modEventBus, "data components", PathosDataComponents.DATA_COMPONENT_TYPE::register);
         registerSafe(modEventBus, "attachments", PathosAttachments.ATTACHMENT_TYPES::register);
         registerSafe(modEventBus, "menus", PathosMenu.REGISTRY::register);
+        registerSafe(modEventBus, "enchantment effects", PathosEnchantmentEffects.ENTITY_ENCHANTMENT_EFFECTS::register);
 
         PathosCraft.LOGGER.info("Registration process completed.");
     }
@@ -31,7 +33,7 @@ public class PathosRegisters {
     private static void registerSafe(IEventBus modEventBus, String name, Consumer<IEventBus> registrationAction) {
         try {
             registrationAction.accept(modEventBus);
-            PathosCraft.LOGGER.info("Successfully registered {}", name);
+            PathosCraft.LOGGER.info("Successfully registered IEventBus: {}", name);
         } catch (Exception e) {
             PathosCraft.LOGGER.error("Failed to register {}", name, e);
         }
