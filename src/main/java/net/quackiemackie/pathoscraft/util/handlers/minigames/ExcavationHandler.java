@@ -13,7 +13,9 @@ public class ExcavationHandler {
         }
     }
 
-    public static void rewardCompletedMiniGame(int foundOre, Player player) {
-        PathosCraft.LOGGER.info("Rewarding: {}, for finding {} ore.", player, foundOre);
+    public static void rewardCompletedMiniGame(int quantity, ItemStack rewardItem, Player player) {
+        rewardItem.setCount(quantity);
+        player.drop(rewardItem, false);
+        PathosCraft.LOGGER.info("Rewarding: {}, for finding {}x {} ore.", player, quantity, rewardItem);
     }
 }

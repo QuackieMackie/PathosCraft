@@ -125,7 +125,7 @@ public class ServerPayloadHandler {
      *                the excavation mini-game and their associated data.
      */
     public static void handleFinishedExcavationMiniGame(FinishedExcavationMiniGame data, IPayloadContext context) {
-        PathosCraft.LOGGER.info("Found Ore: {}, Player: {}", data.foundOre(), context.player().getName().getString());
-        ExcavationHandler.rewardCompletedMiniGame(data.foundOre(), context.player());
+        PathosCraft.LOGGER.info("Found Ore: {}, ItemStack: {}, Player: {}", data.foundOre(), data.rewardItem(), context.player().getName().getString());
+        ExcavationHandler.rewardCompletedMiniGame(data.foundOre(), data.rewardItem(), context.player());
     }
 }

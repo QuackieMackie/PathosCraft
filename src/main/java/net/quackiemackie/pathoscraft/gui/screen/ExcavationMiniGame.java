@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-//TODO
-// Depending on what ore is used as the texture, or what block is broken, it would render in similar minecraft ores.
 
 public class ExcavationMiniGame extends Screen {
 
@@ -193,7 +191,7 @@ public class ExcavationMiniGame extends Screen {
 
         //Only send payload if found ores = over 0
         if (foundOres > 0) {
-            PacketDistributor.sendToServer(new FinishedExcavationMiniGame(foundOres));
+            PacketDistributor.sendToServer(new FinishedExcavationMiniGame(foundOres, rewardItem));
         }
     }
 
@@ -244,14 +242,14 @@ public class ExcavationMiniGame extends Screen {
 
                 // Render result message
                 guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(centerX, centerY - 20, 0);
+                guiGraphics.pose().translate(centerX, centerY - 20, 300.0f);
                 guiGraphics.pose().scale(1.8f, 1.8f, 1.0f);
                 guiGraphics.drawString(minecraft.font, resultMessage, -(minecraft.font.width(resultMessage) / 2), 0, resultColor);
                 guiGraphics.pose().popPose();
 
                 // Render the "exit" prompt
                 guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(centerX, centerY + 20, 0);
+                guiGraphics.pose().translate(centerX, centerY + 20, 300.0f);
                 guiGraphics.pose().scale(1.4f, 1.4f, 1.0f);
                 guiGraphics.drawString(minecraft.font, exitPrompt, -(minecraft.font.width(exitPrompt) / 2), 0, resultColor);
                 guiGraphics.pose().popPose();
