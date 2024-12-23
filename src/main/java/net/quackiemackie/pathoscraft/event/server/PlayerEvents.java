@@ -1,19 +1,15 @@
-package net.quackiemackie.pathoscraft.event;
+package net.quackiemackie.pathoscraft.event.server;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.item.advanced.BasicFishingRod;
-import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.StartFishingMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.SyncActiveQuests;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.SyncCompletedQuests;
 import net.quackiemackie.pathoscraft.util.quest.Quest;
@@ -58,20 +54,6 @@ public class PlayerEvents {
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncCompletedQuests(completedQuests));
             } else {
                 PathosCraft.LOGGER.error("Issue with completed quests, it is empty.");
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onItemFished(ItemFishedEvent event) {
-        Player player = event.getEntity();
-
-        if (player.getMainHandItem().getItem() instanceof BasicFishingRod || player.getOffhandItem().getItem() instanceof BasicFishingRod) {
-            event.setCanceled(true);
-
-            Minecraft minecraft = Minecraft.getInstance();
-            if (minecraft.player != null && minecraft.player.equals(player)) {
-                PacketDistributor.sendToPlayer((ServerPlayer) player, StartFishingMiniGame.INSTANCE);
             }
         }
     }

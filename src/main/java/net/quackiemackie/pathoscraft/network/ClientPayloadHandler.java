@@ -101,6 +101,7 @@ public class ClientPayloadHandler {
      * @param context The context providing access to the player and the environment in which the payload is processed.
      */
     public static void handleStartExcavationMiniGame(StartExcavationMiniGame data, IPayloadContext context) {
-        ExcavationHandler.startMiniGame(context.player());
+        ExcavationHandler.startMiniGame(context.player(), data.blockDrop());
+        PathosCraft.LOGGER.info("Item drop: {}", data.blockDrop());
     }
 }

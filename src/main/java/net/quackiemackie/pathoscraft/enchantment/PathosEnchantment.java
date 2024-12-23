@@ -10,11 +10,8 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.level.block.Block;
 import net.quackiemackie.pathoscraft.PathosCraft;
-import net.quackiemackie.pathoscraft.enchantment.effects.ExcavationMiniGameEnchantment;
-import net.quackiemackie.pathoscraft.enchantment.effects.FishingMiniGameEnchantment;
 
 public class PathosEnchantment {
     public static final ResourceKey<Enchantment> EXCAVATION_MINIGAME = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "excavation_minigame"));
@@ -33,8 +30,7 @@ public class PathosEnchantment {
                         Enchantment.dynamicCost(5, 7),
                         Enchantment.dynamicCost(25, 7),
                         2,
-                        EquipmentSlotGroup.MAINHAND))
-                .withEffect(EnchantmentEffectComponents.HIT_BLOCK, new ExcavationMiniGameEnchantment()));
+                        EquipmentSlotGroup.MAINHAND)));
 
         register(context, FISHING_MINIGAME, Enchantment.enchantment(Enchantment.definition(
                         items.getOrThrow(ItemTags.FISHING_ENCHANTABLE),
@@ -43,8 +39,7 @@ public class PathosEnchantment {
                         Enchantment.dynamicCost(5, 7),
                         Enchantment.dynamicCost(25, 7),
                         2,
-                        EquipmentSlotGroup.MAINHAND))
-                .withEffect(EnchantmentEffectComponents.HIT_BLOCK, new FishingMiniGameEnchantment()));
+                        EquipmentSlotGroup.MAINHAND)));
     }
 
     private static void register(BootstrapContext<Enchantment> registry, ResourceKey<Enchantment> key,

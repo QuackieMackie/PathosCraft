@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.parts.miniGames.ExcavationButton;
@@ -26,7 +27,6 @@ public class ExcavationMiniGame extends Screen {
     private static final int MAX_LIVES = 6; // Maximum lives for the player
     private static final int MAX_ORES = 5; // Maximum number of ores on the board
 
-    private static final ResourceLocation SADNESS_TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/item/raw_sadness.png");
     private static final ResourceLocation STONE_PICKAXE_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/item/stone_pickaxe.png");
     private static final ResourceLocation BROKEN_STONE_PICKAXE_TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/minigame/broken_stone_pickaxe.png");
 
@@ -34,13 +34,15 @@ public class ExcavationMiniGame extends Screen {
     private final boolean[][] revealedStates = new boolean[GRID_SIZE][GRID_SIZE];
     private final List<ExcavationButton> buttons = new ArrayList<>();
 
+    private final ItemStack rewardItem;
     private int remainingLives = MAX_LIVES;
     private int remainingOres;
     private boolean gameOver = false;
     private boolean pauseState = false;
 
-    public ExcavationMiniGame() {
+    public ExcavationMiniGame(ItemStack rewardItem) {
         super(Component.translatable("screen.widget.pathoscraft.excavation_mini_game.title"));
+        this.rewardItem = rewardItem;
         generateBoard();
     }
 
@@ -278,13 +280,14 @@ public class ExcavationMiniGame extends Screen {
     }
 
     /**
-     * Renders the textures for revealed "ore" tiles on the game board.
+     * Renders textures for "ore" tiles that have completed their animation in the Excavation Mini-Game.
      *
-     * This method uses the grid layout and the revealed states of the game tiles
-     * to identify and render the "ore" textures at their corresponding positions
-     * after the animation for each tile has played.
+     * This method iterates through the list of buttons and checks for buttons that
+     * represent "ore" and have completed their animation. For such buttons, it calculates
+     * the position and scaling for drawing the corresponding "ore" textures, and renders
+     * the textures using the provided graphics context.
      *
-     * @param guiGraphics The graphical context used for rendering the textures.
+     * @param guiGraphics The graphics context used to render "ore" textures onto the screen.
      */
     private void renderOreTextures(GuiGraphics guiGraphics) {
         int buttonSize = Math.min(width, height) / (GRID_SIZE + 2);
@@ -297,10 +300,19 @@ public class ExcavationMiniGame extends Screen {
             if (button.isAnimationCompleted() && "ore".equals(button.getType())) {
                 int x = startX + button.getCol() * buttonSize;
                 int y = startY + button.getRow() * buttonSize;
-                int centerX = x + (buttonSize - textureWidth) / 2;
-                int centerY = y + (buttonSize - textureHeight) / 2;
+                int centerX = x + buttonSize / 2;
+                int centerY = y + buttonSize / 2;
 
-                guiGraphics.blit(SADNESS_TEXTURE, centerX, centerY, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(centerX, centerY, 0);
+
+                float scaleX = (float) textureWidth / 16.0F;
+                float scaleY = (float) textureHeight / 16.0F;
+                guiGraphics.pose().scale(scaleX, scaleY, 1.0F);
+                guiGraphics.pose().translate(-8, -8, 0);
+
+                guiGraphics.renderItem(rewardItem, 0, 0);
+                guiGraphics.pose().popPose();
             }
         }
     }

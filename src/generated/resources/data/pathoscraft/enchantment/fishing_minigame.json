@@ -3,15 +3,6 @@
   "description": {
     "translate": "enchantment.pathoscraft.fishing_minigame"
   },
-  "effects": {
-    "minecraft:hit_block": [
-      {
-        "effect": {
-          "type": "pathoscraft:fishing_minigame"
-        }
-      }
-    ]
-  },
   "max_cost": {
     "base": 25,
     "per_level_above_first": 7

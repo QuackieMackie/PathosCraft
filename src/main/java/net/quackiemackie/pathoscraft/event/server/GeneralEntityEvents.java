@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.event;
+package net.quackiemackie.pathoscraft.event.server;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Monster;

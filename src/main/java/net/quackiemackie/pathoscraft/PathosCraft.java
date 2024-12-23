@@ -7,7 +7,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.quackiemackie.pathoscraft.entity.PathosEntities;
 import net.quackiemackie.pathoscraft.entity.renderer.AstralFormRenderer;
 import net.quackiemackie.pathoscraft.entity.renderer.SpiderMountRenderer;
-import net.quackiemackie.pathoscraft.event.GeneralEntityEvents;
+import net.quackiemackie.pathoscraft.event.server.GeneralEntityEvents;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
 import net.quackiemackie.pathoscraft.registers.*;

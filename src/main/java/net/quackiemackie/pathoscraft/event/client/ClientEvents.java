@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.event;
+package net.quackiemackie.pathoscraft.event.client;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;

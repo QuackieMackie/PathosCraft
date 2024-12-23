@@ -26,7 +26,8 @@ public class TestItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         //FishingHandler.startMiniGame(player);
-        ExcavationHandler.startMiniGame(player);
+        ItemStack stack = player.getItemInHand(hand);
+        ExcavationHandler.startMiniGame(player, stack);
         if (!level.isClientSide && player != null) {
             clearPlayerDataAttachment(player);
             sendClearDataPayload(player);

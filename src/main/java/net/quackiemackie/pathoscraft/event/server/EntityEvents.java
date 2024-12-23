@@ -1,4 +1,4 @@
-package net.quackiemackie.pathoscraft.event;
+package net.quackiemackie.pathoscraft.event.server;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

@@ -3,15 +3,6 @@
   "description": {
     "translate": "enchantment.pathoscraft.excavation_minigame"
   },
-  "effects": {
-    "minecraft:hit_block": [
-      {
-        "effect": {
-          "type": "pathoscraft:excavation_minigame"
-        }
-      }
-    ]
-  },
   "max_cost": {
     "base": 25,
     "per_level_above_first": 7
