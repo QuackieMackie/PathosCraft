@@ -59,6 +59,7 @@
   "screen.widget.pathoscraft.quest_menu.optional_quest_button": "Optional Quests",
   "screen.widget.pathoscraft.quest_menu.active_quest_button": "Active Quests",
   "screen.widget.pathoscraft.quest_menu.information_button.tooltip": "§5Quest System Guide:\n§aGreen: Quests with completed objectives.\n§6Orange: Quests on your active list.\n§8Grey: Quests that have been completed.\n\n§5Controls:\n• §7Left-click: Claim completed quests rewards and activate quests.\n• §7Right-click: Disable active quests.\n• §7Middle-click: Swap quests.\n\nTip: Hover over quests for details!",
+  "screen.widget.pathoscraft.page_number": "Page %1$s/%2$s",
 
   "screen.widget.pathoscraft.fishing_mini_game.title": "Fishing Mini Game",
   "screen.widget.pathoscraft.fishing_mini_game.match_key": "Match this key >",

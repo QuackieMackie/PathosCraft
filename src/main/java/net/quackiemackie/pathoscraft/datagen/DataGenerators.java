@@ -39,7 +39,6 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new PathosRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new PathosDataMapProvider(packOutput, lookupProvider));
 
-        generator.addProvider(event.includeServer(), new PathosQuestProvider(packOutput));
         generator.addProvider(event.includeServer(), new PathosDataPackProvider(packOutput, lookupProvider));
     }
 }

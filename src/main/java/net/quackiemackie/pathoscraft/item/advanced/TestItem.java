@@ -12,7 +12,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
-import net.quackiemackie.pathoscraft.util.handlers.minigames.ExcavationHandler;
 import net.quackiemackie.pathoscraft.util.quest.Quest;
 
 import java.util.ArrayList;
@@ -25,12 +24,11 @@ public class TestItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        //FishingHandler.startMiniGame(player);
         ItemStack stack = player.getItemInHand(hand);
-        ExcavationHandler.startMiniGame(player, stack);
+        //FishingHandler.startMiniGame(player);
+        //ExcavationHandler.startMiniGame(player, stack);
         if (!level.isClientSide && player != null) {
             clearPlayerDataAttachment(player);
-            sendClearDataPayload(player);
         }
 
         return super.use(level, player, hand);
@@ -39,9 +37,6 @@ public class TestItem extends Item {
     private void clearPlayerDataAttachment(Player player) {
         ((IAttachmentHolder) player).setData(PathosAttachments.COMPLETED_QUESTS.get(), new ArrayList<>());
         PathosCraft.LOGGER.info("Cleared data attachment for player {}", player.getName().getString());
-    }
-
-    private void sendClearDataPayload(Player player) {
         List<Quest> completedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get());
         PacketDistributor.sendToPlayer((ServerPlayer) player, new ClearCompletedQuests(completedQuests));
     }

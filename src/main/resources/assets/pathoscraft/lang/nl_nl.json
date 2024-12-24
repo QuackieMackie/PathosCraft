@@ -1,0 +1,83 @@
+{
+  "item.pathoscraft.raw_sadness": "Ruwe Verdriet",
+  "item.pathoscraft.sadness_ingot": "Verdriet Bar",
+  "item.pathoscraft.raw_sunny": "Ruwe Zonnig",
+  "item.pathoscraft.sunny_ingot": "Zonnige Bar",
+  "item.pathoscraft.jump_wand": "Springstok",
+  "item.pathoscraft.mana_herb": "Mana Kruid",
+  "item.pathoscraft.mana_potion": "Mana Drankje",
+  "item.pathoscraft.arrow_test": "Test Pijl",
+
+  "item.pathoscraft.sadness_sword": "Verdriet Zwaard",
+  "item.pathoscraft.sadness_pickaxe": "Verdriet Houweel",
+  "item.pathoscraft.sadness_axe": "Verdriet Bijl",
+  "item.pathoscraft.sadness_shovel": "Verdriet Schep",
+  "item.pathoscraft.sadness_hoe": "Verdriet Hark",
+  "item.pathoscraft.basic_fishing_rod": "Basis Vishengel",
+
+  "item.pathoscraft.animated_item": "Getest Animerend Object",
+  "item.pathoscraft.astral_lantern": "Astrale Lantaarn",
+  "item.pathoscraft.quest_book": "§dMissieboek",
+  "item.pathoscraft.creature_crystal": "Wezenkristal",
+  "item.pathoscraft.test_item": "Test Object",
+
+  "block.pathoscraft.sadness_block": "Blok van Verdriet",
+  "block.pathoscraft.sadness_ore": "Erts van Verdriet",
+  "block.pathoscraft.deepslate_sadness_ore": "Diepsteen Verdriet Erts",
+  "block.pathoscraft.sunny_ore": "Zonnig Erts",
+  "block.pathoscraft.deepslate_sunny_ore": "Diepsteen Zonnig Erts",
+  "block.pathoscraft.repair_block": "Reparatieblok",
+
+  "enchantment.pathoscraft.excavation_minigame": "Mini-spel Graven",
+  "enchantment.pathoscraft.fishing_minigame": "Mini-spel Vissen",
+
+  "creative_tab.pathoscraft.blocks": "Bouwblokken",
+  "creative_tab.pathoscraft.ingredients": "Ingrediënten",
+  "creative_tab.pathoscraft.tools": "Gereedschap",
+  "creative_tab.pathoscraft.food": "Eten",
+  "creative_tab.pathoscraft.misc": "Diversen",
+
+  "item.pathoscraft.jump_wand.tooltip": "Klik op de grond om naar dat blok te teleporteren!",
+  "item.pathoscraft.mana_potion.tooltip": "Het drinken hiervan geeft je 5 seconden Regeneratie II!",
+  "item.pathoscraft.mana_herb.tooltip": "Geoogst in de open wereld, dit kruid heeft bij consumptie een kans je te genezen.\nHet is ook erg geschikt om mee te koken...",
+  "item.pathoscraft.quest_book.tooltip": "§8Een logboek van beschikbare en actieve missies voor jou.\n\n§7§oDe legende zegt...\n§7§oDit boek bevat de kracht om §6mythische vaardigheden§7§o te verlenen door zijn taken te voltooien.",
+
+  "block.pathoscraft.repair_block.tooltip": "Repareer je springstok door:\n- §cJe springstok op het blok te gooien!\n§r- §cOp het reparatieblok te klikken met je springstok!",
+
+  "keybinding.pathoscraft.category": "PathosCraft Toetsenbindingen",
+  "keybinding.pathoscraft.astral_form_exit": "Verlaat Astrale Vorm",
+
+  "abilities.pathoscraft.astral_form_exit": "Druk op %s om de Astrale Vorm te verlaten",
+  "abilities.pathoscraft.astral_form_name": "'s Fysieke Lichaam",
+
+  "networking.pathoscraft.client.failed": "Netwerkfout aan clientzijde:",
+  "networking.pathoscraft.server.failed": "Netwerkfout aan serverzijde:",
+
+  "screen.title.pathoscraft.quest_menu": "Missiemenu",
+  "screen.widget.pathoscraft.quest_menu.main_quest_button": "Hoofdmissies",
+  "screen.widget.pathoscraft.quest_menu.side_quest_button": "Zijmissies",
+  "screen.widget.pathoscraft.quest_menu.optional_quest_button": "Optionele Missies",
+  "screen.widget.pathoscraft.quest_menu.active_quest_button": "Actieve Missies",
+  "screen.widget.pathoscraft.quest_menu.information_button.tooltip": "§5Handleiding Missiesysteem:\n§aGroen: Missies met voltooide doelen.\n§6Oranje: Missies in je actielijst.\n§8Grijs: Voltooide missies.\n\n§5Besturing:\n• §7Linksklik: Claim voltooide beloningen en activeer missies.\n• §7Rechtsklik: Deactiveer actieve missies.\n• §7Middenklik: Wissel missies.\n\nTip: Beweeg je cursor over missies voor details!",
+
+  "screen.widget.pathoscraft.fishing_mini_game.title": "Mini-spel Vissen",
+  "screen.widget.pathoscraft.fishing_mini_game.match_key": "Deze toets matchen >",
+  "screen.widget.pathoscraft.fishing_mini_game.score": "Score: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.round": "Ronde: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.quit_early": "Je bent gestopt, eindscore: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.success": "Je hebt gewonnen! Totale score: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.failure": "Game over! Totale score: %s",
+  "screen.widget.pathoscraft.fishing_mini_game.start_message": "Druk op een toets om te beginnen!",
+  "screen.widget.pathoscraft.fishing_mini_game.instructions": "§5Mini-spel Vissen Instructies§r\n§aDoel: Match de volgorde van toetsen op het scherm om de vis te vangen!§r\n§6Elk correcte toetsaanslag brengt je dichter bij voltooiing van de ronde.§r\n§8Elke ronde wordt moeilijker met langere reeksen.§r\n\n§5Hoe te spelen:§r\n§7Begin: Druk op een toets om te starten.§r\n§7Toetscombinaties: Let goed op het weergegeven patroon. Druk op de juiste toetsen in volgorde om verder te gaan.§r\n\n§2Scoren:§r\n§7Verdien punten voor elke correcte match, probeer je hoogste score te behalen!",
+
+  "screen.widget.pathoscraft.excavation_mini_game.title": "Mini-spel Graven",
+  "screen.widget.pathoscraft.excavation_mini_game.quit_early": "Je bent gestopt! Gevonden ertsen: %s",
+  "screen.widget.pathoscraft.excavation_mini_game.congratulations": "Gefeliciteerd, je hebt gewonnen! Totale gevonden ertsen: %s",
+  "screen.widget.pathoscraft.excavation_mini_game.better_luck": "Volgende keer beter! Totale gevonden ertsen: %s",
+  "screen.widget.pathoscraft.excavation_mini_game.lives": "Levens: %s",
+  "screen.widget.pathoscraft.excavation_mini_game.amazing": "Geweldig! Je hebt %s aderen van erts gevonden!",
+  "screen.widget.pathoscraft.excavation_mini_game.not_bad": "Niet slecht, je hebt %s aderen van erts gevonden!",
+  "screen.widget.pathoscraft.excavation_mini_game.better_luck_next_time": "Volgende keer beter!",
+  "screen.widget.pathoscraft.excavation_mini_game.exit_prompt": "Druk op '%s' of 'ESC' om te stoppen en je beloningen op te halen.",
+  "screen.widget.pathoscraft.excavation_mini_game.instructions": "§5Mini-spel Graven Instructies§r\n§aDoel: Ontvang waardevolle beloningen door vierkanten op het raster te graven!§r\n§6Wees strategisch: Elk vierkant kan een verborgen beloning of niets bevatten.§r\n§8Je houweel staat voor je leven—als het breekt, eindigt het spel.§r\n\n§5Hoe te spelen:§r\n§7Raster: Klik op vierkanten om te graven.§r\n§7Beloningen: Ontdek verborgen beloningen zoals ertsen of schatten.§r\n§7Lege Vierkanten: Als een vierkant leeg is, breekt je houweel en verlies je een leven.§r\n\n§2Beloningen:§r\n§7Behoud alle beloningen die je ontdekt.§r"
+}

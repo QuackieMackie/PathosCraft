@@ -171,8 +171,19 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     }
 
     private int calculateMaxPagesForTab(QuestTabButton button) {
-        int totalQuests = QuestHandler.getQuestsByType(button.getQuestType()).size();
-        return (int) Math.ceil((double) totalQuests / MAX_QUESTS_PER_PAGE);
+        List<Quest> quests = QuestHandler.getQuestsByType(button.getQuestType());
+        if (quests.isEmpty()) {
+            return 1;
+        }
+
+        // Determine the highest questSlot used
+        int maxSlot = quests.stream()
+                .mapToInt(Quest::getQuestSlot)
+                .max()
+                .orElse(0);
+
+        // Calculate the number of pages needed based on the highest slot
+        return (int) Math.ceil((double) (maxSlot + 1) / MAX_QUESTS_PER_PAGE);
     }
 
     /**
@@ -231,7 +242,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
         // Update maxPages using the filtered quests and calculate dynamically
-        maxPages = (int) Math.ceil((double) filteredQuests.size() / MAX_QUESTS_PER_PAGE);
+        maxPages = calculateMaxPagesForTab(activeButton);
 
         // Adjust page buttons' enabled states
         if (activeButton != activeQuestsButton) {
@@ -274,21 +285,27 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     private void questTabBuilder(List<Quest> filteredQuests, List<Quest> activeQuests) {
         Map<Integer, Quest> activeQuestMap = QuestHandler.getActiveQuestMap(activeQuests);
 
-        int start = (currentPage - 1) * MAX_QUESTS_PER_PAGE;
-        int end = Math.min(start + MAX_QUESTS_PER_PAGE, filteredQuests.size());
+        // Page slot range based on `MAX_QUESTS_PER_PAGE`
+        int startSlot = (currentPage - 1) * MAX_QUESTS_PER_PAGE;
+        int endSlot = startSlot + MAX_QUESTS_PER_PAGE;
 
-        for (int index = start; index < end; index++) {
-            Quest quest = filteredQuests.get(index);
-            int pageIndex = index % MAX_QUESTS_PER_PAGE;
-            int x = 8 + (pageIndex % 9) * 18;
-            int y = 18 + (pageIndex / 9) * 18;
+        for (Quest quest : filteredQuests) {
+            int questSlot = quest.getQuestSlot();
 
-            // Get quest from active list or default to existing quest
-            Quest activeQuest = activeQuestMap.get(quest.getQuestId());
+            if (questSlot < startSlot || questSlot >= endSlot) {
+                continue;
+            }
+
+            // Relative position for rendering
+            int localSlot = questSlot - startSlot;
+            int x = 8 + (localSlot % 9) * 18;
+            int y = 18 + (localSlot / 9) * 18;
+
             QuestSlotButton questButton;
-
-            // Create quest button based on its state (active/completed/inactive)
             ItemStack questItemStack = createQuestIconStack(quest);
+
+            // Check quest state (active/completed/inactive)
+            Quest activeQuest = activeQuestMap.get(quest.getQuestId());
             if (activeQuest != null && QuestHandler.isQuestObjectiveCompleted(activeQuest)) {
                 questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, activeQuest, e -> {});
             } else {
