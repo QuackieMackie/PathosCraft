@@ -107,13 +107,13 @@ public class QuestActiveSlotButton extends QuestSlotButton {
             heldQuest = clickedQuest;
             heldQuestIndex = clickedQuestIndex;
         } else if (heldQuestIndex != clickedQuestIndex) {
-            PathosCraft.LOGGER.info("Client: Requesting server to swap {Quest ID: {}, Index: {}} with {Quest ID: {}, Index: {}}", clickedQuest.getQuestId(), clickedQuestIndex, heldQuest.getQuestId(), heldQuestIndex);
+            PathosCraft.LOGGER.info("Client: Requesting server to swap {Quest ID: {}, Index: {}} with {Quest ID: {}, Index: {}}", clickedQuest.id(), clickedQuestIndex, heldQuest.id(), heldQuestIndex);
 
             Collections.swap(activeQuests, heldQuestIndex, clickedQuestIndex);
 
-            int tempSlot = heldQuest.getQuestActiveSlot();
-            heldQuest.setQuestActiveSlot(clickedQuest.getQuestActiveSlot());
-            clickedQuest.setQuestActiveSlot(tempSlot);
+            int tempSlot = heldQuest.activeSlot();
+            heldQuest.withActiveSlot(clickedQuest.activeSlot());
+            clickedQuest.withActiveSlot(tempSlot);
 
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
 
@@ -158,7 +158,7 @@ public class QuestActiveSlotButton extends QuestSlotButton {
             activeQuests.remove(quest);
 
             for (int i = 0; i < activeQuests.size(); i++) {
-                activeQuests.get(i).setQuestActiveSlot(i);
+                activeQuests.get(i).withActiveSlot(i);
             }
 
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
@@ -180,7 +180,7 @@ public class QuestActiveSlotButton extends QuestSlotButton {
             activeQuests.remove(quest);
 
             for (int i = 0; i < activeQuests.size(); i++) {
-                activeQuests.get(i).setQuestActiveSlot(i);
+                activeQuests.get(i).withActiveSlot(i);
             }
 
             player.setData(PathosAttachments.COMPLETED_QUESTS.get(), completedQuests);

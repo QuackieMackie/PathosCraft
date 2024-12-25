@@ -27,9 +27,9 @@ public class QuestPayloadHandler {
             if (activeQuests.size() < Quest.MAX_ACTIVE_QUESTS) {
                 activeQuests.add(quest);
                 player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-                PathosCraft.LOGGER.info("Server: Added Quest {} to Player {} Active Quests", quest.getQuestId(), player.getName().getString());
+                PathosCraft.LOGGER.info("Server: Added Quest {} to Player {} Active Quests", quest.id(), player.getName().getString());
             } else {
-                PathosCraft.LOGGER.info("Server: Max quest count reached skipped adding {}, for player {}.", quest.getQuestId(), player.getName().getString());
+                PathosCraft.LOGGER.info("Server: Max quest count reached skipped adding {}, for player {}.", quest.id(), player.getName().getString());
             }
         }
     }
@@ -48,7 +48,7 @@ public class QuestPayloadHandler {
             activeQuests.remove(quest);
 
             for (int i = 0; i < activeQuests.size(); i++) {
-                activeQuests.get(i).setQuestActiveSlot(i);
+                activeQuests.get(i).withActiveSlot(i);
             }
 
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
@@ -56,14 +56,14 @@ public class QuestPayloadHandler {
             QuestHandler.returnItems(player, quest);
 
             PathosCraft.LOGGER.info("Server: Removed Quest {ID: {}, Slot: {}} from Player {} Active Quests and reassigned slots.",
-                    quest.getQuestId(), quest.getQuestActiveSlot(), player.getName().getString());
+                    quest.id(), quest.activeSlot(), player.getName().getString());
 
             for (Quest activeQuest : activeQuests) {
-                PathosCraft.LOGGER.info("Quest {ID: {}, Assigned Slot: {}}", activeQuest.getQuestId(), activeQuest.getQuestActiveSlot());
+                PathosCraft.LOGGER.info("Quest {ID: {}, Assigned Slot: {}}", activeQuest.id(), activeQuest.activeSlot());
             }
         } else {
             PathosCraft.LOGGER.warn("Server: Quest {ID: {}} could not be removed. Either it is already completed or not active for Player {}.",
-                    quest.getQuestId(), player.getName().getString());
+                    quest.id(), player.getName().getString());
         }
     }
 
@@ -91,19 +91,19 @@ public class QuestPayloadHandler {
         for (int i = 0; i < activeQuests.size(); i++) {
             Quest quest = activeQuests.get(i);
 
-            if (quest.getQuestId() == updatedQuest.getQuestId()) {
+            if (quest.id() == updatedQuest.id()) {
                 activeQuests.set(i, updatedQuest);
                 questUpdated = true;
 
                 PathosCraft.LOGGER.info("Client: Updated quest ID {} for player {}: {}",
-                        updatedQuest.getQuestId(), player.getName().getString(), updatedQuest);
+                        updatedQuest.id(), player.getName().getString(), updatedQuest);
                 break;
             }
         }
 
         if (!questUpdated) {
             PathosCraft.LOGGER.warn("Client: Quest ID {} not found in active quests for player {}, cannot update progress.",
-                    updatedQuest.getQuestId(), player.getName().getString());
+                    updatedQuest.id(), player.getName().getString());
             return;
         }
 
@@ -129,34 +129,34 @@ public class QuestPayloadHandler {
 
         PathosCraft.LOGGER.info("Server {firstQuest: {}, secondQuest: {}}", firstQuest, secondQuest);
 
-        if (firstQuest.getQuestId() == secondQuest.getQuestId()) {
+        if (firstQuest.id() == secondQuest.id()) {
             PathosCraft.LOGGER.warn("Server: Attempted to swap the same quest {ID: {}} with itself for Player {}",
-                    firstQuest.getQuestId(), player.getName().getString());
+                    firstQuest.id(), player.getName().getString());
             return;
         }
 
         Quest questInFirstSlot = activeQuests.stream()
-                .filter(quest -> quest.getQuestId() == firstQuest.getQuestId())
+                .filter(quest -> quest.id() == firstQuest.id())
                 .findFirst()
                 .orElse(null);
 
         Quest questInSecondSlot = activeQuests.stream()
-                .filter(quest -> quest.getQuestId() == secondQuest.getQuestId())
+                .filter(quest -> quest.id() == secondQuest.id())
                 .findFirst()
                 .orElse(null);
 
         if (questInFirstSlot != null && questInSecondSlot != null) {
-            int firstActiveSlot = questInFirstSlot.getQuestActiveSlot();
-            int secondActiveSlot = questInSecondSlot.getQuestActiveSlot();
+            int firstActiveSlot = questInFirstSlot.activeSlot();
+            int secondActiveSlot = questInSecondSlot.activeSlot();
 
-            questInFirstSlot.setQuestActiveSlot(secondActiveSlot);
-            questInSecondSlot.setQuestActiveSlot(firstActiveSlot);
+            questInFirstSlot.withActiveSlot(secondActiveSlot);
+            questInSecondSlot.withActiveSlot(firstActiveSlot);
 
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
 
-            PathosCraft.LOGGER.info("Server: Swapped Quest {ID: {}, Old Slot: {}, New Slot: {}} with Quest {ID: {}, Old Slot: {}, New Slot: {}} for Player {}", questInFirstSlot.getQuestId(), firstActiveSlot, secondActiveSlot, questInSecondSlot.getQuestId(), secondActiveSlot, firstActiveSlot, player.getName().getString());
+            PathosCraft.LOGGER.info("Server: Swapped Quest {ID: {}, Old Slot: {}, New Slot: {}} with Quest {ID: {}, Old Slot: {}, New Slot: {}} for Player {}", questInFirstSlot.id(), firstActiveSlot, secondActiveSlot, questInSecondSlot.id(), secondActiveSlot, firstActiveSlot, player.getName().getString());
         } else {
-            PathosCraft.LOGGER.warn("Server: Failed to swap quests. Quests with IDs {} and {} were not found in the active quest list for Player {}", firstQuest.getQuestId(), secondQuest.getQuestId(), player.getName().getString());
+            PathosCraft.LOGGER.warn("Server: Failed to swap quests. Quests with IDs {} and {} were not found in the active quest list for Player {}", firstQuest.id(), secondQuest.id(), player.getName().getString());
         }
     }
 
@@ -171,12 +171,12 @@ public class QuestPayloadHandler {
      */
     public static void addCompletedQuest(List<Quest> completedQuests, List<Quest> activeQuests, Quest quest, Player player) {
         if (QuestHandler.isQuestCompleted(player, quest)) {
-            PathosCraft.LOGGER.warn("Server: Cannot add Quest {} to Player {} Completed Quests because it is already on the completed list.", quest.getQuestId(), player.getName().getString());
+            PathosCraft.LOGGER.warn("Server: Cannot add Quest {} to Player {} Completed Quests because it is already on the completed list.", quest.id(), player.getName().getString());
             return;
         }
 
         if (!QuestHandler.isQuestObjectiveCompleted(quest)) {
-            PathosCraft.LOGGER.warn("Server: Cannot add Quest {} to Player {} Completed Quests because it is not completed.", quest.getQuestId(), player.getName().getString());
+            PathosCraft.LOGGER.warn("Server: Cannot add Quest {} to Player {} Completed Quests because it is not completed.", quest.id(), player.getName().getString());
             return;
         }
 
@@ -186,7 +186,7 @@ public class QuestPayloadHandler {
         activeQuests.remove(quest);
 
         for (int i = 0; i < activeQuests.size(); i++) {
-            activeQuests.get(i).setQuestActiveSlot(i);
+            activeQuests.get(i).withActiveSlot(i);
         }
 
         player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
@@ -194,7 +194,7 @@ public class QuestPayloadHandler {
         completedQuests.add(quest);
         player.setData(PathosAttachments.COMPLETED_QUESTS.get(), completedQuests);
 
-        PathosCraft.LOGGER.info("Server: Given rewards for Quest {} to Player {}.", quest.getQuestId(), player.getName().getString());
-        PathosCraft.LOGGER.info("Server: Added Quest {} to Player {} Completed Quests", quest.getQuestId(), player.getName().getString());
+        PathosCraft.LOGGER.info("Server: Given rewards for Quest {} to Player {}.", quest.id(), player.getName().getString());
+        PathosCraft.LOGGER.info("Server: Added Quest {} to Player {} Completed Quests", quest.id(), player.getName().getString());
     }
 }

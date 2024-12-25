@@ -7,12 +7,10 @@
   "quest_objectives": [
     {
       "action": "collect",
-      "progress": 0,
       "quantity": 5,
       "target": "minecraft:dirt"
     }
   ],
-  "quest_preceding": 0,
   "quest_rewards": [
     {
       "action": "give",

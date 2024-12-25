@@ -120,10 +120,10 @@ public class QuestSlotButton extends Button {
                 for (int i = 0; i < Quest.MAX_ACTIVE_QUESTS; i++) {
                     final int currentSlot = i;
                     boolean isSlotInUse = activeQuests.stream()
-                            .anyMatch(activeQuest -> activeQuest.getQuestActiveSlot() == currentSlot);
+                            .anyMatch(activeQuest -> activeQuest.activeSlot() == currentSlot);
 
                     if (!isSlotInUse) {
-                        quest.setQuestActiveSlot(currentSlot);
+                        quest.withActiveSlot(currentSlot);
                         slotAssigned = true;
                         break;
                     }
@@ -133,9 +133,9 @@ public class QuestSlotButton extends Button {
                     activeQuests.add(quest);
                     player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
                     questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
-                    PathosCraft.LOGGER.info("Quest {} assigned to slot {}", quest.getQuestId(), quest.getQuestActiveSlot());
+                    PathosCraft.LOGGER.info("Quest {} assigned to slot {}", quest.id(), quest.activeSlot());
                 } else {
-                    PathosCraft.LOGGER.warn("No available slots for Quest {}", quest.getQuestId());
+                    PathosCraft.LOGGER.warn("No available slots for Quest {}", quest.id());
                 }
             }
         }

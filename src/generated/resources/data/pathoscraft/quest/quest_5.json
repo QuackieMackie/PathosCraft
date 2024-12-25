@@ -7,18 +7,15 @@
   "quest_objectives": [
     {
       "action": "kill",
-      "progress": 0,
       "quantity": 10,
       "target": "minecraft:ghast"
     },
     {
       "action": "collect",
-      "progress": 0,
       "quantity": 5,
       "target": "minecraft:dirt"
     }
   ],
-  "quest_preceding": 0,
   "quest_rewards": [
     {
       "action": "give",

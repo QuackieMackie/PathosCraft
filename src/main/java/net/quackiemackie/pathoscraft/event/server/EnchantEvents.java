@@ -17,6 +17,7 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.enchantment.PathosEnchantment;
 import net.quackiemackie.pathoscraft.enchantment.effect.ExcavationMiniGameEffect;
 import net.quackiemackie.pathoscraft.enchantment.effect.FishingMiniGameEffect;
+import net.quackiemackie.pathoscraft.registers.PathosTags;
 
 @EventBusSubscriber(modid = PathosCraft.MOD_ID)
 public class EnchantEvents {
@@ -26,11 +27,13 @@ public class EnchantEvents {
         Player player = event.getPlayer();
         if (player.getMainHandItem().isEmpty()) return;
 
-        int excavationEnchantmentLevel = EnchantmentHelper.getEnchantmentLevel(enchantmentHolder(PathosEnchantment.EXCAVATION_MINIGAME, player), player);
+        if (event.getState().is(PathosTags.Blocks.EXCAVATION_MINIGAME_ORES)) {
+            int excavationEnchantmentLevel = EnchantmentHelper.getEnchantmentLevel(enchantmentHolder(PathosEnchantment.EXCAVATION_MINIGAME, player), player);
 
-        if (excavationEnchantmentLevel == 1) {
-            ExcavationMiniGameEffect effect = new ExcavationMiniGameEffect(0.20f);
-            effect.handleBlockMine(event);
+            if (excavationEnchantmentLevel == 1) {
+                ExcavationMiniGameEffect effect = new ExcavationMiniGameEffect(0.20f);
+                effect.handleBlockMine(event);
+            }
         }
     }
 

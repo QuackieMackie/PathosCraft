@@ -28,7 +28,7 @@ public class PathosItems {
     // Special
     public static final DeferredItem<Item> QUEST_BOOK = ITEMS.register("quest_book", () -> new QuestBook(new Item.Properties()));
     //Tests
-    public static final DeferredItem<TestItem> TEST_ITEM = ITEMS.register("test_item", () -> new TestItem(new Item.Properties()));
+    public static final DeferredItem<TestItem> TEST_ITEM = ITEMS.register("test_item", () -> new TestItem(new Item.Properties().stacksTo(1).fireResistant()));
     public static final DeferredItem<ArrowItem> ARROW_TEST = ITEMS.register("arrow_test", () -> new ArrowItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> ANIMATED_ITEM = ITEMS.register("animated_item", () -> new AnimatedItem(new Item.Properties()));
     public static final DeferredItem<Item> CREATURE_CRYSTAL = ITEMS.register("creature_crystal", () -> new CreatureCrystal(new Item.Properties().stacksTo(1)));
