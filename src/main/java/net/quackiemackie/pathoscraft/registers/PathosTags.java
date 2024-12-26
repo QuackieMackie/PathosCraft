@@ -28,6 +28,7 @@ public class PathosTags {
 
     public static class Items {
         public static final TagKey<Item> REPAIRABLE_BLOCK_ITEMS = createTag("repairable_block_items");
+        public static final TagKey<Item> MINIGAME_ENCHANT_ITEMS = createTag("minigame_enchant_items");
 
         private static TagKey<Item> createTag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, name));

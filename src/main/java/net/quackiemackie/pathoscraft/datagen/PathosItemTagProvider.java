@@ -40,5 +40,9 @@ public class PathosItemTagProvider extends ItemTagsProvider {
         tag(PathosTags.EntityFood.SPIDER_MOUNT_FOOD)
                 .add(Items.CHICKEN, Items.PORKCHOP, Items.BEEF, Items.MUTTON, Items.RABBIT)
                 .add(Items.COOKED_CHICKEN, Items.COOKED_PORKCHOP, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT);
+
+        tag(PathosTags.Items.MINIGAME_ENCHANT_ITEMS)
+                .addTag(ItemTags.PICKAXES)
+                .add(Items.FISHING_ROD);
     }
 }

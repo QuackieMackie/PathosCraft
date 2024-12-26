@@ -28,8 +28,10 @@
   "block.pathoscraft.deepslate_sunny_ore": "Diepsteen Zonnig Erts",
   "block.pathoscraft.repair_block": "Reparatieblok",
 
-  "enchantment.pathoscraft.excavation_minigame": "Mini-spel Graven",
-  "enchantment.pathoscraft.fishing_minigame": "Mini-spel Vissen",
+  "enchantment.pathoscraft.minigame": "Minigame",
+  "message.pathoscraft.minigame_status": "§8Minigame Status [%s§8]",
+  "message.pathoscraft.status.active": "§cIngeschakeld",
+  "message.pathoscraft.status.inactive": "§cUitgeschakeld",
 
   "creative_tab.pathoscraft.blocks": "Bouwblokken",
   "creative_tab.pathoscraft.ingredients": "Ingrediënten",
@@ -79,5 +81,6 @@
   "screen.widget.pathoscraft.excavation_mini_game.not_bad": "Niet slecht, je hebt %s aderen van erts gevonden!",
   "screen.widget.pathoscraft.excavation_mini_game.better_luck_next_time": "Volgende keer beter!",
   "screen.widget.pathoscraft.excavation_mini_game.exit_prompt": "Druk op '%s' of 'ESC' om te stoppen en je beloningen op te halen.",
-  "screen.widget.pathoscraft.excavation_mini_game.instructions": "§5Mini-spel Graven Instructies§r\n§aDoel: Ontvang waardevolle beloningen door vierkanten op het raster te graven!§r\n§6Wees strategisch: Elk vierkant kan een verborgen beloning of niets bevatten.§r\n§8Je houweel staat voor je leven—als het breekt, eindigt het spel.§r\n\n§5Hoe te spelen:§r\n§7Raster: Klik op vierkanten om te graven.§r\n§7Beloningen: Ontdek verborgen beloningen zoals ertsen of schatten.§r\n§7Lege Vierkanten: Als een vierkant leeg is, breekt je houweel en verlies je een leven.§r\n\n§2Beloningen:§r\n§7Behoud alle beloningen die je ontdekt.§r"
+  "screen.widget.pathoscraft.excavation_mini_game.instructions": "§5Mini-spel Graven Instructies§r\n§aDoel: Ontvang waardevolle beloningen door vierkanten op het raster te graven!§r\n§6Wees strategisch: Elk vierkant kan een verborgen beloning of niets bevatten.§r\n§8Je houweel staat voor je leven—als het breekt, eindigt het spel.§r\n\n§5Hoe te spelen:§r\n§7Raster: Klik op vierkanten om te graven.§r\n§7Beloningen: Ontdek verborgen beloningen zoals ertsen of schatten.§r\n§7Lege Vierkanten: Als een vierkant leeg is, breekt je houweel en verlies je een leven.§r\n\n§2Beloningen:§r\n§7Behoud alle beloningen die je ontdekt.§r",
+  "screen.widget.pathoscraft.page_number": "Page %1$s/%2$s"
 }

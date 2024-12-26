@@ -1,12 +1,14 @@
 package net.quackiemackie.pathoscraft.registers;
 
-import net.minecraft.core.BlockPos;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.event.server.EnchantEvents;
+import net.quackiemackie.pathoscraft.item.advanced.CreatureCrystal;
 
 import java.util.function.UnaryOperator;
 
@@ -19,6 +21,9 @@ public class PathosDataComponents {
         return DATA_COMPONENT_TYPE.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());
     }
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> COORDINATES = register("coordinates", builder -> builder.persistent(BlockPos.CODEC));
+    ///A Boolean value used to determine if the logic for the minigame should be able to run or if it's inactive.
+    /// Minigame logic here: [EnchantEvents]
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ACTIVE_MINIGAME_BOOL = register("active_minigame_bool", builder -> builder.persistent(Codec.BOOL));
+    ///A future data component, that will store entity data, so they can be captures in the [CreatureCrystal]
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> ENTITY_CAPTURED_DATA = register("captured_entity_data", builder -> builder.persistent(CompoundTag.CODEC));
 }

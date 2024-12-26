@@ -1,7 +1,7 @@
 {
   "anvil_cost": 2,
   "description": {
-    "translate": "enchantment.pathoscraft.fishing_minigame"
+    "translate": "enchantment.pathoscraft.minigame"
   },
   "max_cost": {
     "base": 25,
@@ -9,12 +9,12 @@
   },
   "max_level": 1,
   "min_cost": {
-    "base": 5,
+    "base": 25,
     "per_level_above_first": 7
   },
   "slots": [
     "mainhand"
   ],
-  "supported_items": "#minecraft:enchantable/fishing",
+  "supported_items": "#pathoscraft:minigame_enchant_items",
   "weight": 5
 }
