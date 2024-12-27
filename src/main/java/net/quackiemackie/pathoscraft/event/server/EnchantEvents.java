@@ -30,27 +30,38 @@ public class EnchantEvents {
     public static void onPlayerMine(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
         ItemStack stack = player.getMainHandItem();
-        if (player.getMainHandItem().isEmpty()) return;
+        if (stack.isEmpty()) return;
 
-        if (event.getState().is(PathosTags.Blocks.EXCAVATION_MINIGAME_ORES)) {
-            if (EnchantmentHelper.getEnchantmentLevel(enchantmentHolder(PathosEnchantment.MINIGAME, player), player) == 1) {
-                if (stack.get(PathosDataComponents.ACTIVE_MINIGAME_BOOL)) {
-                    ExcavationMiniGameEffect effect = new ExcavationMiniGameEffect(1.00f);
-                    effect.handleBlockMine(event);
-                }
+        if (event.getState().is(PathosTags.Blocks.EXCAVATION_MINIGAME_ORES) && EnchantmentHelper.getEnchantmentLevel(enchantmentHolder(PathosEnchantment.MINIGAME, player), player) == 1) {
+
+            Boolean activeMinigame = stack.get(PathosDataComponents.ACTIVE_MINIGAME_BOOL);
+            if (activeMinigame == null) {
+                activeMinigame = true;
+                stack.set(PathosDataComponents.ACTIVE_MINIGAME_BOOL, activeMinigame);
+            }
+
+            if (activeMinigame) {
+                ExcavationMiniGameEffect effect = new ExcavationMiniGameEffect(1.00f);
+                effect.handleBlockMine(event);
             }
         }
     }
-
 
     @SubscribeEvent
     public static void onItemFished(ItemFishedEvent event) {
         Player player = event.getEntity();
         ItemStack stack = player.getMainHandItem();
-        if (player.getMainHandItem().isEmpty()) return;
+        if (stack.isEmpty()) return;
 
         if (EnchantmentHelper.getEnchantmentLevel(enchantmentHolder(PathosEnchantment.MINIGAME, player), player) == 1) {
-            if (stack.get(PathosDataComponents.ACTIVE_MINIGAME_BOOL)) {
+
+            Boolean activeMinigame = stack.get(PathosDataComponents.ACTIVE_MINIGAME_BOOL);
+            if (activeMinigame == null) {
+                activeMinigame = true;
+                stack.set(PathosDataComponents.ACTIVE_MINIGAME_BOOL, activeMinigame);
+            }
+
+            if (activeMinigame) {
                 FishingMiniGameEffect effect = new FishingMiniGameEffect(1.00f);
                 if (effect.isEffectActivated()) {
                     effect.playEffect((ServerPlayer) player, event);
@@ -63,25 +74,21 @@ public class EnchantEvents {
     public static void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
-        if (EnchantmentHelper.getEnchantmentLevel(enchantmentHolder(PathosEnchantment.MINIGAME, player), player) == 1) {
-            if (player.isShiftKeyDown() && stack.is(PathosTags.Items.MINIGAME_ENCHANT_ITEMS)) {
-                boolean isMinigameActive = Boolean.TRUE.equals(stack.get(PathosDataComponents.ACTIVE_MINIGAME_BOOL));
+        if (EnchantmentHelper.getEnchantmentLevel(enchantmentHolder(PathosEnchantment.MINIGAME, player), player) == 1 && player.isShiftKeyDown() && stack.is(PathosTags.Items.MINIGAME_ENCHANT_ITEMS)) {
 
-                stack.set(PathosDataComponents.ACTIVE_MINIGAME_BOOL, !isMinigameActive);
+            Boolean activeMinigame = stack.get(PathosDataComponents.ACTIVE_MINIGAME_BOOL);
+            boolean isMinigameActive = activeMinigame != null && activeMinigame;
 
-                Component status = Component.translatable(
-                        !isMinigameActive ? "message.pathoscraft.status.inactive" : "message.pathoscraft.status.active"
-                );
+            stack.set(PathosDataComponents.ACTIVE_MINIGAME_BOOL, !isMinigameActive);
 
-                player.displayClientMessage(
-                        Component.translatable("message.pathoscraft.minigame_status", status),
-                        true
-                );
-                event.setCanceled(true);
-            }
+            Component status = Component.translatable(isMinigameActive
+                    ? "message.pathoscraft.status.inactive"
+                    : "message.pathoscraft.status.active");
+            player.displayClientMessage(Component.translatable("message.pathoscraft.minigame_status", status), true);
+
+            event.setCanceled(true);
         }
     }
-
 
     /**
      * Retrieves a {@link Holder} for the specified enchantment based on the provided player context.
@@ -91,8 +98,13 @@ public class EnchantEvents {
      * @return A holder containing the specified enchantment, fetched from the player's current registry.
      */
     private static Holder<Enchantment> enchantmentHolder(ResourceKey<Enchantment> enchantment, Player player) {
-        RegistryAccess registryAccess = player.level().registryAccess();
-        Registry<Enchantment> enchantmentRegistry = registryAccess.registryOrThrow(Registries.ENCHANTMENT);
-        return enchantmentRegistry.getHolderOrThrow(enchantment);
+        try {
+            RegistryAccess registryAccess = player.level().registryAccess();
+            Registry<Enchantment> enchantmentRegistry = registryAccess.registryOrThrow(Registries.ENCHANTMENT);
+            return enchantmentRegistry.getHolderOrThrow(enchantment);
+        } catch (Exception e) {
+            PathosCraft.LOGGER.error("Failed to retrieve enchantment holder for enchantment {}: {}", enchantment, e.getMessage());
+            throw e;
+        }
     }
 }

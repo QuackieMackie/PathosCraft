@@ -88,11 +88,11 @@ public class PathosQuests {
      */
     public static void bootstrap(BootstrapContext<Quest> context) {
         for (Quest quest : QUESTS) {
-            ResourceKey<Quest> questKey = ResourceKey.create(QUEST_REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "quest_" + quest.id()));
+            ResourceKey<Quest> questKey = ResourceKey.create(QUEST_REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "quest_" + quest.getQuestId()));
 
             context.register(questKey, quest);
 
-            PathosCraft.LOGGER.info("Registered Quest: ID={} Name={} Key={}", quest.id(), quest.name(), questKey.location());
+            PathosCraft.LOGGER.info("Registered Quest: ID={} Name={} Key={}", quest.getQuestId(), quest.getQuestName(), questKey.location());
         }
     }
 

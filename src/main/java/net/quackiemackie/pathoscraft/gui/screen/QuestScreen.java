@@ -171,19 +171,8 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     }
 
     private int calculateMaxPagesForTab(QuestTabButton button) {
-        List<Quest> quests = QuestHandler.getQuestsByType(button.getQuestType());
-        if (quests.isEmpty()) {
-            return 1;
-        }
-
-        // Determine the highest questSlot used
-        int maxSlot = quests.stream()
-                .mapToInt(Quest::slot)
-                .max()
-                .orElse(0);
-
-        // Calculate the number of pages needed based on the highest slot
-        return (int) Math.ceil((double) (maxSlot + 1) / MAX_QUESTS_PER_PAGE);
+        int totalQuests = QuestHandler.getQuestsByType(button.getQuestType()).size();
+        return (int) Math.ceil((double) totalQuests / MAX_QUESTS_PER_PAGE);
     }
 
     /**
@@ -242,7 +231,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
         // Update maxPages using the filtered quests and calculate dynamically
-        maxPages = calculateMaxPagesForTab(activeButton);
+        maxPages = (int) Math.ceil((double) filteredQuests.size() / MAX_QUESTS_PER_PAGE);
 
         // Adjust page buttons' enabled states
         if (activeButton != activeQuestsButton) {
@@ -285,27 +274,21 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     private void questTabBuilder(List<Quest> filteredQuests, List<Quest> activeQuests) {
         Map<Integer, Quest> activeQuestMap = QuestHandler.getActiveQuestMap(activeQuests);
 
-        // Page slot range based on `MAX_QUESTS_PER_PAGE`
-        int startSlot = (currentPage - 1) * MAX_QUESTS_PER_PAGE;
-        int endSlot = startSlot + MAX_QUESTS_PER_PAGE;
+        int start = (currentPage - 1) * MAX_QUESTS_PER_PAGE;
+        int end = Math.min(start + MAX_QUESTS_PER_PAGE, filteredQuests.size());
 
-        for (Quest quest : filteredQuests) {
-            int questSlot = quest.slot();
+        for (int index = start; index < end; index++) {
+            Quest quest = filteredQuests.get(index);
+            int pageIndex = index % MAX_QUESTS_PER_PAGE;
+            int x = 8 + (pageIndex % 9) * 18;
+            int y = 18 + (pageIndex / 9) * 18;
 
-            if (questSlot < startSlot || questSlot >= endSlot) {
-                continue;
-            }
-
-            // Relative position for rendering
-            int localSlot = questSlot - startSlot;
-            int x = 8 + (localSlot % 9) * 18;
-            int y = 18 + (localSlot / 9) * 18;
-
+            // Get quest from active list or default to existing quest
+            Quest activeQuest = activeQuestMap.get(quest.getQuestId());
             QuestSlotButton questButton;
-            ItemStack questItemStack = createQuestIconStack(quest);
 
-            // Check quest state (active/completed/inactive)
-            Quest activeQuest = activeQuestMap.get(quest.id());
+            // Create quest button based on its state (active/completed/inactive)
+            ItemStack questItemStack = createQuestIconStack(quest);
             if (activeQuest != null && QuestHandler.isQuestObjectiveCompleted(activeQuest)) {
                 questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, activeQuest, e -> {});
             } else {
@@ -345,10 +328,10 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                 continue;
             }
 
-            int questActiveSlot = activeQuests.indexOf(quest);
+            int questActiveSlot = quest.getQuestActiveSlot();
 
             if (questActiveSlot < 0 || questActiveSlot >= Quest.MAX_ACTIVE_QUESTS) {
-                System.err.println("Invalid quest active slot: " + questActiveSlot + " for quest " + quest.name());
+                System.err.println("Invalid quest active slot: " + questActiveSlot + " for quest " + quest.getQuestName());
                 continue;
             }
 
@@ -372,7 +355,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * @return the ItemStack representing the quest icon.
      */
     private ItemStack createQuestIconStack(Quest quest) {
-        String[] iconParts = quest.icon().split(":");
+        String[] iconParts = quest.getQuestIcon().split(":");
         String namespace = iconParts.length > 1 ? iconParts[0] : "minecraft";
         String path = iconParts.length > 1 ? iconParts[1] : iconParts[0];
 
@@ -394,26 +377,26 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
         // Check if the current quest is an active quest
         Quest displayQuest = activeQuests.stream()
-                .filter(activeQuest -> activeQuest.id() == quest.id())
+                .filter(activeQuest -> activeQuest.getQuestId() == quest.getQuestId())
                 .findFirst()
                 .orElse(quest);
 
-        questButton.addHoverInfo(Component.literal("§7" + displayQuest.name()));
-        questButton.addHoverInfo(Component.literal("§7" + displayQuest.description()));
+        questButton.addHoverInfo(Component.literal("§7" + displayQuest.getQuestName()));
+        questButton.addHoverInfo(Component.literal("§7" + displayQuest.getQuestDescription()));
         questButton.addHoverInfo(Component.literal(""));
         questButton.addHoverInfo(Component.literal("§aObjectives:"));
-        for (QuestObjective objective : displayQuest.objectives()) {
-            String target = objective.target().substring(objective.target().indexOf(':') + 1).replace('_', ' ');
-            questButton.addHoverInfo(Component.literal("  §8- §a" + objective.action() + " " + objective.progress() + "/" + objective.quantity() + " " + target));
+        for (QuestObjective objective : displayQuest.getQuestObjectives()) {
+            String target = objective.getTarget().substring(objective.getTarget().indexOf(':') + 1).replace('_', ' ');
+            questButton.addHoverInfo(Component.literal("  §8- §a" + objective.getAction() + " " + objective.getProgress() + "/" + objective.getQuantity() + " " + target));
         }
         questButton.addHoverInfo(Component.literal("§cRewards:"));
 
-        for (QuestReward reward : displayQuest.rewards()) {
-            String itemName = reward.item().substring(reward.item().indexOf(':') + 1).replace('_', ' ');
-            questButton.addHoverInfo(Component.literal("  §8- §c" + reward.quantity() + " " + itemName));
+        for (QuestReward reward : displayQuest.getQuestRewards()) {
+            String itemName = reward.getItem().substring(reward.getItem().indexOf(':') + 1).replace('_', ' ');
+            questButton.addHoverInfo(Component.literal("  §8- §c" + reward.getQuantity() + " " + itemName));
         }
         questButton.addHoverInfo(Component.literal(""));
-        questButton.addHoverInfo(Component.literal("§7Type: §f" + (displayQuest.type() == 0 ? "Main Quest" : displayQuest.type() == 1 ? "Side Quest" : displayQuest.type() == 2 ? "Optional Quest" : "Unknown")));
-        questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + displayQuest.id()));
+        questButton.addHoverInfo(Component.literal("§7Type: §f" + (displayQuest.getQuestType() == 0 ? "Main Quest" : displayQuest.getQuestType() == 1 ? "Side Quest" : displayQuest.getQuestType() == 2 ? "Optional Quest" : "Unknown")));
+        questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + displayQuest.getQuestId()));
     }
 }

@@ -27,13 +27,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-//TODO:
-// Small error with the a duplicate value when the progress isn't at the quantity yet.
-// I think it's to do with active buttons or regular slot buttons being rendered
-// depending on if it's on the active data attachment or from the files.
-// -
-// The error I'm receiving is to do with duplicated ids being rendered.
-
 public class QuestHandler {
     private static final List<Quest> quests = new ArrayList<>();
 
@@ -61,9 +54,9 @@ public class QuestHandler {
                         .orElseThrow(() -> new IllegalStateException("Failed to parse quest: " + jsonElement));
 
                 // Check for duplicate slot
-                usedSlotsByType.putIfAbsent(quest.type(), new HashSet<>());
-                if (!usedSlotsByType.get(quest.type()).add(quest.slot())) {
-                    throw new IllegalStateException(String.format("Duplicate slot %d found for quest type '%s' in file '%s'", quest.slot(), quest.type(), resourceLocation));
+                usedSlotsByType.putIfAbsent(quest.getQuestType(), new HashSet<>());
+                if (!usedSlotsByType.get(quest.getQuestType()).add(quest.getQuestSlot())) {
+                    throw new IllegalStateException(String.format("Duplicate slot %d found for quest type '%s' in file '%s'", quest.getQuestSlot(), quest.getQuestType(), resourceLocation));
                 }
 
                 quests.add(quest);
@@ -93,7 +86,7 @@ public class QuestHandler {
      */
     public static Quest getQuestById(int questId) {
         return quests.stream()
-                .filter(quest -> quest.id() == questId)
+                .filter(quest -> quest.getQuestId() == questId)
                 .findFirst()
                 .orElse(null);
     }
@@ -108,7 +101,7 @@ public class QuestHandler {
      */
     public static List<Quest> getQuestsByType(int questType) {
         return quests.stream()
-                .filter(quest -> quest.type() == questType)
+                .filter(quest -> quest.getQuestType() == questType)
                 .collect(Collectors.toList());
     }
 
@@ -121,8 +114,8 @@ public class QuestHandler {
      * @type Helper
      */
     public static boolean isQuestObjectiveCompleted(Quest quest) {
-        return quest.objectives().stream()
-                .allMatch(objective -> objective.progress() >= objective.quantity());
+        return quest.getQuestObjectives().stream()
+                .allMatch(objective -> objective.getProgress() >= objective.getQuantity());
     }
 
     /**
@@ -168,7 +161,7 @@ public class QuestHandler {
      */
     public static Map<Integer, Quest> getActiveQuestMap(List<Quest> activeQuests) {
         return activeQuests.stream()
-                .collect(Collectors.toMap(Quest::id, Function.identity()));
+                .collect(Collectors.toMap(Quest::getQuestId, Function.identity()));
     }
 
     /**
@@ -186,9 +179,9 @@ public class QuestHandler {
 
         // Loop through all objectives of active quests to see if the item is a target
         for (Quest quest : activeQuests) {
-            for (QuestObjective objective : quest.objectives()) {
+            for (QuestObjective objective : quest.getQuestObjectives()) {
                 // Check if the objective action is "collect" and the target matches the item
-                if ("collect".equals(objective.action()) && itemRegistry.equals(objective.target())) {
+                if ("collect".equals(objective.getAction()) && itemRegistry.equals(objective.getTarget())) {
                     return true;
                 }
             }
@@ -200,43 +193,24 @@ public class QuestHandler {
      * Updates the player's progress on a specific quest objective and notifies the client.
      *
      * @param player       the player whose progress is being updated
-     * @param updatedObjective    the specific quest objective that's being updated
+     * @param objective    the specific quest objective that's being updated
      * @param quest        the quest to which the objective belongs
      *
      * @type Helper
      */
-    public static void updateProgress(Player player, QuestObjective updatedObjective, Quest quest) {
-        PathosCraft.LOGGER.info("Player: {}, Quest Objective: {}, Quest: {}", player, updatedObjective, quest);
+    private static void updateProgress(Player player, QuestObjective objective, Quest quest) {
+        PathosCraft.LOGGER.info("Quest Progress Updated: {Quest ID: {}, Objective Progress: {}/{}}", quest.getQuestId(), objective.getProgress(), objective.getQuantity());
+        List<Quest> activeQuests = new ArrayList<>(player.getData(PathosAttachments.ACTIVE_QUESTS.get()));
 
-        // Replace and re-map the updated objective in the quest
-        Quest updatedQuest = new Quest(
-                quest.id(),
-                quest.name(),
-                quest.description(),
-                quest.icon(),
-                quest.type(),
-                quest.preceding(),
-                quest.slot(),
-                quest.activeSlot(),
-                Collections.singletonList(new QuestObjective(updatedObjective.action(), updatedObjective.target(), updatedObjective.quantity(), updatedObjective.progress())),
-                quest.rewards()
-        );
-
-        // Update the player's active quests
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
-        activeQuests.replaceAll(q -> q.id() == updatedQuest.id() ? updatedQuest : q);
-        ((IAttachmentHolder) player).setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
-
-        PathosCraft.LOGGER.debug("Updated quest in active quests on server: {}", activeQuests.stream()
-                .filter(q -> q.id() == updatedQuest.id())
-                .findFirst()
-                .orElse(null));
-
-        // Send the updated quest to the client
-        if (player instanceof ServerPlayer serverPlayer) {
-            PathosCraft.LOGGER.debug("Sending updated quest data to client: {}", updatedQuest);
-            PacketDistributor.sendToPlayer(serverPlayer, new UpdateProgressActiveQuest(updatedQuest));
+        for (int i = 0; i < activeQuests.size(); i++) {
+            Quest activeQuest = activeQuests.get(i);
+            if (activeQuest.getQuestId() == quest.getQuestId()) {
+                activeQuests.set(i, quest);
+                break;
+            }
         }
+        player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new UpdateProgressActiveQuest(quest));
     }
 
     /**
@@ -250,27 +224,26 @@ public class QuestHandler {
     public static void updateQuestKillProgress(Player player, String killedTarget) {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
+        // Iterate through each quest to find matching objectives
         for (Quest quest : activeQuests) {
-            for (QuestObjective objective : quest.objectives()) {
-                // Check if this is a "kill" objective and matches the killed target
-                if ("kill".equals(objective.action()) && killedTarget.equals(objective.target())) {
-                    int currentProgress = objective.progress();
+            for (QuestObjective objective : quest.getQuestObjectives()) {
+                // Check if the objective is a "kill" action for the killed target
+                if ("kill".equals(objective.getAction()) && killedTarget.equals(objective.getTarget())) {
+                    int currentProgress = objective.getProgress();
 
-                    // Only update progress if it's less than the quantity required
-                    if (currentProgress < objective.quantity()) {
-                        // Create the updated objective
-                        QuestObjective updatedObjective = objective.withProgress(currentProgress + 1);
+                    // Only update progress if the current progress is less than the required quantity
+                    if (currentProgress < objective.getQuantity()) {
 
-                        // Pass the updated objective to updateProgress for replacing
-                        updateProgress(player, updatedObjective, quest);
+                        // Increment the progress by one
+                        objective.setProgress(currentProgress + 1);
 
-                        // Debugging info
-                        PathosCraft.LOGGER.debug("Updated kill progress: QuestID={}, Target={}, Progress={}/{}",
-                                quest.id(), updatedObjective.target(), updatedObjective.progress(), updatedObjective.quantity());
+                        // Update progress and notify the client
+                        updateProgress(player, objective, quest);
                     }
                 }
             }
         }
+        PathosCraft.LOGGER.info("Quest Progress Updated: {Killed Target: {}}", killedTarget);
     }
 
     /**
@@ -284,34 +257,24 @@ public class QuestHandler {
      */
     public static void updateQuestPickupProgress(Player player, String pickedUpItem, int quantity) {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
+        int remainingQuantity = quantity;
+
         for (Quest quest : activeQuests) {
-            for (QuestObjective objective : quest.objectives()) {
-                // Match "collect" objectives against the picked-up item
-                if ("collect".equals(objective.action()) && pickedUpItem.equals(objective.target()) && quantity > 0) {
-                    int currentProgress = objective.progress();
-                    int requiredQuantity = objective.quantity();
+            for (QuestObjective objective : quest.getQuestObjectives()) {
+                if ("collect".equals(objective.getAction()) && pickedUpItem.equals(objective.getTarget()) && remainingQuantity > 0) {
+                    int currentProgress = objective.getProgress();
+                    int requiredQuantity = objective.getQuantity();
 
                     if (currentProgress < requiredQuantity) {
-                        // Calculate the progress increment
-                        int progressIncrement = Math.min(quantity, requiredQuantity - currentProgress);
-                        PathosCraft.LOGGER.debug("Progress increment: {}", progressIncrement);
+                        int progressIncrement = Math.min(remainingQuantity, requiredQuantity - currentProgress);
 
-                        // Create the updated objective
-                        QuestObjective updatedObjective = objective.withProgress(currentProgress + progressIncrement);
-                        PathosCraft.LOGGER.debug("Updated objective: {}", updatedObjective);
+                        objective.setProgress(currentProgress + progressIncrement);
+                        remainingQuantity -= progressIncrement;
 
-                        // Decrease the remaining quantity by the progress increment
-                        quantity -= progressIncrement;
+                        updateProgress(player, objective, quest);
 
-                        // Pass the updated objective to updateProgress
-                        updateProgress(player, updatedObjective, quest);
-
-                        // Debugging info
-                        PathosCraft.LOGGER.debug("Updated collect progress: QuestID={}, Item={}, Progress={}/{}",
-                                quest.id(), updatedObjective.target(), updatedObjective.progress(), updatedObjective.quantity());
-
-                        // Exit if there's no remaining quantity
-                        if (quantity <= 0) {
+                        // Exit the loop if there are no remaining items
+                        if (remainingQuantity <= 0) {
                             return;
                         }
                     }
@@ -333,9 +296,9 @@ public class QuestHandler {
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
         for (Quest quest : activeQuests) {
-            for (QuestObjective objective : quest.objectives()) {
-                if ("collect".equals(objective.action()) && itemRegistry.equals(objective.target())
-                        && objective.progress() < objective.quantity()) {
+            for (QuestObjective objective : quest.getQuestObjectives()) {
+                if ("collect".equals(objective.getAction()) && itemRegistry.equals(objective.getTarget())
+                        && objective.getProgress() < objective.getQuantity()) {
                     return true;
                 }
             }
@@ -358,10 +321,10 @@ public class QuestHandler {
         int totalRequiredQuantity = 0;
 
         for (Quest quest : activeQuests) {
-            for (QuestObjective objective : quest.objectives()) {
-                if ("collect".equals(objective.action()) && itemRegistry.equals(objective.target())) {
-                    int currentProgress = objective.progress();
-                    int requiredQuantity = objective.quantity();
+            for (QuestObjective objective : quest.getQuestObjectives()) {
+                if ("collect".equals(objective.getAction()) && itemRegistry.equals(objective.getTarget())) {
+                    int currentProgress = objective.getProgress();
+                    int requiredQuantity = objective.getQuantity();
                     if (currentProgress < requiredQuantity) {
                         totalRequiredQuantity += (requiredQuantity - currentProgress);
                     }
@@ -381,11 +344,11 @@ public class QuestHandler {
      * @type Payload
      */
     public static void returnItems(Player player, Quest quest) {
-        for (QuestObjective objective : quest.objectives()) {
-            if ("collect".equals(objective.action())) {
-                int itemsToReturn = objective.progress();
+        for (QuestObjective objective : quest.getQuestObjectives()) {
+            if ("collect".equals(objective.getAction())) {
+                int itemsToReturn = objective.getProgress();
                 if (itemsToReturn > 0) {
-                    giveItemsToPlayer(player, objective.target(), itemsToReturn);
+                    giveItemsToPlayer(player, objective.getTarget(), itemsToReturn);
                 }
             }
         }
@@ -400,24 +363,28 @@ public class QuestHandler {
      * @type Payload
      */
     public static void giveRewardsToPlayer(Player player, Quest quest) {
-        for (QuestReward reward : quest.rewards()) {
-            giveItemsToPlayer(player, reward.item(), reward.quantity());
+        for (QuestReward reward : quest.getQuestRewards()) {
+            giveItemsToPlayer(player, reward.getItem(), reward.getQuantity());
         }
     }
 
     /**
-     * Gives the specific quantity of items to the player.
+     * Gives the specified quantity of the item to the player.
      *
-     * @param player   the player receiving the items.
-     * @param itemName the name of the item.
-     * @param quantity the quantity of items to give.
+     * @param player the player receiving the items
+     * @param itemName the name of the item
+     * @param quantity the number of items to be given
+     *
+     * @type Helper
      */
     public static void giveItemsToPlayer(Player player, String itemName, int quantity) {
         try {
             ResourceLocation itemRegistryName = ResourceLocation.parse(itemName);
             Item item = BuiltInRegistries.ITEM.get(itemRegistryName);
+
             ItemStack itemStack = new ItemStack(item, quantity);
             player.getInventory().add(itemStack);
+            PathosCraft.LOGGER.info("Returned {} of item: {} to the player.", quantity, itemName);
         } catch (ResourceLocationException e) {
             PathosCraft.LOGGER.error("Failed to parse item name {}: {}", itemName, e.getMessage());
         }
