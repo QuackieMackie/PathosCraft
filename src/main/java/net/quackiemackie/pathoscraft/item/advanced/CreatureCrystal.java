@@ -1,20 +1,21 @@
 package net.quackiemackie.pathoscraft.item.advanced;
 
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
+import net.quackiemackie.pathoscraft.PathosCraft;
+import net.quackiemackie.pathoscraft.registers.PathosDataComponents;
 
-// check for the entity captured data (need to still figure that out)
-//stack.has(PathosDataComponents.ENTITY_CAPTURED_DATA)
-
-//This item is going to be used to pick up certain entities (thinking Monster and Animals)
-//and store the data in the item, and place that entity back down.
-//Essentially a poke ball but crystal \o/
+import java.util.List;
+import java.util.UUID;
 
 public class CreatureCrystal extends Item {
 
@@ -22,20 +23,105 @@ public class CreatureCrystal extends Item {
         super(properties);
     }
 
-    @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
-        ItemStack stack = context.getItemInHand();
-        Level level = context.getLevel();
-        Player player = context.getPlayer();
+    /**
+     * Handles logic when right-clicking on a block (USE_ON behavior).
+     */
+    public static void captureEntity(ItemStack stack, Level level, Player player, Entity target) {
+        // Save the entity's data
+        CompoundTag entityData = new CompoundTag();
+        target.save(entityData);
 
-        if (!level.isClientSide && player != null) {
-            if (!stack.hasFoil()) {
-                stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-            } else if (stack.hasFoil()) {
-                stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
-            }
+        // Store the entity's UUID to avoid duplication issues
+        entityData.putUUID("CapturedEntityUUID", target.getUUID());
+
+        // Store the data into the crystal
+        stack.set(PathosDataComponents.ENTITY_CAPTURED_DATA, entityData);
+
+        // Notify the player
+        PathosCraft.LOGGER.info("Entity captured! Data: {}", entityData);
+        player.displayClientMessage(Component.literal("Captured: " + target.getDisplayName().getString()), true);
+
+        // Remove the entity from the world
+        target.discard();
+    }
+
+    /**
+     * Releases an entity at a specific BlockPos.
+     */
+    public InteractionResult releaseEntityAt(ItemStack stack, Level level, Player player, BlockPos blockPos) {
+        CompoundTag entityData = stack.get(PathosDataComponents.ENTITY_CAPTURED_DATA);
+
+        if (entityData == null || entityData.isEmpty()) {
+            player.displayClientMessage(Component.literal("No captured entity to release!"), true);
+            return InteractionResult.FAIL;
         }
 
-        return super.useOn(context);
+        // Get the captured entity type
+        String entityTypeString = entityData.getString("id");
+        EntityType<?> entityType = EntityType.byString(entityTypeString).orElse(null);
+        if (entityType == null) {
+            player.displayClientMessage(Component.literal("Could not release entity, type is invalid!"), true);
+            PathosCraft.LOGGER.error("Invalid entity type: {}", entityTypeString);
+            return InteractionResult.FAIL;
+        }
+
+        // Create the new entity
+        Entity entity = entityType.create(level);
+        if (entity == null) {
+            player.displayClientMessage(Component.literal("Could not release entity! Entity creation failed."), true);
+            PathosCraft.LOGGER.error("Failed to create entity of type: {}", entityTypeString);
+            return InteractionResult.FAIL;
+        }
+
+        // Load and position the entity
+        entity.load(entityData);
+        entity.setUUID(UUID.randomUUID());
+        entity.setPos(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5); // Center on the block
+
+        // Add entity to the world
+        if (level.addFreshEntity(entity)) {
+            stack.remove(PathosDataComponents.ENTITY_CAPTURED_DATA);
+            player.displayClientMessage(Component.literal("Released: " + entity.getDisplayName().getString()), true);
+            PathosCraft.LOGGER.info("Entity released at block position: {}", blockPos);
+            return InteractionResult.SUCCESS;
+        } else {
+            player.displayClientMessage(Component.literal("Failed to release entity at the target position!"), true);
+            return InteractionResult.FAIL;
+        }
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        CompoundTag capturedData = stack.get(PathosDataComponents.ENTITY_CAPTURED_DATA);
+
+        if (capturedData == null || capturedData.isEmpty()) {
+            tooltipComponents.add(Component.literal("§cRight-click §7a creature to pick it up."));
+        } else if (!tooltipFlag.isAdvanced() || !tooltipFlag.hasShiftDown()) {
+            tooltipComponents.add(Component.literal("§7Hold §eShift §7for more information."));
+            tooltipComponents.add(Component.literal("§cShift + Right-click §7a block to place the captured creature."));
+        } else {
+            addEntityDetailsTooltip(capturedData, tooltipComponents);
+        }
+    }
+
+    /**
+     * Adds detailed information about the captured entity to the tooltip.
+     *
+     * @param capturedData      The NBT data of the captured entity.
+     * @param tooltipComponents The list of tooltip components to append to.
+     */
+    private void addEntityDetailsTooltip(CompoundTag capturedData, List<Component> tooltipComponents) {
+        tooltipComponents.add(Component.literal("§7=== Captured Creature Details ==="));
+
+        String entityType = capturedData.getString("id");
+        String entityName = capturedData.contains("CustomName") ?
+                capturedData.getString("CustomName") :
+                entityType.substring(entityType.lastIndexOf(":") + 1);
+
+        tooltipComponents.add(Component.literal("§7Type: §a" + entityName));
+
+        if (capturedData.contains("Health")) {
+            tooltipComponents.add(Component.literal("§7Health: §c" + capturedData.getFloat("Health")));
+        }
     }
 }

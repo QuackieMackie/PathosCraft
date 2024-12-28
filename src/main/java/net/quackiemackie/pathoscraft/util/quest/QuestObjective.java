@@ -12,13 +12,15 @@ public class QuestObjective {
             Codec.STRING.fieldOf("action").forGetter(QuestObjective::getAction),
             Codec.STRING.fieldOf("target").forGetter(QuestObjective::getTarget),
             Codec.INT.fieldOf("quantity").forGetter(QuestObjective::getQuantity),
-            Codec.INT.optionalFieldOf("progress", 0).forGetter(QuestObjective::getProgress)
+            Codec.INT.optionalFieldOf("progress", 0).forGetter(QuestObjective::getProgress),
+            Codec.BOOL.optionalFieldOf("returnItems", false).forGetter(QuestObjective::getReturnItems)
     ).apply(instance, QuestObjective::new));
 
     private final String action;
     private final String target;
     private final int quantity;
     private int progress;
+    private final boolean returnItems;
 
     /**
      * Creates a QuestObjective.
@@ -27,12 +29,14 @@ public class QuestObjective {
      * @param target the target of the action.
      * @param quantity the quantity of the target required to complete the objective.
      * @param progress initial progress of the objective.
+     * @param returnItems should items in this objective be returned after completing the quest?
      */
-    public QuestObjective(String action, String target, int quantity, int progress) {
+    public QuestObjective(String action, String target, int quantity, int progress, boolean returnItems) {
         this.action = action;
         this.target = target;
         this.quantity = quantity;
         this.progress = progress;
+        this.returnItems = returnItems;
     }
 
     public String getAction() {
@@ -55,6 +59,10 @@ public class QuestObjective {
         this.progress = progress;
     }
 
+    public boolean getReturnItems() {
+        return returnItems;
+    }
+
     @Override
     public String toString() {
         return "Objective: {" +
@@ -62,6 +70,7 @@ public class QuestObjective {
                 ", target='" + target + '\'' +
                 ", quantity=" + quantity +
                 ", progress=" + progress +
+                ", returnItems=" + returnItems +
                 '}';
     }
 }

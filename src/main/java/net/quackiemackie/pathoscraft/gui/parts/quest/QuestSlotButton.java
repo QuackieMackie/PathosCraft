@@ -98,10 +98,10 @@ public class QuestSlotButton extends Button {
                 activeQuests.remove(quest);
                 player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
                 questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+
+                PacketDistributor.sendToServer(new RemoveActiveQuest(quest));
             }
         }
-
-        PacketDistributor.sendToServer(new RemoveActiveQuest(quest));
     }
 
     /**
@@ -133,6 +133,9 @@ public class QuestSlotButton extends Button {
                     activeQuests.add(quest);
                     player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
                     questScreen.refreshQuestsUI(activeQuests, questScreen.activeButton.getQuestType());
+
+                    PacketDistributor.sendToServer(new AddActiveQuest(quest));
+
                     PathosCraft.LOGGER.info("Quest {} assigned to slot {}", quest.getQuestId(), quest.getQuestActiveSlot());
                 } else {
                     PathosCraft.LOGGER.warn("No available slots for Quest {}", quest.getQuestId());
@@ -140,7 +143,6 @@ public class QuestSlotButton extends Button {
             }
         }
 
-        PacketDistributor.sendToServer(new AddActiveQuest(quest));
     }
 
     void refreshUIAfterQuestChange(List<Quest> activeQuests) {

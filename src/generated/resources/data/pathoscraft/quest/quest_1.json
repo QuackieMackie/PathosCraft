@@ -8,6 +8,7 @@
     {
       "action": "collect",
       "quantity": 10,
+      "returnItems": true,
       "target": "minecraft:dirt"
     }
   ],

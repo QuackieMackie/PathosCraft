@@ -6,11 +6,6 @@
   "quest_name": "Side Quest 1",
   "quest_objectives": [
     {
-      "action": "kill",
-      "quantity": 10,
-      "target": "minecraft:ghast"
-    },
-    {
       "action": "collect",
       "quantity": 5,
       "target": "minecraft:dirt"
