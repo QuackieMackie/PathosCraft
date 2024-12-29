@@ -95,10 +95,10 @@ public class CreatureCrystal extends Item {
         CompoundTag capturedData = stack.get(PathosDataComponents.ENTITY_CAPTURED_DATA);
 
         if (capturedData == null || capturedData.isEmpty()) {
-            tooltipComponents.add(Component.literal("§cRight-click §7a creature to pick it up."));
+            tooltipComponents.add(Component.literal("§eRight-click §7a creature to pick it up."));
         } else if (!tooltipFlag.isAdvanced() || !tooltipFlag.hasShiftDown()) {
             tooltipComponents.add(Component.literal("§7Hold §eShift §7for more information."));
-            tooltipComponents.add(Component.literal("§cShift + Right-click §7a block to place the captured creature."));
+            tooltipComponents.add(Component.literal("§eShift + Right-click §7a block to place the captured creature."));
         } else {
             addEntityDetailsTooltip(capturedData, tooltipComponents);
         }
@@ -111,17 +111,16 @@ public class CreatureCrystal extends Item {
      * @param tooltipComponents The list of tooltip components to append to.
      */
     private void addEntityDetailsTooltip(CompoundTag capturedData, List<Component> tooltipComponents) {
-        tooltipComponents.add(Component.literal("§7=== Captured Creature Details ==="));
+        if (capturedData.contains("CustomName")) {
+            tooltipComponents.add(Component.literal("§7Name: §a" + capturedData.getString("CustomName")));
+        }
 
         String entityType = capturedData.getString("id");
-        String entityName = capturedData.contains("CustomName") ?
-                capturedData.getString("CustomName") :
-                entityType.substring(entityType.lastIndexOf(":") + 1);
-
-        tooltipComponents.add(Component.literal("§7Type: §a" + entityName));
+        String trimmedEntityType = entityType.substring(entityType.lastIndexOf(":") + 1);
+        tooltipComponents.add(Component.literal("§7Type: §a" + trimmedEntityType));
 
         if (capturedData.contains("Health")) {
-            tooltipComponents.add(Component.literal("§7Health: §c" + capturedData.getFloat("Health")));
+            tooltipComponents.add(Component.literal("§7Health: §a" + capturedData.getFloat("Health")));
         }
     }
 }
