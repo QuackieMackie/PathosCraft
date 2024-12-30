@@ -53,7 +53,7 @@ public class QuestPayloadHandler {
 
             player.setData(PathosAttachments.ACTIVE_QUESTS.get(), activeQuests);
 
-            QuestHandler.returnItems(player, quest);
+            QuestHandler.returnItemsOnRemove(player, quest);
 
             PathosCraft.LOGGER.info("Server: Removed Quest {ID: {}, Slot: {}} from Player {} Active Quests and reassigned slots.",
                     quest.getQuestId(), quest.getQuestActiveSlot(), player.getName().getString());
@@ -180,7 +180,7 @@ public class QuestPayloadHandler {
             return;
         }
 
-        QuestHandler.returnItems(player, quest);
+        QuestHandler.returnItemsOnCompletion(player, quest);
         QuestHandler.giveRewardsToPlayer(player, quest);
 
         activeQuests.remove(quest);

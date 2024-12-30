@@ -8,11 +8,13 @@
     {
       "action": "kill",
       "quantity": 10,
+      "returnItems": false,
       "target": "minecraft:chicken"
     },
     {
       "action": "kill",
       "quantity": 5,
+      "returnItems": false,
       "target": "minecraft:pig"
     }
   ],

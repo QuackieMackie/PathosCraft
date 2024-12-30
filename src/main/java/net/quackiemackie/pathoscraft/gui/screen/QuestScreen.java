@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.menu.QuestMenu;
 import net.quackiemackie.pathoscraft.gui.parts.quest.*;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
@@ -331,7 +332,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
             int questActiveSlot = quest.getQuestActiveSlot();
 
             if (questActiveSlot < 0 || questActiveSlot >= Quest.MAX_ACTIVE_QUESTS) {
-                System.err.println("Invalid quest active slot: " + questActiveSlot + " for quest " + quest.getQuestName());
+                PathosCraft.LOGGER.error("Invalid quest active slot: " + questActiveSlot + " for quest " + quest.getQuestName());
                 continue;
             }
 
@@ -381,22 +382,27 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                 .findFirst()
                 .orElse(quest);
 
-        questButton.addHoverInfo(Component.literal("§7" + displayQuest.getQuestName()));
-        questButton.addHoverInfo(Component.literal("§7" + displayQuest.getQuestDescription()));
+        questButton.addHoverInfo(Component.translatable("quest.pathoscraft.quest_" + quest.getQuestId() + ".name"));
+        questButton.addHoverInfo(Component.translatable("quest.pathoscraft.quest_" + quest.getQuestId() + ".description"));
         questButton.addHoverInfo(Component.literal(""));
-        questButton.addHoverInfo(Component.literal("§aObjectives:"));
-        for (QuestObjective objective : displayQuest.getQuestObjectives()) {
-            String target = objective.getTarget().substring(objective.getTarget().indexOf(':') + 1).replace('_', ' ');
-            questButton.addHoverInfo(Component.literal("  §8- §a" + objective.getAction() + " " + objective.getProgress() + "/" + objective.getQuantity() + " " + target));
-        }
-        questButton.addHoverInfo(Component.literal("§cRewards:"));
 
-        for (QuestReward reward : displayQuest.getQuestRewards()) {
-            String itemName = reward.getItem().substring(reward.getItem().indexOf(':') + 1).replace('_', ' ');
-            questButton.addHoverInfo(Component.literal("  §8- §c" + reward.getQuantity() + " " + itemName));
+        questButton.addHoverInfo(Component.translatable("quest.pathoscraft.objective.title"));
+        int objectiveIndex = 1; // Start with the first objective
+        for (QuestObjective objective : displayQuest.getQuestObjectives()) {
+            questButton.addHoverInfo(Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".objective_" + objectiveIndex));
+            objectiveIndex++;
         }
+
+        questButton.addHoverInfo(Component.translatable("quest.pathoscraft.reward.title"));
+        int rewardIndex = 1;
+        for (QuestReward reward : displayQuest.getQuestRewards()) {
+            questButton.addHoverInfo(Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".reward_" + rewardIndex));
+            rewardIndex++;
+        }
+
         questButton.addHoverInfo(Component.literal(""));
-        questButton.addHoverInfo(Component.literal("§7Type: §f" + (displayQuest.getQuestType() == 0 ? "Main Quest" : displayQuest.getQuestType() == 1 ? "Side Quest" : displayQuest.getQuestType() == 2 ? "Optional Quest" : "Unknown")));
-        questButton.addHoverInfo(Component.literal("§7Quest ID: §f" + displayQuest.getQuestId()));
+        questButton.addHoverInfo(Component.literal((displayQuest.getQuestType() == 0 ? Component.translatable("quest.pathoscraft.type.main").getString() : displayQuest.getQuestType() == 1 ? Component.translatable("quest.pathoscraft.type.side").getString() : displayQuest.getQuestType() == 2 ? Component.translatable("quest.pathoscraft.type.optional").getString() : Component.translatable("quest.pathoscraft.type.unknown").getString())));
+        questButton.addHoverInfo(Component.literal(Component.translatable("quest.pathoscraft.id").getString() + "§f" + displayQuest.getQuestId()));
+
     }
 }

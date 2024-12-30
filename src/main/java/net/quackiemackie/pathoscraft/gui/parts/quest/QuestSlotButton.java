@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -15,6 +17,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.gui.screen.QuestScreen;
+import net.quackiemackie.pathoscraft.util.handlers.client.ToolTipHandler;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.AddActiveQuest;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.RemoveActiveQuest;
@@ -86,10 +89,10 @@ public class QuestSlotButton extends Button {
      * Handles removing a quest from the active list upon right-click.
      *
      * @brief When a quest is right-clicked, it is removed from the player's
-     *        active quest list, and both the client and server are updated
-     *        to reflect this change.
-     *        The UI is refreshed to display the
-     *        updated list of active quests.
+     * active quest list, and both the client and server are updated
+     * to reflect this change.
+     * The UI is refreshed to display the
+     * updated list of active quests.
      */
     private void handleRightClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         Quest quest = this.getQuest();
@@ -108,8 +111,8 @@ public class QuestSlotButton extends Button {
      * Handles accepting rewards from completed quests upon left-click.
      *
      * @brief This method processes the action of accepting rewards for quests that
-     *        have been completed. It updates the completed quests data attachment and
-     *        sends the necessary payload to the server to execute the associated logic.
+     * have been completed. It updates the completed quests data attachment and
+     * sends the necessary payload to the server to execute the associated logic.
      */
     private void handleLeftClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         Quest quest = this.getQuest();
@@ -184,10 +187,25 @@ public class QuestSlotButton extends Button {
 
         renderItem(itemStack, itemX, itemY, guiGraphics);
 
-        if (this.isHovered()) {
-            if (!hoverInfo.isEmpty()) {
-                guiGraphics.renderTooltip(Minecraft.getInstance().font, hoverInfo, ItemStack.EMPTY.getTooltipImage(), mouseX, mouseY);
-            }
+        if (this.isHovered() && !hoverInfo.isEmpty()) {
+            List<ClientTooltipComponent> tooltipComponents = hoverInfo.stream()
+                    .map(component -> ClientTooltipComponent.create(component.getVisualOrderText()))
+                    .toList();
+
+            ClientTooltipPositioner positioner = (screenWidth, screenHeight, tooltipMouseX, tooltipMouseY, tooltipWidth, tooltipHeight) -> {
+                int x = Math.min(screenWidth - tooltipWidth - 10, tooltipMouseX + 10);
+                int y = Math.min(screenHeight - tooltipHeight - 10, tooltipMouseY - 20);
+                return new org.joml.Vector2i(Math.max(10, x), Math.max(10, y));
+            };
+
+            ToolTipHandler.renderCustomTooltip(
+                    minecraft.font,           // Font used for rendering text
+                    tooltipComponents,        // Converted tooltip components
+                    guiGraphics,              // Graphics context
+                    positioner,               // Tooltip positioner
+                    mouseX,                   // Current mouse X position (method parameter)
+                    mouseY                    // Current mouse Y position (method parameter)
+            );
         }
     }
 

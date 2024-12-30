@@ -40,5 +40,6 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new PathosDataMapProvider(packOutput, lookupProvider));
 
         generator.addProvider(event.includeServer(), new PathosDataPackProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new PathosLangProvider(packOutput, PathosCraft.MOD_ID, "en_us"));
     }
 }

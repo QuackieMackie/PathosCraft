@@ -343,12 +343,31 @@ public class QuestHandler {
      *
      * @type Payload
      */
-    public static void returnItems(Player player, Quest quest) {
+    public static void returnItemsOnRemove(Player player, Quest quest) {
         for (QuestObjective objective : quest.getQuestObjectives()) {
             if ("collect".equals(objective.getAction())) {
                 int itemsToReturn = objective.getProgress();
                 if (itemsToReturn > 0) {
                     giveItemsToPlayer(player, objective.getTarget(), itemsToReturn);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns items to the player for eligible quest objectives.
+     *
+     * @param player the player to whom the items are returned.
+     * @param quest  the quest containing the objectives to process.
+     */
+    public static void returnItemsOnCompletion(Player player, Quest quest) {
+        for (QuestObjective objective : quest.getQuestObjectives()) {
+            if ("collect".equals(objective.getAction()) && objective.getReturnItems()) {
+                int itemsToReturn = objective.getProgress();
+                if (itemsToReturn > 0) {
+                    giveItemsToPlayer(player, objective.getTarget(), itemsToReturn); // Return specific items
+                    PathosCraft.LOGGER.info("Returned {} x{} to Player {} for objective: {}",
+                            objective.getTarget(), itemsToReturn, player.getName().getString(), objective);
                 }
             }
         }

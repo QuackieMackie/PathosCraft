@@ -13,7 +13,7 @@ public class QuestObjective {
             Codec.STRING.fieldOf("target").forGetter(QuestObjective::getTarget),
             Codec.INT.fieldOf("quantity").forGetter(QuestObjective::getQuantity),
             Codec.INT.optionalFieldOf("progress", 0).forGetter(QuestObjective::getProgress),
-            Codec.BOOL.optionalFieldOf("returnItems", false).forGetter(QuestObjective::getReturnItems)
+            Codec.BOOL.fieldOf("returnItems").forGetter(QuestObjective::getReturnItems)
     ).apply(instance, QuestObjective::new));
 
     private final String action;

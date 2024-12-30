@@ -77,8 +77,18 @@ public class PathosQuests {
 
             new Quest(7, "Optional Quest 2", "Description for test quest 7.", "minecraft:gold_ingot", 2, 0, 1, ACTIVE_QUEST_SLOT,
                     List.of(new QuestObjective("collect", "minecraft:dirt", 5, DEFAULT_PROGRESS, true)),
-                    List.of(new QuestReward("give", "minecraft:diamond", 1)))
+                    List.of(new QuestReward("give", "minecraft:diamond", 1))),
+
+            new Quest(8, "Main Quest 5", "Test Quest 8", "pathoscraft:animated_item", 0, 4, 4, ACTIVE_QUEST_SLOT,
+                    List.of(new QuestObjective("collect", "minecraft:diamond", 5, DEFAULT_PROGRESS, true),
+                            new QuestObjective("collect", "minecraft:iron_ingot", 10, DEFAULT_PROGRESS, true),
+                            new QuestObjective("collect", "minecraft:gold_ingot", 10, DEFAULT_PROGRESS, false)),
+                    List.of(new QuestReward("give", "minecraft:gold_ingot", 1)))
     );
+
+    public static List<Quest> getQuests() {
+        return QUESTS;
+    }
 
     /**
      * Bootstrap method dynamically generates quests and uses dynamically generated ResourceKeys.

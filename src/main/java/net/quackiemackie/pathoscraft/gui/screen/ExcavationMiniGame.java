@@ -39,7 +39,7 @@ public class ExcavationMiniGame extends Screen {
     private boolean pauseState = false;
 
     public ExcavationMiniGame(ItemStack rewardItem) {
-        super(Component.translatable("screen.widget.pathoscraft.excavation_mini_game.title"));
+        super(Component.translatable("screen.title.pathoscraft.excavation_mini_game"));
         this.rewardItem = rewardItem;
         generateBoard();
     }

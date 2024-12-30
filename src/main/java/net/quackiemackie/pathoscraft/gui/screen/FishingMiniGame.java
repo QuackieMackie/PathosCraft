@@ -39,7 +39,7 @@ public class FishingMiniGame extends Screen {
     private final List<FishingSequenceButton> buttonWidgets = new ArrayList<>();
 
     public FishingMiniGame() {
-        super(Component.translatable("screen.widget.pathoscraft.fishing_mini_game.title"));
+        super(Component.translatable("screen.title.pathoscraft.fishing_mini_game"));
         generateSequence();
     }
 
@@ -195,7 +195,7 @@ public class FishingMiniGame extends Screen {
 
         if (waitingToStart) {
             if (!buttonWidgets.isEmpty()) {
-                FishingSequenceButton topButton = buttonWidgets.get(0);
+                FishingSequenceButton topButton = buttonWidgets.getFirst();
                 Component startMessage = Component.translatable("screen.widget.pathoscraft.fishing_mini_game.start_message");
                 int messageX = this.width / 2 - this.font.width(startMessage) / 2;
                 int messageY = topButton.getY() - this.font.lineHeight - 5;
@@ -227,7 +227,7 @@ public class FishingMiniGame extends Screen {
         guiGraphics.drawString(this.font, Component.translatable("screen.widget.pathoscraft.fishing_mini_game.score", score).getString(), 10, scoreY, 0xFFFFFF);
         guiGraphics.drawString(this.font, Component.translatable("screen.widget.pathoscraft.fishing_mini_game.round", currentRound).getString(), 10, roundY, 0xFFFFFF);
         if (!buttonWidgets.isEmpty()) {
-            FishingSequenceButton topButton = buttonWidgets.get(0);
+            FishingSequenceButton topButton = buttonWidgets.getFirst();
             String matchMessage = Component.translatable("screen.widget.pathoscraft.fishing_mini_game.match_key").getString();
             int messageX = topButton.getX() - this.font.width(matchMessage) - 5;
             int messageY = topButton.getY() + (topButton.getHeight() / 2) - (this.font.lineHeight / 2);

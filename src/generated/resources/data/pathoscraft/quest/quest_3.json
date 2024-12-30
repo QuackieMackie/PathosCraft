@@ -8,6 +8,7 @@
     {
       "action": "kill",
       "quantity": 10,
+      "returnItems": false,
       "target": "minecraft:skeleton"
     },
     {
