@@ -17,7 +17,6 @@ public class PathosLangProvider extends LanguageProvider {
         addQuestTranslations();
     }
 
-
     private void addQuestTranslations() {
         this.add("quest.pathoscraft.objective.title", "§aObjectives:");
         this.add("quest.pathoscraft.reward.title", "§cRewards:");
@@ -26,6 +25,7 @@ public class PathosLangProvider extends LanguageProvider {
         this.add("quest.pathoscraft.type.side", "§7Type: §fSide Quest");
         this.add("quest.pathoscraft.type.optional", "§7Type: §fOptional Quest");
         this.add("quest.pathoscraft.type.unknown", "§7Type: §fUnknown");
+        this.add("quest.pathoscraft.return_item.consume", "§8[§cConsumed§8]");
 
         if (PathosQuests.getQuests() == null || PathosQuests.getQuests().isEmpty()) {
             PathosCraft.LOGGER.warn("PathosQuests.QUESTS is empty or null! No translations will be generated.");
@@ -33,7 +33,7 @@ public class PathosLangProvider extends LanguageProvider {
         }
 
         for (Quest quest : PathosQuests.getQuests()) {
-            PathosCraft.LOGGER.info("Processing quest: " + quest.getQuestId());
+            PathosCraft.LOGGER.info("Processing quest: {}", quest.getQuestId());
             String baseKey = "quest." + PathosCraft.MOD_ID + ".quest_" + quest.getQuestId();
 
             this.add(baseKey + ".name", "§7" + quest.getQuestName());
@@ -41,33 +41,13 @@ public class PathosLangProvider extends LanguageProvider {
 
             int index = 1;
             for (var objective : quest.getQuestObjectives()) {
-                if ("collect".equalsIgnoreCase(objective.getAction())) {
-                    String returnItems = "Returns";
-                    if (!objective.getReturnItems()) {
-                        returnItems = "Consumed";
-                    }
-                    this.add(baseKey + ".objective_" + index,
-                            String.format("§8- §a%s %s 0/%d §8[§c%s§8]",
-                                    objective.getAction(),
-                                    translateTarget(objective.getTarget()),
-                                    objective.getQuantity(),
-                                    returnItems));
-                } else {
-                    this.add(baseKey + ".objective_" + index,
-                            String.format("§8- §a%s %s 0/%d",
-                                    objective.getAction(),
-                                    translateTarget(objective.getTarget()),
-                                    objective.getQuantity()));
-                }
+                this.add(baseKey + ".objective_" + index, String.format("§8- §a%s %s", objective.getAction(), translate(objective.getTarget())));
                 index++;
             }
 
             index = 1;
             for (var reward : quest.getQuestRewards()) {
-                this.add(baseKey + ".reward_" + index,
-                        String.format("§8- §c%d %s",
-                                reward.getQuantity(),
-                                translateItemName(reward.getItem())));
+                this.add(baseKey + ".reward_" + index, String.format("§8- §c%d %s", reward.getQuantity(), translate(reward.getItem())));
                 index++;
             }
         }
@@ -179,11 +159,7 @@ public class PathosLangProvider extends LanguageProvider {
         this.add("screen.widget.pathoscraft.excavation_mini_game.instructions", "§5Excavation Mini-Game Instructions§r\n§aGoal: Uncover valuable rewards by mining squares on the grid!§r\n§6Be strategic: Each square could contain a hidden reward or nothing at all.§r\n§8Your pickaxes represent your lives—run out of pickaxes, and the game ends.§r\n\n§5How to Play:§r\n§7Grid: Click squares on the grid to mine.§r\n§7Rewards: Uncover hidden rewards like ore or treasure to collect them.§r\n§7Empty Squares: If the square is empty, your pickaxe breaks and you lose a life.§r\n\n§2Rewards:§r\n§7Keep whatever rewards you uncover.§r");
     }
 
-    private static String translateTarget(String target) {
-        return target.substring(target.indexOf(':') + 1).replace('_', ' ');
-    }
-
-    private static String translateItemName(String itemName) {
-        return itemName.substring(itemName.indexOf(':') + 1).replace('_', ' ');
+    private static String translate(String string) {
+        return string.substring(string.indexOf(':') + 1).replace('_', ' ');
     }
 }

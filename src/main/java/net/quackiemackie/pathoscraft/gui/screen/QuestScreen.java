@@ -142,23 +142,30 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * Initialize and adds the tab buttons to the screen.
      */
     private void initTabButtons() {
+        int rightAnchorX = this.width / 2 - 87;
+        int leftAnchorX = this.width / 2 + 87;
+        int mainQuestButtonWidth = font.width(Component.translatable("screen.widget.pathoscraft.quest_menu.main_quest_button")) + 20;
+        int sideQuestButtonWidth = font.width(Component.translatable("screen.widget.pathoscraft.quest_menu.side_quest_button")) + 20;
+        int optionalQuestButtonWidth = font.width(Component.translatable("screen.widget.pathoscraft.quest_menu.optional_quest_button")) + 20;
+        int activeQuestButtonWidth = font.width(Component.translatable("screen.widget.pathoscraft.quest_menu.active_quest_button")) + 20;
+
         // Initialize and add main quest button
-        mainQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 105, 95, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.main_quest_button"), true, 0, button -> {
+        mainQuestButton = new QuestTabButton(rightAnchorX - mainQuestButtonWidth, this.height / 2 - 105, mainQuestButtonWidth, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.main_quest_button"), true, 0, button -> {
             setActiveButton(mainQuestButton);
         }, false);
 
         // Initialize and add side quest button
-        sideQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 75, 95, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.side_quest_button"), false, 1, button -> {
+        sideQuestButton = new QuestTabButton(rightAnchorX - sideQuestButtonWidth, this.height / 2 - 75, sideQuestButtonWidth, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.side_quest_button"), false, 1, button -> {
             setActiveButton(sideQuestButton);
         }, false);
 
         // Initialize and add optional quest button
-        optionalQuestButton = new QuestTabButton(this.width / 2 - 182, this.height / 2 - 45, 95, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.optional_quest_button"), false, 2, button -> {
+        optionalQuestButton = new QuestTabButton(rightAnchorX - optionalQuestButtonWidth, this.height / 2 - 45, optionalQuestButtonWidth, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.optional_quest_button"), false, 2, button -> {
             setActiveButton(optionalQuestButton);
         }, false);
 
         // Initialize and add active quests button
-        activeQuestsButton = new QuestTabButton(this.width / 2 + 87, this.height / 2 - 105, 95, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.active_quest_button"), false, 3, button -> {
+        activeQuestsButton = new QuestTabButton(leftAnchorX, this.height / 2 - 105, activeQuestButtonWidth, 20, Component.translatable("screen.widget.pathoscraft.quest_menu.active_quest_button"), false, 3, button -> {
             setActiveButton(activeQuestsButton);
         }, true);
 
@@ -290,7 +297,7 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
 
             // Create quest button based on its state (active/completed/inactive)
             ItemStack questItemStack = createQuestIconStack(quest);
-            if (activeQuest != null && QuestHandler.isQuestObjectiveCompleted(activeQuest)) {
+            if (activeQuest != null && QuestHandler.isQuestObjectiveCompleted(activeQuest) || activeQuest != null && QuestHandler.isQuestPartiallyCompleted(activeQuest)) {
                 questButton = new QuestActiveSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, activeQuest, e -> {});
             } else {
                 questButton = new QuestSlotButton(this.leftPos + x, this.topPos + y, Component.empty(), questItemStack, quest, e -> {});
@@ -387,9 +394,13 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         questButton.addHoverInfo(Component.literal(""));
 
         questButton.addHoverInfo(Component.translatable("quest.pathoscraft.objective.title"));
-        int objectiveIndex = 1; // Start with the first objective
+        int objectiveIndex = 1;
         for (QuestObjective objective : displayQuest.getQuestObjectives()) {
-            questButton.addHoverInfo(Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".objective_" + objectiveIndex));
+            if (!objective.getReturnItems() && objective.getAction().equals("collect")) {
+                questButton.addHoverInfo(Component.literal(Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".objective_" + objectiveIndex).getString() + " " + objective.getProgress() + "/" +  objective.getQuantity() + " " + Component.translatable("quest.pathoscraft.return_item.consume").getString()));
+            } else {
+                questButton.addHoverInfo(Component.literal(Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".objective_" + objectiveIndex).getString() + " " + objective.getProgress() + "/" +  objective.getQuantity()));
+            }
             objectiveIndex++;
         }
 

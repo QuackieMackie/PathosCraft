@@ -96,6 +96,7 @@ public class QuestSlotButton extends Button {
      */
     private void handleRightClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         Quest quest = this.getQuest();
+
         if (minecraft.screen instanceof QuestScreen questScreen) {
             if (activeQuests.contains(quest)) {
                 activeQuests.remove(quest);

@@ -192,8 +192,15 @@ public class QuestActiveSlotButton extends QuestSlotButton {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
         Quest quest = this.getQuest();
+
+        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+
+        boolean isQuestActive = activeQuests.contains(quest);
         boolean isQuestObjectiveCompleted = QuestHandler.isQuestObjectiveCompleted(quest);
+        boolean isQuestCompleted = QuestHandler.isQuestCompleted(player, quest);
 
         int itemX = this.getX() + (this.width / 2);
         int itemY = this.getY() + (this.height / 2);
@@ -202,7 +209,14 @@ public class QuestActiveSlotButton extends QuestSlotButton {
         if (isQuestObjectiveCompleted) {
             backgroundColor = 0x5000FF00; // Green for objective completed
             renderBackground(guiGraphics, itemX, itemY, backgroundColor);
+        } else if (isQuestActive) {
+            backgroundColor = 0x50FFA500; // Orange for active
+            renderBackground(guiGraphics, itemX, itemY, backgroundColor);
+        } else if (isQuestCompleted) {
+            backgroundColor = 0x90000000; // Grey for completed
+            renderBackground(guiGraphics, itemX, itemY, backgroundColor);
         }
+
         renderItem(itemStack, itemX, itemY, guiGraphics);
 
         if (this.isHovered() && heldQuest == null) {

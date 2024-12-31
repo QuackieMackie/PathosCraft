@@ -119,6 +119,23 @@ public class QuestHandler {
     }
 
     /**
+     * Checks if a quest is partially completed based on its objectives.
+     *
+     * A quest is considered partially completed if at least one of its objectives
+     * has progress greater than zero, but not all objectives are fully completed.
+     *
+     * @param quest the quest to be checked
+     * @return true if the quest is partially completed, false otherwise
+     *
+     * @type Helper
+     */
+    public static boolean isQuestPartiallyCompleted(Quest quest) {
+        boolean hasProgress = quest.getQuestObjectives().stream().anyMatch(objective -> objective.getProgress() > 0);
+        boolean notFullyCompleted = quest.getQuestObjectives().stream().anyMatch(objective -> objective.getProgress() < objective.getQuantity());
+        return hasProgress && notFullyCompleted;
+    }
+
+    /**
      * Checks if the quest is already on the completed list.
      *
      * @param player the player whose completed quests are being checked
