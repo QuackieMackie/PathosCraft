@@ -389,31 +389,38 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
                 .findFirst()
                 .orElse(quest);
 
-        questButton.addHoverInfo(Component.translatable("quest.pathoscraft.quest_" + quest.getQuestId() + ".name"));
-        questButton.addHoverInfo(Component.translatable("quest.pathoscraft.quest_" + quest.getQuestId() + ".description"));
+        String name = Component.translatable("quest.pathoscraft.quest_" + quest.getQuestId() + ".name").getString();
+        String description = Component.translatable("quest.pathoscraft.quest_" + quest.getQuestId() + ".description").getString();
+        questButton.addHoverInfo(Component.literal(String.format("§7%s", name)));
+        questButton.addHoverInfo(Component.literal(String.format("§7%s", description)));
         questButton.addHoverInfo(Component.literal(""));
 
-        questButton.addHoverInfo(Component.translatable("quest.pathoscraft.objective.title"));
+        questButton.addHoverInfo(Component.literal(String.format("§a%s", Component.translatable("quest.pathoscraft.objective.title").getString())));
         int objectiveIndex = 1;
-        for (QuestObjective objective : displayQuest.getQuestObjectives()) {
-            if (!objective.getReturnItems() && objective.getAction().equals("collect")) {
-                questButton.addHoverInfo(Component.literal(Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".objective_" + objectiveIndex).getString() + " " + objective.getProgress() + "/" +  objective.getQuantity() + " " + Component.translatable("quest.pathoscraft.return_item.consume").getString()));
+        for (QuestObjective questObjective : displayQuest.getQuestObjectives()) {
+            String action = Component.translatable("quest.pathoscraft.objective.action." + questObjective.getAction()).getString();
+            String target = Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".objective_" + objectiveIndex + ".target").getString();
+            String progress = questObjective.getProgress() + "/" +  questObjective.getQuantity();
+            String consume = Component.translatable("quest.pathoscraft.return_item.consume").getString();
+
+            if (!questObjective.getReturnItems() && questObjective.getAction().equals("collect")) {
+                questButton.addHoverInfo(Component.literal(String.format("§8- §a%s %s %s %s", action, target, progress, consume)));
             } else {
-                questButton.addHoverInfo(Component.literal(Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".objective_" + objectiveIndex).getString() + " " + objective.getProgress() + "/" +  objective.getQuantity()));
+                questButton.addHoverInfo(Component.literal(String.format("§8- §a%s %s %s", action, target, progress)));
             }
             objectiveIndex++;
         }
 
-        questButton.addHoverInfo(Component.translatable("quest.pathoscraft.reward.title"));
+        questButton.addHoverInfo(Component.literal(String.format("§c%s", Component.translatable("quest.pathoscraft.reward.title").getString())));
         int rewardIndex = 1;
-        for (QuestReward reward : displayQuest.getQuestRewards()) {
-            questButton.addHoverInfo(Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".reward_" + rewardIndex));
+        for (QuestReward questReward : displayQuest.getQuestRewards()) {
+            String reward = Component.translatable("quest.pathoscraft.quest_" + displayQuest.getQuestId() + ".reward_" + rewardIndex + ".item").getString();
+            questButton.addHoverInfo(Component.literal(String.format("§8- §c%d %s", questReward.getQuantity(), reward)));
             rewardIndex++;
         }
-
         questButton.addHoverInfo(Component.literal(""));
-        questButton.addHoverInfo(Component.literal((displayQuest.getQuestType() == 0 ? Component.translatable("quest.pathoscraft.type.main").getString() : displayQuest.getQuestType() == 1 ? Component.translatable("quest.pathoscraft.type.side").getString() : displayQuest.getQuestType() == 2 ? Component.translatable("quest.pathoscraft.type.optional").getString() : Component.translatable("quest.pathoscraft.type.unknown").getString())));
-        questButton.addHoverInfo(Component.literal(Component.translatable("quest.pathoscraft.id").getString() + "§f" + displayQuest.getQuestId()));
+        questButton.addHoverInfo(Component.literal(String.format("§8%s §7%s", Component.translatable("quest.pathoscraft.type").getString(), (displayQuest.getQuestType() == 0 ? Component.translatable("quest.pathoscraft.type.main").getString() : displayQuest.getQuestType() == 1 ? Component.translatable("quest.pathoscraft.type.side").getString() : displayQuest.getQuestType() == 2 ? Component.translatable("quest.pathoscraft.type.optional").getString() : Component.translatable("quest.pathoscraft.type.unknown").getString()))));
+        questButton.addHoverInfo(Component.literal(String.format("§8%s §7%d", Component.translatable("quest.pathoscraft.id").getString(), displayQuest.getQuestId())));
 
     }
 }

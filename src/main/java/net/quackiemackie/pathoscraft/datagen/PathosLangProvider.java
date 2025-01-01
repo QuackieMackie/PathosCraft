@@ -18,14 +18,17 @@ public class PathosLangProvider extends LanguageProvider {
     }
 
     private void addQuestTranslations() {
-        this.add("quest.pathoscraft.objective.title", "§aObjectives:");
-        this.add("quest.pathoscraft.reward.title", "§cRewards:");
-        this.add("quest.pathoscraft.id", "§7Quest ID: ");
-        this.add("quest.pathoscraft.type.main", "§7Type: §fMain Quest");
-        this.add("quest.pathoscraft.type.side", "§7Type: §fSide Quest");
-        this.add("quest.pathoscraft.type.optional", "§7Type: §fOptional Quest");
-        this.add("quest.pathoscraft.type.unknown", "§7Type: §fUnknown");
+        this.add("quest.pathoscraft.objective.title", "Objectives:");
+        this.add("quest.pathoscraft.reward.title", "Rewards:");
+        this.add("quest.pathoscraft.id", "Quest ID:");
+        this.add("quest.pathoscraft.type", "Type:");
+        this.add("quest.pathoscraft.type.main", "Main Quest");
+        this.add("quest.pathoscraft.type.side", "Side Quest");
+        this.add("quest.pathoscraft.type.optional", "Optional Quest");
+        this.add("quest.pathoscraft.type.unknown", "Unknown");
         this.add("quest.pathoscraft.return_item.consume", "§8[§cConsumed§8]");
+        this.add("quest.pathoscraft.objective.action.collect", "collect");
+        this.add("quest.pathoscraft.objective.action.kill", "kill");
 
         if (PathosQuests.getQuests() == null || PathosQuests.getQuests().isEmpty()) {
             PathosCraft.LOGGER.warn("PathosQuests.QUESTS is empty or null! No translations will be generated.");
@@ -36,18 +39,18 @@ public class PathosLangProvider extends LanguageProvider {
             PathosCraft.LOGGER.info("Processing quest: {}", quest.getQuestId());
             String baseKey = "quest." + PathosCraft.MOD_ID + ".quest_" + quest.getQuestId();
 
-            this.add(baseKey + ".name", "§7" + quest.getQuestName());
-            this.add(baseKey + ".description", "§7" + quest.getQuestDescription());
+            this.add(baseKey + ".name", quest.getQuestName());
+            this.add(baseKey + ".description", quest.getQuestDescription());
 
             int index = 1;
             for (var objective : quest.getQuestObjectives()) {
-                this.add(baseKey + ".objective_" + index, String.format("§8- §a%s %s", objective.getAction(), translate(objective.getTarget())));
+                this.add(baseKey + ".objective_" + index + ".target", String.format("%s", translate(objective.getTarget())));
                 index++;
             }
 
             index = 1;
             for (var reward : quest.getQuestRewards()) {
-                this.add(baseKey + ".reward_" + index, String.format("§8- §c%d %s", reward.getQuantity(), translate(reward.getItem())));
+                this.add(baseKey + ".reward_" + index + ".item", String.format("%s", translate(reward.getItem())));
                 index++;
             }
         }
