@@ -66,7 +66,8 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * @param graphics the graphics context used for rendering.
      */
     private void drawPageNumber(GuiGraphics graphics) {
-        String pageText = "Page " + currentPage + "/" + maxPages;
+        String pageTranslation = Component.translatable("screen.widget.pathoscraft.quest_menu.page").getString();
+        String pageText = String.format("%s %d/%d", pageTranslation, currentPage, maxPages);
         int textWidth = Minecraft.getInstance().font.width(pageText);
         int xPos = this.leftPos + (this.imageWidth / 2) - (textWidth / 2);
         int yPos = this.topPos + this.imageHeight + 8;
@@ -179,8 +180,14 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     }
 
     private int calculateMaxPagesForTab(QuestTabButton button) {
-        int totalQuests = QuestHandler.getQuestsByType(button.getQuestType()).size();
-        return (int) Math.ceil((double) totalQuests / MAX_QUESTS_PER_PAGE);
+        List<Quest> quests = QuestHandler.getQuestsByType(button.getQuestType());
+
+        int maxSlot = quests.stream()
+                .mapToInt(Quest::getQuestSlot)
+                .max()
+                .orElse(0);
+
+        return (maxSlot == 0) ? 1 : (int) Math.ceil((double) (maxSlot + 1) / MAX_QUESTS_PER_PAGE);
     }
 
     /**
@@ -238,8 +245,8 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
         List<Quest> filteredQuests = QuestHandler.getQuestsByType(questType);
         List<Quest> activeQuests = ((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get());
 
-        // Update maxPages using the filtered quests and calculate dynamically
-        maxPages = (int) Math.ceil((double) filteredQuests.size() / MAX_QUESTS_PER_PAGE);
+        // Recalculate the total number of pages based on the tab type
+        maxPages = calculateMaxPagesForTab(activeButton);
 
         // Adjust page buttons' enabled states
         if (activeButton != activeQuestsButton) {
@@ -282,14 +289,21 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
     private void questTabBuilder(List<Quest> filteredQuests, List<Quest> activeQuests) {
         Map<Integer, Quest> activeQuestMap = QuestHandler.getActiveQuestMap(activeQuests);
 
-        int start = (currentPage - 1) * MAX_QUESTS_PER_PAGE;
-        int end = Math.min(start + MAX_QUESTS_PER_PAGE, filteredQuests.size());
+        int startSlot = (currentPage - 1) * MAX_QUESTS_PER_PAGE;
+        int endSlot = startSlot + MAX_QUESTS_PER_PAGE;
 
-        for (int index = start; index < end; index++) {
-            Quest quest = filteredQuests.get(index);
-            int pageIndex = index % MAX_QUESTS_PER_PAGE;
-            int x = 8 + (pageIndex % 9) * 18;
-            int y = 18 + (pageIndex / 9) * 18;
+        for (Quest quest : filteredQuests) {
+            int questSlot = quest.getQuestSlot();
+
+            // Skip quests that do not belong to the current page
+            if (questSlot < startSlot || questSlot >= endSlot) {
+                continue;
+            }
+
+            // Calculate screen coordinates based on questSlot (slot within the page)
+            int pageRelativeSlot = questSlot - startSlot; // Slot relative to the current page
+            int x = 8 + (pageRelativeSlot % 9) * 18;
+            int y = 18 + (pageRelativeSlot / 9) * 18;
 
             // Get quest from active list or default to existing quest
             Quest activeQuest = activeQuestMap.get(quest.getQuestId());

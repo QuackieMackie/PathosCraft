@@ -34,9 +34,7 @@ public class PathosLangProvider extends LanguageProvider {
             PathosCraft.LOGGER.warn("PathosQuests.QUESTS is empty or null! No translations will be generated.");
             return;
         }
-
         for (Quest quest : PathosQuests.getQuests()) {
-            PathosCraft.LOGGER.info("Processing quest: {}", quest.getQuestId());
             String baseKey = "quest." + PathosCraft.MOD_ID + ".quest_" + quest.getQuestId();
 
             this.add(baseKey + ".name", quest.getQuestName());
@@ -54,6 +52,9 @@ public class PathosLangProvider extends LanguageProvider {
                 index++;
             }
         }
+
+        int questCount = PathosQuests.getQuests().size();
+        PathosCraft.LOGGER.info("Processed [{}] quests.", questCount);
     }
 
     /**
@@ -136,10 +137,10 @@ public class PathosLangProvider extends LanguageProvider {
         this.add("screen.widget.pathoscraft.quest_menu.optional_quest_button", "Optional Quests");
         this.add("screen.widget.pathoscraft.quest_menu.active_quest_button", "Active Quests");
         this.add("screen.widget.pathoscraft.quest_menu.information_button.tooltip", "§5Quest System Guide:\n§aGreen: Quests with completed objectives.\n§6Orange: Quests on your active list.\n§8Grey: Quests that have been completed.\n\n§5Controls:\n• §7Left-click: Claim completed quests rewards and activate quests.\n• §7Right-click: Disable active quests.\n• §7Middle-click: Swap quests.\n\nTip: Hover over quests for details!");
-        this.add("screen.widget.pathoscraft.quest_menu.page_number", "Page %1$s/%2$s");
+        this.add("screen.widget.pathoscraft.quest_menu.page", "Page");
 
         // Fishing Minigame
-        this.add("screen.title.pathoscraft.fishing_mini_game", "Fishing Mini Game");
+        this.add("screen.title.pathoscraft.fishing_mini_game", "Fishing Mini-Game");
         this.add("screen.widget.pathoscraft.fishing_mini_game.match_key", "Match this key >");
         this.add("screen.widget.pathoscraft.fishing_mini_game.score", "Score: %s");
         this.add("screen.widget.pathoscraft.fishing_mini_game.round", "Round: %s");
@@ -160,6 +161,8 @@ public class PathosLangProvider extends LanguageProvider {
         this.add("screen.widget.pathoscraft.excavation_mini_game.better_luck_next_time", "Better luck next time!");
         this.add("screen.widget.pathoscraft.excavation_mini_game.exit_prompt", "Press '%s' or 'ESC' to exit and claim your rewards.");
         this.add("screen.widget.pathoscraft.excavation_mini_game.instructions", "§5Excavation Mini-Game Instructions§r\n§aGoal: Uncover valuable rewards by mining squares on the grid!§r\n§6Be strategic: Each square could contain a hidden reward or nothing at all.§r\n§8Your pickaxes represent your lives—run out of pickaxes, and the game ends.§r\n\n§5How to Play:§r\n§7Grid: Click squares on the grid to mine.§r\n§7Rewards: Uncover hidden rewards like ore or treasure to collect them.§r\n§7Empty Squares: If the square is empty, your pickaxe breaks and you lose a life.§r\n\n§2Rewards:§r\n§7Keep whatever rewards you uncover.§r");
+
+        this.add("screen.title.pathoscraft.lumbering_mini_game", "Lumbering Mini-Game");
     }
 
     private static String translate(String string) {

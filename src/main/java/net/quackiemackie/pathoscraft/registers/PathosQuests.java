@@ -83,7 +83,13 @@ public class PathosQuests {
                     List.of(new QuestObjective("collect", "minecraft:diamond", 5, DEFAULT_PROGRESS, true),
                             new QuestObjective("collect", "minecraft:iron_ingot", 10, DEFAULT_PROGRESS, true),
                             new QuestObjective("collect", "minecraft:gold_ingot", 10, DEFAULT_PROGRESS, false)),
-                    List.of(new QuestReward("give", "minecraft:gold_ingot", 1)))
+                    List.of(new QuestReward("give", "minecraft:gold_ingot", 1))),
+
+            new Quest(9, "Main Quest 5", "Test Quest 8", "pathoscraft:creature_crystal", 0, 4, 100, ACTIVE_QUEST_SLOT,
+                      List.of(new QuestObjective("collect", "minecraft:diamond", 5, DEFAULT_PROGRESS, true),
+                            new QuestObjective("collect", "minecraft:iron_ingot", 10, DEFAULT_PROGRESS, true),
+                            new QuestObjective("collect", "minecraft:gold_ingot", 10, DEFAULT_PROGRESS, false)),
+            List.of(new QuestReward("give", "minecraft:gold_ingot", 1)))
     );
 
     public static List<Quest> getQuests() {
