@@ -13,7 +13,7 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.item.PathosItems;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
 import net.quackiemackie.pathoscraft.registers.PathosAttachments;
-import net.quackiemackie.pathoscraft.util.handlers.minigames.ExcavationHandler;
+import net.quackiemackie.pathoscraft.util.handlers.minigames.LumberingHandler;
 import net.quackiemackie.pathoscraft.util.quest.Quest;
 
 import java.util.ArrayList;
@@ -28,7 +28,9 @@ public class TestItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = PathosItems.RAW_SADNESS.get().getDefaultInstance();
         //FishingHandler.startMiniGame(player);
-        ExcavationHandler.startMiniGame(player, stack);
+        //ExcavationHandler.startMiniGame(player, stack);
+        LumberingHandler.startMiniGame(player);
+
         if (!level.isClientSide && player != null) {
             clearPlayerDataAttachment(player);
         }
