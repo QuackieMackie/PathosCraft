@@ -5,14 +5,17 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Random;
 
 public class LumberingMiniGame extends Screen {
 
-    private static final ResourceLocation LOG_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/oak_log.png");
+    //private static final ResourceLocation LOG_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/oak_log.png");
     private static final ResourceLocation AXE_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/item/stone_axe.png");
+    private final ItemStack logItemStack;
 
     private static final int TIMER_DURATION = 10; // Total game time in seconds
     private static final int COUNTDOWN_INITIAL_TIME = 3; // Countdown duration in seconds
@@ -45,8 +48,9 @@ public class LumberingMiniGame extends Screen {
     private int spacePressDuration = 0;
     private float progressAccelerationFactor = 1.0f;
 
-    public LumberingMiniGame() {
+    public LumberingMiniGame(ItemStack logTexture) {
         super(Component.translatable("screen.title.pathoscraft.lumbering_mini_game"));
+        this.logItemStack = logTexture;
         generateRandomArea();
     }
 
@@ -131,8 +135,14 @@ public class LumberingMiniGame extends Screen {
         int progressBarX = (this.width - progressBarWidth) / 2;
         int progressBarY = this.height / 2;
 
+        BlockItem blockItem = (BlockItem) logItemStack.getItem();
+        String rawName = blockItem.getBlock().defaultBlockState().getBlockHolder().getRegisteredName();
+        String modId = rawName.contains(":") ? rawName.split(":")[0] : "minecraft";
+        String itemName = rawName.contains(":") ? rawName.split(":")[1] : rawName;
+        ResourceLocation logTexture = ResourceLocation.fromNamespaceAndPath(modId, "textures/block/" + itemName + ".png");
+
         for (int xOffset = 0; xOffset < progressBarWidth; xOffset += 16) {
-            guiGraphics.blit(LOG_TEXTURE, progressBarX + xOffset, progressBarY, 0, 0, Math.min(16, progressBarWidth - xOffset), progressBarHeight, 16, 16);
+            guiGraphics.blit(logTexture, progressBarX + xOffset, progressBarY, 0, 0, Math.min(16, progressBarWidth - xOffset), progressBarHeight, 16, 16);
         }
 
         float interpolatedProgress = lastProgress + (progress - lastProgress) * partialTick;

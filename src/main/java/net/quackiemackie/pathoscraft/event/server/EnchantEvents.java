@@ -20,6 +20,7 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.enchantment.PathosEnchantment;
 import net.quackiemackie.pathoscraft.enchantment.effect.ExcavationMiniGameEffect;
 import net.quackiemackie.pathoscraft.enchantment.effect.FishingMiniGameEffect;
+import net.quackiemackie.pathoscraft.enchantment.effect.LumberingMiniGameEffect;
 import net.quackiemackie.pathoscraft.registers.PathosDataComponents;
 import net.quackiemackie.pathoscraft.registers.PathosTags;
 
@@ -42,6 +43,19 @@ public class EnchantEvents {
 
             if (activeMinigame) {
                 ExcavationMiniGameEffect effect = new ExcavationMiniGameEffect(1.00f);
+                effect.handleBlockMine(event);
+            }
+        }
+
+        if (event.getState().is(PathosTags.Blocks.LUMBERING_MINIGAME_BLOCKS) && EnchantmentHelper.getEnchantmentLevel(enchantmentHolder(PathosEnchantment.MINIGAME, player), player) == 1) {
+            Boolean activeMinigame = stack.get(PathosDataComponents.ACTIVE_MINIGAME_BOOL);
+            if (activeMinigame == null) {
+                activeMinigame = true;
+                stack.set(PathosDataComponents.ACTIVE_MINIGAME_BOOL, activeMinigame);
+            }
+
+            if (activeMinigame) {
+                LumberingMiniGameEffect effect = new LumberingMiniGameEffect(1.00f);
                 effect.handleBlockMine(event);
             }
         }

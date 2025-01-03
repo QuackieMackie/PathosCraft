@@ -14,6 +14,7 @@ import net.quackiemackie.pathoscraft.PathosCraft;
 public class PathosTags {
     public static class Blocks {
         public static final TagKey<Block> EXCAVATION_MINIGAME_ORES = createTag("excavation_minigame_ores");
+        public static final TagKey<Block> LUMBERING_MINIGAME_BLOCKS = createTag("lumbering_minigame_blocks");
 
         public static final TagKey<Block> SADNESS_ORE = createTag("sadness_ore");
         public static final TagKey<Block> SUNNY_ORE = createTag("sunny_ore");

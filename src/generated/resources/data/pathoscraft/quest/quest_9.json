@@ -1,0 +1,37 @@
+{
+  "quest_active_slot": 0,
+  "quest_description": "Test Quest 8",
+  "quest_icon": "pathoscraft:creature_crystal",
+  "quest_id": 9,
+  "quest_name": "Main Quest 5",
+  "quest_objectives": [
+    {
+      "action": "collect",
+      "quantity": 5,
+      "returnItems": true,
+      "target": "minecraft:diamond"
+    },
+    {
+      "action": "collect",
+      "quantity": 10,
+      "returnItems": true,
+      "target": "minecraft:iron_ingot"
+    },
+    {
+      "action": "collect",
+      "quantity": 10,
+      "returnItems": false,
+      "target": "minecraft:gold_ingot"
+    }
+  ],
+  "quest_preceding": 4,
+  "quest_rewards": [
+    {
+      "action": "give",
+      "item": "minecraft:gold_ingot",
+      "quantity": 1
+    }
+  ],
+  "quest_slot": 100,
+  "quest_type": 0
+}

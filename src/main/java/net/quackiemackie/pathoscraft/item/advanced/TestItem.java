@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.quackiemackie.pathoscraft.PathosCraft;
@@ -26,10 +27,11 @@ public class TestItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = PathosItems.RAW_SADNESS.get().getDefaultInstance();
+        ItemStack excavationStack = PathosItems.RAW_SADNESS.get().getDefaultInstance();
+        ItemStack lumberingStack = Blocks.CHERRY_LOG.asItem().getDefaultInstance();
         //FishingHandler.startMiniGame(player);
-        //ExcavationHandler.startMiniGame(player, stack);
-        LumberingHandler.startMiniGame(player);
+        //ExcavationHandler.startMiniGame(player, excavationStack);
+        LumberingHandler.startMiniGame(player, lumberingStack);
 
         if (!level.isClientSide && player != null) {
             clearPlayerDataAttachment(player);

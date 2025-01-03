@@ -6,8 +6,10 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.quackiemackie.pathoscraft.PathosCraft;
 import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.StartExcavationMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.StartFishingMiniGame;
+import net.quackiemackie.pathoscraft.network.payload.minigames.lumbering.StartLumberingMiniGame;
 import net.quackiemackie.pathoscraft.util.handlers.minigames.ExcavationHandler;
 import net.quackiemackie.pathoscraft.util.handlers.minigames.FishingHandler;
+import net.quackiemackie.pathoscraft.util.handlers.minigames.LumberingHandler;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestPayloadHandler;
 import net.quackiemackie.pathoscraft.network.payload.abilities.astralForm.AstralFormStatus;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.SyncActiveQuests;
@@ -103,5 +105,17 @@ public class ClientPayloadHandler {
     public static void handleStartExcavationMiniGame(StartExcavationMiniGame data, IPayloadContext context) {
         ExcavationHandler.startMiniGame(context.player(), data.blockDrop());
         PathosCraft.LOGGER.info("Item drop: {}", data.blockDrop());
+    }
+
+    /**
+     * Handles the initiation of the lumbering mini-game on the client-side. This method
+     * is called when a StartLumberingMiniGame payload is received, triggering the interface
+     * for the lumbering mini-game for the player.
+     *
+     * @param data    The payload containing the data required to start the lumbering mini-game.
+     * @param context The context providing access to the player and the environment in which the payload is processed.
+     */
+    public static void handleStartLmberingMiniGame(StartLumberingMiniGame data, IPayloadContext context) {
+        LumberingHandler.startMiniGame(context.player(), data.blockDrop());
     }
 }

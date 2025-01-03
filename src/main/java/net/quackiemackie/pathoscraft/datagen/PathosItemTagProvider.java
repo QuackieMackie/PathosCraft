@@ -43,6 +43,7 @@ public class PathosItemTagProvider extends ItemTagsProvider {
 
         tag(PathosTags.Items.MINIGAME_ENCHANT_ITEMS)
                 .addTag(ItemTags.PICKAXES)
-                .add(Items.FISHING_ROD);
+                .add(Items.FISHING_ROD)
+                .addTag(ItemTags.AXES);
     }
 }

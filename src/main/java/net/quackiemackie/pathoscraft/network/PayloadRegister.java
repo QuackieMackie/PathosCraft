@@ -10,6 +10,7 @@ import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.Finish
 import net.quackiemackie.pathoscraft.network.payload.minigames.excavation.StartExcavationMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.FinishedFishingMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.minigames.fishing.StartFishingMiniGame;
+import net.quackiemackie.pathoscraft.network.payload.minigames.lumbering.StartLumberingMiniGame;
 import net.quackiemackie.pathoscraft.network.payload.quest.active.*;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.AddCompletedQuest;
 import net.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
@@ -44,8 +45,10 @@ public class PayloadRegister {
 
         // Mini Games
         registrar.commonToClient(StartFishingMiniGame.TYPE, StartFishingMiniGame.STREAM_CODEC, ClientPayloadHandler::handleStartFishingMiniGame);
-        registrar.commonToServer(FinishedFishingMiniGame.TYPE, FinishedFishingMiniGame.STREAM_CODEC, ServerPayloadHandler::handleFinishedFishingMiniGame);
         registrar.commonToClient(StartExcavationMiniGame.TYPE, StartExcavationMiniGame.STREAM_CODEC, ClientPayloadHandler::handleStartExcavationMiniGame);
+        registrar.commonToClient(StartLumberingMiniGame.TYPE, StartLumberingMiniGame.STREAM_CODEC, ClientPayloadHandler::handleStartLmberingMiniGame);
+
+        registrar.commonToServer(FinishedFishingMiniGame.TYPE, FinishedFishingMiniGame.STREAM_CODEC, ServerPayloadHandler::handleFinishedFishingMiniGame);
         registrar.commonToServer(FinishedExcavationMiniGame.TYPE, FinishedExcavationMiniGame.STREAM_CODEC, ServerPayloadHandler::handleFinishedExcavationMiniGame);
     }
 }

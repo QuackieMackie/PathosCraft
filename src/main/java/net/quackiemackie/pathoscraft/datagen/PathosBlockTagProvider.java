@@ -57,5 +57,8 @@ public class PathosBlockTagProvider extends BlockTagsProvider {
                 .addTag(Tags.Blocks.ORES)
                 .addTag(PathosTags.Blocks.SADNESS_ORE)
                 .addTag(PathosTags.Blocks.SUNNY_ORE);
+
+        tag(PathosTags.Blocks.LUMBERING_MINIGAME_BLOCKS)
+                .addTag(BlockTags.LOGS);
     }
 }
