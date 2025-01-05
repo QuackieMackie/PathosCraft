@@ -2,6 +2,7 @@ package net.quackiemackie.pathoscraft.entity.entity;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -10,13 +11,10 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.*;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class AstralFormEntity extends Animal implements GeoEntity {
-    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+public class AstralFormEntity extends Animal {
+    public final AnimationState idleAnimationState = new AnimationState();
+    private int idleAnimationTimeout = 0;
 
     public AstralFormEntity(EntityType<? extends AstralFormEntity> entityType, Level level) {
         super(entityType, level);
@@ -25,8 +23,8 @@ public class AstralFormEntity extends Animal implements GeoEntity {
     public static AttributeSupplier.Builder createAttributes() {
         return Animal.createLivingAttributes()
                 .add(Attributes.MAX_HEALTH,  0.5D)
-                .add(Attributes.FOLLOW_RANGE, 1.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.25D);
+                .add(Attributes.FOLLOW_RANGE, 0D)
+                .add(Attributes.MOVEMENT_SPEED, 0D);
     }
 
     @Override
@@ -34,25 +32,27 @@ public class AstralFormEntity extends Animal implements GeoEntity {
         this.goalSelector.addGoal(0, new FloatGoal(this));
     }
 
-
-    @Override
-    public void registerControllers(final AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 3, this::predicate));
-    }
-
-    private PlayState predicate(AnimationState event) {
-        event.getController().setAnimation(RawAnimation.begin().then("animation.player_ghost.float", Animation.LoopType.LOOP));
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
-    }
-
     @Override
     public void setNoAi(boolean noAi) {
         super.setNoAi(noAi);
+    }
+
+    private void setupAnimationState() {
+        if (this.idleAnimationTimeout <= 0) {
+            this.idleAnimationTimeout = 126;
+            this.idleAnimationState.start(this.tickCount);
+        } else {
+            --this.idleAnimationTimeout;
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (this.level().isClientSide) {
+            this.setupAnimationState();
+        }
     }
 
     @Override

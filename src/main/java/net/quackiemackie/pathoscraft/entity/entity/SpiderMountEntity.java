@@ -8,6 +8,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -20,46 +21,25 @@ import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.quackiemackie.pathoscraft.registers.PathosTags;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
-
+public class SpiderMountEntity extends AbstractHorse {
     private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(SpiderMountEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(SpiderMountEntity.class, EntityDataSerializers.BYTE);
-
-    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
-
-    // Animations
-    private final RawAnimation walkAnimation = RawAnimation.begin().thenLoop("animation.spider_mount.walk");
-    private final RawAnimation eatAnimation = RawAnimation.begin().thenPlay("animation.spider_mount.eat");
-
-    private boolean isEating = false;
-    private float eatAnim = 0.0F;
-    private float eatAnimO = 0.0F;
 
     public SpiderMountEntity(EntityType<? extends SpiderMountEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    // Goal Registration
     @Override
     protected void registerGoals() {
         Predicate<ItemStack> temptationItems = (stack) -> stack.is(PathosTags.EntityFood.SPIDER_MOUNT_FOOD);
@@ -70,7 +50,6 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
         this.goalSelector.addGoal(5, new RandomStrollGoal(this, 0.8D));
     }
 
-    // Attribute Registration
     public static AttributeSupplier.Builder createAttributes() {
         return Animal.createLivingAttributes()
                 .add(Attributes.MAX_HEALTH, 50.0D)
@@ -79,12 +58,72 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
                 .add(Attributes.FOLLOW_RANGE, 32.0D);
     }
 
-    // Synched Data
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(OWNER_UUID, Optional.empty());
-        builder.define(DATA_FLAGS_ID, (byte)0);
+        builder.define(DATA_FLAGS_ID, (byte) 0);
+    }
+
+    public final AnimationState eatAnimationState = new AnimationState();
+    private int eatAnimationTimeout = 0;
+    private boolean isEating = false;
+
+    private void handleEatingAnimation() {
+        if (this.isEating && this.level().isClientSide) {
+            if (this.eatAnimationTimeout <= 0) {
+                this.eatAnimationTimeout = 11;
+                this.eatAnimationState.start(this.tickCount);
+            } else {
+                --this.eatAnimationTimeout;
+            }
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.level().isClientSide) {
+            this.handleEatingAnimation();
+        }
+        if (!this.level().isClientSide) {
+            this.setClimbing(this.horizontalCollision);
+        }
+        if (this.eatAnimationTimeout <= 0) {
+            this.isEating = false;
+        }
+    }
+
+    @Override
+    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown() && handleEating(player, itemStack)) {
+            this.setEating(true);
+            if (!player.getAbilities().instabuild) {
+                itemStack.shrink(1);
+            }
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
+        }
+        if (!this.level().isClientSide && !player.isShiftKeyDown()) {
+            this.doPlayerRide(player);
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
+        }
+        return InteractionResult.PASS;
+    }
+
+    protected boolean handleEating(Player player, ItemStack stack) {
+        float healAmount = 0.0F;
+        if (stack.is(Items.CHICKEN) || stack.is(Items.PORKCHOP) || stack.is(Items.BEEF) || stack.is(Items.MUTTON) || stack.is(Items.RABBIT)) {
+            healAmount = 2.0F;
+        } else if (stack.is(Items.COOKED_CHICKEN) || stack.is(Items.COOKED_PORKCHOP) || stack.is(Items.COOKED_BEEF) || stack.is(Items.COOKED_MUTTON) || stack.is(Items.COOKED_RABBIT)) {
+            healAmount = 4.0F;
+        }
+        if (this.getHealth() < this.getMaxHealth() && healAmount > 0.0F) {
+            this.heal(healAmount);
+            this.isEating = true;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -99,104 +138,16 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
     public void setClimbing(boolean climbing) {
         byte b0 = this.entityData.get(DATA_FLAGS_ID);
         if (climbing) {
-            b0 = (byte)(b0 | 1);
+            b0 = (byte) (b0 | 1);
         } else {
-            b0 = (byte)(b0 & -2);
+            b0 = (byte) (b0 & -2);
         }
-
         this.entityData.set(DATA_FLAGS_ID, b0);
     }
 
     @Override
     public boolean onClimbable() {
         return this.isClimbing();
-    }
-
-    // Interaction Handling
-    @Override
-    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown() && handleEating(player, itemStack)) {
-            this.setEating(true);
-            if (!player.getAbilities().instabuild) {
-                itemStack.shrink(1);
-            }
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
-        }
-        if (!this.level().isClientSide() && !player.isShiftKeyDown()) {
-            this.doPlayerRide(player);
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
-        }
-        return InteractionResult.PASS;
-    }
-
-    // Eating Handling
-    protected boolean handleEating(Player player, ItemStack stack) {
-        float healAmount = 0.0F;
-
-        if (stack.is(Items.CHICKEN) || stack.is(Items.PORKCHOP) || stack.is(Items.BEEF) || stack.is(Items.MUTTON) || stack.is(Items.RABBIT)) {
-            healAmount = 2.0F;
-        } else if (stack.is(Items.COOKED_CHICKEN) || stack.is(Items.COOKED_PORKCHOP) || stack.is(Items.COOKED_BEEF) || stack.is(Items.COOKED_MUTTON) || stack.is(Items.COOKED_RABBIT)) {
-            healAmount = 4.0F;
-        }
-
-        if (this.getHealth() < this.getMaxHealth() && healAmount > 0.0F) {
-            this.heal(healAmount);
-            this.setEating(true);
-            this.gameEvent(GameEvent.EAT);
-            return true;
-        }
-
-        return false;
-    }
-
-    // Animation Handling
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        AnimationController<SpiderMountEntity> moveController = new AnimationController<>(this, "moveController", 5, this::predicate);
-        AnimationController<SpiderMountEntity> eatController = new AnimationController<>(this, "eatController", 2, this::predicate);
-
-        controllers.add(moveController);
-        controllers.add(eatController);
-    }
-
-    private <E extends GeoEntity> PlayState predicate(AnimationState<E> event) {
-        if (event.isMoving()) {
-            event.getController().setAnimation(walkAnimation);
-            return PlayState.CONTINUE;
-        } else if (this.isEating()) {
-            event.getController().setAnimation(eatAnimation);
-            return PlayState.CONTINUE;
-        }
-        return PlayState.STOP;
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.geoCache;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        this.eatAnimO = this.eatAnim;
-        if (this.isEating) {
-            this.eatAnim += (1.0F - this.eatAnim) * 0.4F + 0.05F;
-            if (this.eatAnim > 1.0F) {
-                this.eatAnim = 1.0F;
-                this.isEating = false;
-            }
-        } else {
-            this.eatAnim += ((0.0F - this.eatAnim) * 0.4F - 0.05F);
-            if (this.eatAnim < 0.0F) {
-                this.eatAnim = 0.0F;
-            }
-        }
-
-        if (!this.level().isClientSide) {
-            this.setClimbing(this.horizontalCollision);
-        }
     }
 
     protected void doPlayerRide(@NotNull Player player) {
@@ -207,7 +158,6 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
         }
     }
 
-    // Riding Handling
     @Override
     public boolean canJump() {
         return true;
@@ -223,21 +173,14 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
             if (travelVector.z <= 0.0) {
                 this.gallopSoundCounter = 0;
             }
-
             if (this.onGround()) {
                 this.setIsJumping(false);
             }
-
             this.setClimbing(this.horizontalCollision);
-
             if (this.isClimbing()) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0.0, 0.2, 0.0));
             }
         }
-    }
-
-    protected @NotNull Vec2 getRiddenRotation(LivingEntity entity) {
-        return new Vec2(entity.getXRot() * 0.5F, entity.getYRot());
     }
 
     @Override
@@ -263,7 +206,6 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
             this.allowStandSliding = true;
             this.standIfPossible();
         }
-
         if (jumpPower >= 90) {
             this.playerJumpPendingScale = 1.0F;
         } else {
@@ -283,14 +225,6 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
         this.setIsJumping(false);
     }
 
-    @Override
-    protected void positionRider(@NotNull Entity passenger, Entity.@NotNull MoveFunction callback) {
-        super.positionRider(passenger, callback);
-        if (passenger instanceof LivingEntity) {
-            ((LivingEntity) passenger).yBodyRot = this.yBodyRot;
-        }
-    }
-
     @Nullable
     @Override
     public LivingEntity getControllingPassenger() {
@@ -301,17 +235,23 @@ public class SpiderMountEntity extends AbstractHorse implements GeoEntity {
         return super.getControllingPassenger();
     }
 
+    @Override
+    protected void positionRider(@NotNull Entity passenger, Entity.@NotNull MoveFunction callback) {
+        super.positionRider(passenger, callback);
+        if (passenger instanceof LivingEntity) {
+            ((LivingEntity) passenger).yBodyRot = this.yBodyRot;
+        }
+    }
+
     @Nullable
     private Vec3 getDismountLocationInDirection(Vec3 direction, LivingEntity passenger) {
         double d0 = this.getX() + direction.x;
         double d1 = this.getBoundingBox().minY;
         double d2 = this.getZ() + direction.z;
         BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
-
         for (Pose pose : passenger.getDismountPoses()) {
             blockPos.set(d0, d1, d2);
             double d3 = this.getBoundingBox().maxY + 0.75;
-
             do {
                 double d4 = this.level().getBlockFloorHeight(blockPos);
                 if (blockPos.getY() + d4 > d3) {

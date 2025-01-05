@@ -1,12 +1,13 @@
 package net.quackiemackie.pathoscraft;
 
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.quackiemackie.pathoscraft.entity.PathosEntities;
-import net.quackiemackie.pathoscraft.entity.renderer.AstralFormRenderer;
-import net.quackiemackie.pathoscraft.entity.renderer.SpiderMountRenderer;
+import net.quackiemackie.pathoscraft.entity.client.astralForm.AstralFormRenderer;
+import net.quackiemackie.pathoscraft.entity.client.spiderMount.SpiderMountRenderer;
 import net.quackiemackie.pathoscraft.event.server.GeneralEntityEvents;
 import net.quackiemackie.pathoscraft.network.PayloadRegister;
 import net.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
@@ -61,6 +62,9 @@ public class PathosCraft {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             PathosItemProperties.registerMinecraftItemProperties();
+
+            EntityRenderers.register(PathosEntities.ASTRAL_FORM.get(), AstralFormRenderer::new);
+            EntityRenderers.register(PathosEntities.SPIDER_MOUNT.get(), SpiderMountRenderer::new);
         }
 
         @SubscribeEvent
@@ -70,8 +74,6 @@ public class PathosCraft {
 
         @SubscribeEvent
         public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(PathosEntities.ASTRAL_FORM.get(), AstralFormRenderer::new);
-            event.registerEntityRenderer(PathosEntities.SPIDER_MOUNT.get(), SpiderMountRenderer::new);
         }
     }
 }
