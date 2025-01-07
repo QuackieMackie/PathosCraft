@@ -28,7 +28,7 @@ public class TestItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack excavationStack = PathosItems.RAW_SADNESS.get().getDefaultInstance();
-        ItemStack lumberingStack = Blocks.CHERRY_LOG.asItem().getDefaultInstance();
+        ItemStack lumberingStack = Blocks.OAK_LOG.asItem().getDefaultInstance();
         //FishingHandler.startMiniGame(player);
         //ExcavationHandler.startMiniGame(player, excavationStack);
         LumberingHandler.startMiniGame(player, lumberingStack);

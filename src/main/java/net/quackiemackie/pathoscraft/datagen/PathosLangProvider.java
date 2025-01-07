@@ -162,7 +162,9 @@ public class PathosLangProvider extends LanguageProvider {
         this.add("screen.widget.pathoscraft.excavation_mini_game.exit_prompt", "Press '%s' or 'ESC' to exit and claim your rewards.");
         this.add("screen.widget.pathoscraft.excavation_mini_game.instructions", "§5Excavation Mini-Game Instructions§r\n§aGoal: Uncover valuable rewards by mining squares on the grid!§r\n§6Be strategic: Each square could contain a hidden reward or nothing at all.§r\n§8Your pickaxes represent your lives—run out of pickaxes, and the game ends.§r\n\n§5How to Play:§r\n§7Grid: Click squares on the grid to mine.§r\n§7Rewards: Uncover hidden rewards like ore or treasure to collect them.§r\n§7Empty Squares: If the square is empty, your pickaxe breaks and you lose a life.§r\n\n§2Rewards:§r\n§7Keep whatever rewards you uncover.§r");
 
-        this.add("screen.title.pathoscraft.lumbering_mini_game", "Lumbering Mini-Game");
+        this.add("screen.title.pathoscraft.minigame.lumbering", "Lumbering Mini-Game");
+        this.add("screen.widget.pathoscraft.minigame.lumbering.time_remaining", "Time Remaining: %d");
+        this.add("screen.widget.pathoscraft.minigame.lumbering.instructions", "§5Lumbering Mini-Game Instructions§r\n§aGoal: Stay within the yellow-highlighted target area in the progress bar to advance.§r\n§6Each round challenges you with a progressively shrinking target area.§r\n§8You must complete 3 rounds before time runs out to win.§r\n\n§5How to Play:§r\n§7Start: Press §eSPACE§7 to start the game.§r\n§7Controls: \n§7- Use §eSPACE§7 to move the axe right, the longer §eSPACE§7 is held down the faster the axe will move right, the axe will naturally gravitate left.\n§7- You can speed this but by holding §eS§7 or §e↓§7. Hold it longer for faster progress.§r\n§7Countdown: Stay in the target area to trigger a countdown. If you can stay in the highlighted area until the countdown reaches 0, you will advance to the next round.§r\n\n§2Game Over Conditions:§r\n§aWin §7by completing all §e3§7 rounds within the time limit.§r\n§cLose §7If the time reaches 0.§r");
     }
 
     private static String translate(String string) {

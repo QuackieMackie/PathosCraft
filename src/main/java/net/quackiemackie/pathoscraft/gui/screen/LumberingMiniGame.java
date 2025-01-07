@@ -7,13 +7,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.quackiemackie.pathoscraft.gui.parts.miniGames.InformationButton;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Random;
 
 public class LumberingMiniGame extends Screen {
 
-    //private static final ResourceLocation LOG_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/oak_log.png");
     private static final ResourceLocation AXE_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/item/stone_axe.png");
     private final ItemStack logItemStack;
 
@@ -49,7 +49,7 @@ public class LumberingMiniGame extends Screen {
     private float progressAccelerationFactor = 1.0f;
 
     public LumberingMiniGame(ItemStack logTexture) {
-        super(Component.translatable("screen.title.pathoscraft.lumbering_mini_game"));
+        super(Component.translatable("screen.title.pathoscraft.minigame.lumbering"));
         this.logItemStack = logTexture;
         generateRandomArea();
     }
@@ -63,7 +63,14 @@ public class LumberingMiniGame extends Screen {
         renderTargetArea(guiGraphics);
 
         if (isCountingDown) renderCountdown(guiGraphics);
-        if (isPaused) renderPausePrompt(guiGraphics);
+        if (isPaused) {
+            renderPausePrompt(guiGraphics);
+
+            InformationButton infoButton = new InformationButton(10, 10);
+            String[] instructions = Component.translatable("screen.widget.pathoscraft.minigame.lumbering.instructions").getString().split("\n");
+            infoButton.setHoverInfo(instructions);
+            this.addRenderableWidget(infoButton);
+        }
         if (gameOver) renderGameOverPrompt(guiGraphics);
     }
 
@@ -115,19 +122,20 @@ public class LumberingMiniGame extends Screen {
         int timerX = this.width / 2;
         int timerY = (int) (this.height * 0.2f);
 
-        String timerText = String.format("%.0f", Math.max(0, timeLeft));
-        guiGraphics.drawCenteredString(this.font, timerText, timerX, timerY, 0xFFFFFF);
+        String timeRemaining = Component.translatable("screen.widget.pathoscraft.minigame.lumbering.time_remaining", String.format("%.1f", timeLeft)).getString();
+        guiGraphics.drawCenteredString(this.font, timeRemaining, timerX, timerY, 0xFFFFFF);
     }
 
     /**
-     * Renders the progress bar, displaying the current progress value and interpolating it
-     * smoothly over frames based on the given partial tick. The progress bar consists of a
-     * black background and a green foreground that dynamically adjusts its width to represent
-     * the progress visually.
+     * Renders the progress bar for the mini-game. The progress bar depicts the player's
+     * current progress visually, with textures and animations representing the changes
+     * in state. An axe icon and a red progress indicator are included in the bar to
+     * signify progress position.
      *
-     * @param guiGraphics The graphical context used to render visual elements on the screen.
-     * @param partialTick A floating-point value representing the fraction of a tick, used to
-     *                    interpolate values between updates for smooth rendering.
+     * @param guiGraphics The graphical context used to render visual elements, such as textures
+     *                    and shapes, on the screen.
+     * @param partialTick The partial tick value used to interpolate between frames for
+     *                    smoother rendering of animations.
      */
     private void renderProgressBar(GuiGraphics guiGraphics, float partialTick) {
         int progressBarWidth = (int) (this.width * 0.8f);

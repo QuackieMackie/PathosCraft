@@ -82,14 +82,6 @@ public class SpiderMountAnimations {
                                     AnimationChannel.Interpolations.LINEAR))).build();
     public static final AnimationDefinition SPIDER_MOUNT_DAMAGED = AnimationDefinition.Builder.withLength(0.16766666f)
             .addAnimation("chest",
-                    new AnimationChannel(AnimationChannel.Targets.POSITION,
-                            new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.LINEAR),
-                            new Keyframe(0.08343333f, KeyframeAnimations.posVec(0f, 10f, 0f),
-                                    AnimationChannel.Interpolations.LINEAR),
-                            new Keyframe(0.16766666f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.LINEAR)))
-            .addAnimation("chest",
                     new AnimationChannel(AnimationChannel.Targets.ROTATION,
                             new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
                                     AnimationChannel.Interpolations.LINEAR),

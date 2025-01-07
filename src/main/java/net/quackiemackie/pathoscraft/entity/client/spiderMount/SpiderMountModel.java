@@ -130,6 +130,7 @@ public class SpiderMountModel<T extends SpiderMountEntity> extends HierarchicalM
 
         this.animateWalk(SpiderMountAnimations.SPIDER_MOUNT_WALK, limbSwing, limbSwingAmount, 2f, 2.5f);
         this.animate(entity.eatAnimationState, SpiderMountAnimations.SPIDER_MOUNT_EAT, ageInTicks, 1f);
+        this.animate(entity.damagedAnimationState, SpiderMountAnimations.SPIDER_MOUNT_DAMAGED, ageInTicks, 1f);
     }
 
     private void applyHeadRotation(float headYaw, float headPitch) {

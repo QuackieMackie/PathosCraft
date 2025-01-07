@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -35,6 +36,11 @@ import java.util.function.Predicate;
 public class SpiderMountEntity extends AbstractHorse {
     private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(SpiderMountEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(SpiderMountEntity.class, EntityDataSerializers.BYTE);
+
+    public final AnimationState damagedAnimationState = new AnimationState();
+    public final AnimationState eatAnimationState = new AnimationState();
+    private int eatAnimationTimeout = 0;
+    private boolean isEating = false;
 
     public SpiderMountEntity(EntityType<? extends SpiderMountEntity> entityType, Level level) {
         super(entityType, level);
@@ -65,10 +71,6 @@ public class SpiderMountEntity extends AbstractHorse {
         builder.define(DATA_FLAGS_ID, (byte) 0);
     }
 
-    public final AnimationState eatAnimationState = new AnimationState();
-    private int eatAnimationTimeout = 0;
-    private boolean isEating = false;
-
     private void handleEatingAnimation() {
         if (this.isEating && this.level().isClientSide) {
             if (this.eatAnimationTimeout <= 0) {
@@ -92,6 +94,12 @@ public class SpiderMountEntity extends AbstractHorse {
         if (this.eatAnimationTimeout <= 0) {
             this.isEating = false;
         }
+    }
+
+    @Override
+    public void handleDamageEvent(DamageSource damageSource) {
+        this.damagedAnimationState.start(this.tickCount);
+        super.handleDamageEvent(damageSource);
     }
 
     @Override
