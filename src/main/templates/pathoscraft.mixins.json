@@ -3,7 +3,9 @@
   "package": "net.quackiemackie.pathoscraft.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "PathosMixin"
+    "PathosMixin",
+    "GuiMixin",
+    "ScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
