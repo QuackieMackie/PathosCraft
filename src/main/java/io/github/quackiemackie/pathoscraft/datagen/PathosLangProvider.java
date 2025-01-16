@@ -15,9 +15,18 @@ public class PathosLangProvider extends LanguageProvider {
     protected void addTranslations() {
         addStaticTranslations();
         addQuestTranslations();
+        addWorkerTranslation();
     }
 
     private void addQuestTranslations() {
+        this.add("screen.title.pathoscraft.quest_menu", "Quest Menu");
+        this.add("screen.widget.pathoscraft.quest_menu.main_quest_button", "Main Quests");
+        this.add("screen.widget.pathoscraft.quest_menu.side_quest_button", "Side Quests");
+        this.add("screen.widget.pathoscraft.quest_menu.optional_quest_button", "Optional Quests");
+        this.add("screen.widget.pathoscraft.quest_menu.active_quest_button", "Active Quests");
+        this.add("screen.widget.pathoscraft.quest_menu.information_button.tooltip", "§5Quest System Guide:\n§aGreen: Quests with completed objectives.\n§6Orange: Quests on your active list.\n§8Grey: Quests that have been completed.\n\n§5Controls:\n• §7Left-click: Claim completed quests rewards and activate quests.\n• §7Right-click: Disable active quests.\n• §7Middle-click: Swap quests.\n\nTip: Hover over quests for details!");
+        this.add("screen.widget.pathoscraft.quest_menu.page", "Page");
+
         this.add("quest.pathoscraft.objective.title", "Objectives:");
         this.add("quest.pathoscraft.reward.title", "Rewards:");
         this.add("quest.pathoscraft.id", "Quest ID:");
@@ -55,6 +64,10 @@ public class PathosLangProvider extends LanguageProvider {
 
         int questCount = PathosQuests.getQuests().size();
         PathosCraft.LOGGER.info("Processed [{}] quests.", questCount);
+    }
+
+    private void addWorkerTranslation() {
+        this.add("screen.title.pathoscraft.worker_hire_menu", "Worker Hiring");
     }
 
     /**
@@ -134,15 +147,6 @@ public class PathosLangProvider extends LanguageProvider {
         // Networking
         this.add("networking.pathoscraft.client.failed", "Client network error:");
         this.add("networking.pathoscraft.server.failed", "Server network error:");
-
-        // Quest Menu Screen
-        this.add("screen.title.pathoscraft.quest_menu", "Quest Menu");
-        this.add("screen.widget.pathoscraft.quest_menu.main_quest_button", "Main Quests");
-        this.add("screen.widget.pathoscraft.quest_menu.side_quest_button", "Side Quests");
-        this.add("screen.widget.pathoscraft.quest_menu.optional_quest_button", "Optional Quests");
-        this.add("screen.widget.pathoscraft.quest_menu.active_quest_button", "Active Quests");
-        this.add("screen.widget.pathoscraft.quest_menu.information_button.tooltip", "§5Quest System Guide:\n§aGreen: Quests with completed objectives.\n§6Orange: Quests on your active list.\n§8Grey: Quests that have been completed.\n\n§5Controls:\n• §7Left-click: Claim completed quests rewards and activate quests.\n• §7Right-click: Disable active quests.\n• §7Middle-click: Swap quests.\n\nTip: Hover over quests for details!");
-        this.add("screen.widget.pathoscraft.quest_menu.page", "Page");
 
         // Fishing Minigame
         this.add("screen.title.pathoscraft.fishing_mini_game", "Fishing Mini-Game");

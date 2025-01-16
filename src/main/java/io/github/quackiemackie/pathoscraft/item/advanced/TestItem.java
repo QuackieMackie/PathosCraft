@@ -1,20 +1,21 @@
 package io.github.quackiemackie.pathoscraft.item.advanced;
 
+import io.github.quackiemackie.pathoscraft.gui.menu.WorkerHireMenu;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.item.PathosItems;
 import io.github.quackiemackie.pathoscraft.network.payload.quest.completed.ClearCompletedQuests;
 import io.github.quackiemackie.pathoscraft.registers.PathosAttachments;
-import io.github.quackiemackie.pathoscraft.util.handlers.minigames.LumberingHandler;
 import io.github.quackiemackie.pathoscraft.util.quest.Quest;
 
 import java.util.ArrayList;
@@ -31,19 +32,25 @@ public class TestItem extends Item {
         ItemStack lumberingStack = Blocks.OAK_LOG.asItem().getDefaultInstance();
         //FishingHandler.startMiniGame(player);
         //ExcavationHandler.startMiniGame(player, excavationStack);
-        LumberingHandler.startMiniGame(player, lumberingStack);
+        //LumberingHandler.startMiniGame(player, lumberingStack);
 
-        if (!level.isClientSide && player != null) {
-            clearPlayerDataAttachment(player);
+//        if (!level.isClientSide && player != null) {
+//            clearPlayerDataAttachment(player);
+//        }
+
+        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.openMenu(new SimpleMenuProvider((id, inventory, serverPlayerEntity) ->
+                    new WorkerHireMenu(id, inventory, null),
+                    Component.translatable("screen.title.pathoscraft.worker_hire_menu")
+            ));
         }
-
         return super.use(level, player, hand);
     }
 
     private void clearPlayerDataAttachment(Player player) {
-        ((IAttachmentHolder) player).setData(PathosAttachments.COMPLETED_QUESTS.get(), new ArrayList<>());
+        player.setData(PathosAttachments.COMPLETED_QUESTS.get(), new ArrayList<>());
         PathosCraft.LOGGER.info("Cleared data attachment for player {}", player.getName().getString());
-        List<Quest> completedQuests = ((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get());
+        List<Quest> completedQuests = player.getData(PathosAttachments.COMPLETED_QUESTS.get());
         PacketDistributor.sendToPlayer((ServerPlayer) player, new ClearCompletedQuests(completedQuests));
     }
 }

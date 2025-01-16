@@ -4,12 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.gui.screen.ExcavationMiniGame;
+import io.github.quackiemackie.pathoscraft.gui.screen.minigame.ExcavationScreen;
 
 public class ExcavationHandler {
     public static void startMiniGame(Player player, ItemStack blockDrop) {
         if (player.level().isClientSide && player == Minecraft.getInstance().player) {
-            Minecraft.getInstance().setScreen(new ExcavationMiniGame(blockDrop));
+            Minecraft.getInstance().setScreen(new ExcavationScreen(blockDrop));
         }
     }
 

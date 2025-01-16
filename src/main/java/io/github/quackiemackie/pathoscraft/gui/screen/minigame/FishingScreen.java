@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.screen;
+package io.github.quackiemackie.pathoscraft.gui.screen.minigame;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class FishingMiniGame extends Screen {
+public class FishingScreen extends Screen {
 
     private static final int MAX_LIVES = 3;
     private static final long TOTAL_TIME = 10_000;
@@ -38,7 +38,7 @@ public class FishingMiniGame extends Screen {
     private final List<String> sequence = new ArrayList<>();
     private final List<FishingSequenceButton> buttonWidgets = new ArrayList<>();
 
-    public FishingMiniGame() {
+    public FishingScreen() {
         super(Component.translatable("screen.title.pathoscraft.fishing_mini_game"));
         generateSequence();
     }

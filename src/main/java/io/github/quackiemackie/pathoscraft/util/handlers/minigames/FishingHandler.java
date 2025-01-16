@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.gui.screen.FishingMiniGame;
+import io.github.quackiemackie.pathoscraft.gui.screen.minigame.FishingScreen;
 
 //TODO:
 // Need to map the loot to some kind of configurable value.
@@ -21,7 +21,7 @@ public class FishingHandler {
      */
     public static void startMiniGame(Player player) {
         if (player.level().isClientSide && player == Minecraft.getInstance().player) {
-            Minecraft.getInstance().setScreen(new FishingMiniGame());
+            Minecraft.getInstance().setScreen(new FishingScreen());
         }
     }
 

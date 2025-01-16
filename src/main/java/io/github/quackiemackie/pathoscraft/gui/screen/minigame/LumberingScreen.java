@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.screen;
+package io.github.quackiemackie.pathoscraft.gui.screen.minigame;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,7 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.Random;
 
-public class LumberingMiniGame extends Screen {
+public class LumberingScreen extends Screen {
 
     private static final int FRAME_COUNT = 6;
     private static final int TIMER_DURATION = 10;
@@ -53,7 +53,7 @@ public class LumberingMiniGame extends Screen {
     private int currentFrame = 0;
     private int frameTickCounter = 0;
 
-    public LumberingMiniGame(ItemStack logItemStack) {
+    public LumberingScreen(ItemStack logItemStack) {
         super(Component.translatable("screen.title.pathoscraft.minigame.lumbering"));
         this.logItemStack = logItemStack;
         generateRandomArea();

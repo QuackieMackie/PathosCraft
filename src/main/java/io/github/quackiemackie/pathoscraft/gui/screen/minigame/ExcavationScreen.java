@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.screen;
+package io.github.quackiemackie.pathoscraft.gui.screen.minigame;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class ExcavationMiniGame extends Screen {
+public class ExcavationScreen extends Screen {
 
     private static final int GRID_SIZE = 5; // Size of the grid (5x5)
     private static final int MAX_LIVES = 6; // Maximum lives for the player
@@ -38,7 +38,7 @@ public class ExcavationMiniGame extends Screen {
     private boolean gameOver = false;
     private boolean pauseState = false;
 
-    public ExcavationMiniGame(ItemStack rewardItem) {
+    public ExcavationScreen(ItemStack rewardItem) {
         super(Component.translatable("screen.title.pathoscraft.excavation_mini_game"));
         this.rewardItem = rewardItem;
         generateBoard();

@@ -16,7 +16,7 @@ import net.minecraft.world.item.*;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.gui.screen.QuestScreen;
+import io.github.quackiemackie.pathoscraft.gui.screen.quest.QuestScreen;
 import io.github.quackiemackie.pathoscraft.util.handlers.client.ToolTipHandler;
 import io.github.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
 import io.github.quackiemackie.pathoscraft.network.payload.quest.active.AddActiveQuest;
@@ -68,7 +68,7 @@ public class QuestSlotButton extends Button {
 
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> activeQuests = new ArrayList<>(player.getData(PathosAttachments.ACTIVE_QUESTS.get()));
 
         return switch (button) {
             case 0 -> {
@@ -164,7 +164,7 @@ public class QuestSlotButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> activeQuests = new ArrayList<>(player.getData(PathosAttachments.ACTIVE_QUESTS.get()));
         Quest quest = this.getQuest();
 
         boolean isQuestActive = activeQuests.contains(quest);

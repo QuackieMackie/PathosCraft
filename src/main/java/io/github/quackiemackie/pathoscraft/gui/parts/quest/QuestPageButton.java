@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import io.github.quackiemackie.pathoscraft.gui.screen.QuestScreen;
+import io.github.quackiemackie.pathoscraft.gui.screen.quest.QuestScreen;
 
 public class QuestPageButton extends AbstractButton {
     private final boolean flipped;

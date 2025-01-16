@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.gui.screen.QuestScreen;
+import io.github.quackiemackie.pathoscraft.gui.screen.quest.QuestScreen;
 import io.github.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
 import io.github.quackiemackie.pathoscraft.network.payload.quest.active.RemoveActiveQuest;
 import io.github.quackiemackie.pathoscraft.network.payload.quest.active.SwapActiveQuests;
@@ -196,7 +196,7 @@ public class QuestActiveSlotButton extends QuestSlotButton {
         Player player = minecraft.player;
         Quest quest = this.getQuest();
 
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> activeQuests = new ArrayList<>(player.getData(PathosAttachments.ACTIVE_QUESTS.get()));
 
         boolean isQuestActive = activeQuests.contains(quest);
         boolean isQuestObjectiveCompleted = QuestHandler.isQuestObjectiveCompleted(quest);

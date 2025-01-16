@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.screen;
+package io.github.quackiemackie.pathoscraft.gui.screen.quest;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.quackiemackie.pathoscraft.gui.parts.quest.*;
@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.gui.menu.QuestMenu;
 import io.github.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
