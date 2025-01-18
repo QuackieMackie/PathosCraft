@@ -1,11 +1,12 @@
 package io.github.quackiemackie.pathoscraft.item.advanced;
 
-import io.github.quackiemackie.pathoscraft.gui.menu.WorkerHireMenu;
-import net.minecraft.network.chat.Component;
+import io.github.quackiemackie.pathoscraft.gui.screen.worker.WorkerMapScreen;
+import io.github.quackiemackie.pathoscraft.util.worker.Worker;
+import io.github.quackiemackie.pathoscraft.util.worker.WorkerResources;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,12 +39,21 @@ public class TestItem extends Item {
 //            clearPlayerDataAttachment(player);
 //        }
 
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.openMenu(new SimpleMenuProvider((id, inventory, serverPlayerEntity) ->
-                    new WorkerHireMenu(id, inventory, null),
-                    Component.translatable("screen.title.pathoscraft.worker_hire_menu")
-            ));
+        excavationStack.setCount(10);
+        WorkerResources stone = new WorkerResources(excavationStack);
+
+        PathosCraft.LOGGER.info(String.valueOf(Worker.artisanWorker(1, List.of(new WorkerResources(excavationStack), stone))));
+
+        if (player.level().isClientSide && player == Minecraft.getInstance().player) {
+            Minecraft.getInstance().setScreen(new WorkerMapScreen());
         }
+
+//        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+//            serverPlayer.openMenu(new SimpleMenuProvider((id, inventory, serverPlayerEntity) ->
+//                    new WorkerHireMenu(id, inventory, null),
+//                    Component.translatable("screen.title.pathoscraft.worker_hire_menu")
+//            ));
+//        }
         return super.use(level, player, hand);
     }
 
