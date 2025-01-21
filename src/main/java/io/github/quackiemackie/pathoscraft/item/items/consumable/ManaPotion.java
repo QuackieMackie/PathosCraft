@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.item.advanced;
+package io.github.quackiemackie.pathoscraft.item.items.consumable;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;

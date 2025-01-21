@@ -10,7 +10,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.item.advanced.CreatureCrystal;
+import io.github.quackiemackie.pathoscraft.item.items.misc.CreatureCrystal;
 import io.github.quackiemackie.pathoscraft.registers.PathosDataComponents;
 
 @EventBusSubscriber(modid = PathosCraft.MOD_ID)
@@ -26,7 +26,7 @@ public class ItemEvents {
             Entity target = event.getTarget();
             if (target.isAlive() && !(target instanceof Player) && !(target instanceof ItemEntity)) {
                 if (!level.isClientSide) {
-                    CreatureCrystal.captureEntity(heldItem, level, player, target);
+                    CreatureCrystal.captureEntity(heldItem, player, target);
                     event.setCanceled(true);
                 }
             }

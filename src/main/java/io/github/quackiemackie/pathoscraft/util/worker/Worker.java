@@ -6,6 +6,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+//TODO: Effecency would return the % of a reward.
+// Speed would determine how much of a speed boost per node it gathers
+// Luck would give a chance to add a 25% bonus to rewards. For example
+// ---
+// During the day the time reduced would be 25% faster
+// Night would have a 25% reduction
+
 public record Worker(int id, int type, int efficiency, int speed, int luck, List<WorkerResources> resources) {
     public static final Codec<Worker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("id").forGetter(Worker::id),
@@ -73,12 +80,3 @@ public record Worker(int id, int type, int efficiency, int speed, int luck, List
                 '}';
     }
 }
-
-/*
-Effecency would return the % of a reward.
-Speed would determine how much of a speed boost per node it gathers
-Luck would give a chance to add a 25% bonus to rewards. For example
-
-During the day the time reduced would be 25% faster
-Night would have a 25% reduction
-*/

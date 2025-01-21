@@ -40,6 +40,12 @@ public class PathosItemModelProvider extends ItemModelProvider {
         handheldItem(PathosItems.QUEST_BOOK.get());
         handheldItem(PathosItems.CREATURE_CRYSTAL.get());
         handheldItem(PathosItems.TEST_ITEM.get());
+
+        handheldItem(PathosItems.NAIVE_WORKER.get());
+        handheldItem(PathosItems.NORMAL_WORKER.get());
+        handheldItem(PathosItems.SKILLED_WORKER.get());
+        handheldItem(PathosItems.PROFESSIONAL_WORKER.get());
+        handheldItem(PathosItems.ARTISAN_WORKER.get());
     }
 
     public void generateFishingRodModels(Item item) {

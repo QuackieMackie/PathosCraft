@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.item.advanced;
+package io.github.quackiemackie.pathoscraft.item.items.misc;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;

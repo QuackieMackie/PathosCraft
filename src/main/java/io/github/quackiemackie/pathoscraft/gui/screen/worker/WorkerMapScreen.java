@@ -1,7 +1,7 @@
 package io.github.quackiemackie.pathoscraft.gui.screen.worker;
 
-import io.github.quackiemackie.pathoscraft.gui.parts.worker.DraggableArea;
-import io.github.quackiemackie.pathoscraft.gui.parts.worker.DraggableWidget;
+import io.github.quackiemackie.pathoscraft.gui.parts.DraggableArea;
+import io.github.quackiemackie.pathoscraft.gui.parts.DraggableWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -18,9 +18,19 @@ public class WorkerMapScreen extends Screen {
     protected void init() {
         super.init();
 
+        int screenWidth = this.width;
+        int screenHeight = this.height;
+
+        int areaWidth = (int) (screenWidth * 0.7);
+        int areaHeight = (int) (screenHeight * 0.7);
+        int startX = (screenWidth - areaWidth) / 2;
+        int startY = (screenHeight - areaHeight) / 2;
+        int maxX = startX + areaWidth;
+        int maxY = startY + areaHeight;
+
         // Initialize draggable area and widget
-        draggableArea = new DraggableArea(this.width, this.height);
-        draggableWidget = new DraggableWidget(draggableArea.getX() + 10, draggableArea.getY() + 10, 50, 50);
+        draggableArea = new DraggableArea(startX, startY, maxX, maxY, 5, 0xFF000000, 0x77000000);
+        draggableWidget = new DraggableWidget(draggableArea, 320, 320, 0xFFAAAAAA, 0xFF555555);
     }
 
     @Override
@@ -50,15 +60,6 @@ public class WorkerMapScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         draggableArea.render(guiGraphics);
-        guiGraphics.pose().pushPose();
-        guiGraphics.enableScissor(
-                draggableArea.getX(),
-                draggableArea.getY(),
-                draggableArea.getX() + draggableArea.getWidth(),
-                draggableArea.getY() + draggableArea.getHeight()
-        );
-        draggableWidget.render(guiGraphics, this.font);
-        guiGraphics.disableScissor();
-        guiGraphics.pose().popPose();
+        draggableWidget.render(guiGraphics, this.font, draggableArea);
     }
 }

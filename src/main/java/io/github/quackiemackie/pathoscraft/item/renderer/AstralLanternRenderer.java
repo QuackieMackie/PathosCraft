@@ -1,6 +1,6 @@
 package io.github.quackiemackie.pathoscraft.item.renderer;
 
-import io.github.quackiemackie.pathoscraft.item.advanced.AstralLantern;
+import io.github.quackiemackie.pathoscraft.item.items.misc.AstralLantern;
 import io.github.quackiemackie.pathoscraft.item.model.AstralLanternModel;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 

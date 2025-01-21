@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.item.advanced;
+package io.github.quackiemackie.pathoscraft.item.items.tools;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

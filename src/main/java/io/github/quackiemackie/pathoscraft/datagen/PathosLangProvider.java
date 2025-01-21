@@ -68,6 +68,12 @@ public class PathosLangProvider extends LanguageProvider {
 
     private void addWorkerTranslation() {
         this.add("screen.title.pathoscraft.worker_hire_menu", "Worker Hiring");
+
+        this.add("item.pathoscraft.naive_worker", "Naive Worker");
+        this.add("item.pathoscraft.normal_worker", "Normal Worker");
+        this.add("item.pathoscraft.skilled_worker", "Skilled Worker");
+        this.add("item.pathoscraft.professional_worker", "Professional Worker");
+        this.add("item.pathoscraft.artisan_worker", "Artisan Worker");
     }
 
     /**

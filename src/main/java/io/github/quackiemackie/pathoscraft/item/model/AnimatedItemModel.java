@@ -2,7 +2,7 @@ package io.github.quackiemackie.pathoscraft.item.model;
 
 import net.minecraft.resources.ResourceLocation;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.item.advanced.AnimatedItem;
+import io.github.quackiemackie.pathoscraft.item.items.tools.AnimatedItem;
 import software.bernie.geckolib.model.GeoModel;
 
 public class AnimatedItemModel extends GeoModel<AnimatedItem> {

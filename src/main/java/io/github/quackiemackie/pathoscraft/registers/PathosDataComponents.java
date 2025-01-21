@@ -1,6 +1,7 @@
 package io.github.quackiemackie.pathoscraft.registers;
 
 import com.mojang.serialization.Codec;
+import io.github.quackiemackie.pathoscraft.util.worker.Worker;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -8,7 +9,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.event.server.EnchantEvents;
-import io.github.quackiemackie.pathoscraft.item.advanced.CreatureCrystal;
+import io.github.quackiemackie.pathoscraft.item.items.misc.CreatureCrystal;
 
 import java.util.function.UnaryOperator;
 
@@ -26,4 +27,6 @@ public class PathosDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ACTIVE_MINIGAME_BOOL = register("active_minigame_bool", builder -> builder.persistent(Codec.BOOL));
     ///A future data component, that will store entity data, so they can be captures in the [CreatureCrystal]
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> ENTITY_CAPTURED_DATA = register("captured_entity_data", builder -> builder.persistent(CompoundTag.CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Worker>> WORKER_ITEM_DATA = register("worker_item_data", builder -> builder.persistent(Worker.CODEC));
 }

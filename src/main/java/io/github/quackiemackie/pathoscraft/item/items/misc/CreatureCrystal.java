@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.item.advanced;
+package io.github.quackiemackie.pathoscraft.item.items.misc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +26,7 @@ public class CreatureCrystal extends Item {
     /**
      * Handles logic when right-clicking on a block (USE_ON behavior).
      */
-    public static void captureEntity(ItemStack stack, Level level, Player player, Entity target) {
+    public static void captureEntity(ItemStack stack, Player player, Entity target) {
         // Save the entity's data
         CompoundTag entityData = new CompoundTag();
         target.save(entityData);

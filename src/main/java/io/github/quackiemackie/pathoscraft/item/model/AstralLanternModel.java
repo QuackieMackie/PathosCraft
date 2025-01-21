@@ -2,7 +2,7 @@ package io.github.quackiemackie.pathoscraft.item.model;
 
 import net.minecraft.resources.ResourceLocation;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.item.advanced.AstralLantern;
+import io.github.quackiemackie.pathoscraft.item.items.misc.AstralLantern;
 import software.bernie.geckolib.model.GeoModel;
 
 public class AstralLanternModel extends GeoModel<AstralLantern> {

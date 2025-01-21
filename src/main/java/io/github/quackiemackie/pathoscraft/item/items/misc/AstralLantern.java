@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.item.advanced;
+package io.github.quackiemackie.pathoscraft.item.items.misc;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.particles.ParticleTypes;

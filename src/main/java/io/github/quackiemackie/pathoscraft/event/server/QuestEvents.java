@@ -11,7 +11,7 @@ import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.util.handlers.quest.QuestHandler;
-import io.github.quackiemackie.pathoscraft.item.advanced.QuestBook;
+import io.github.quackiemackie.pathoscraft.item.items.misc.QuestBook;
 
 @EventBusSubscriber(modid = PathosCraft.MOD_ID)
 public class QuestEvents {

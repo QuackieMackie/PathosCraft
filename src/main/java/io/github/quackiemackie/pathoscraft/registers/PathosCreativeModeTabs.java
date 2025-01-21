@@ -85,6 +85,12 @@ public class PathosCreativeModeTabs {
                         output.accept(PathosItems.QUEST_BOOK.get());
                         output.accept(PathosItems.CREATURE_CRYSTAL.get());
                         output.accept(PathosItems.TEST_ITEM.get());
+
+                        output.accept(PathosItems.NAIVE_WORKER.get());
+                        output.accept(PathosItems.NORMAL_WORKER.get());
+                        output.accept(PathosItems.SKILLED_WORKER.get());
+                        output.accept(PathosItems.PROFESSIONAL_WORKER.get());
+                        output.accept(PathosItems.ARTISAN_WORKER.get());
                     })
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "pathoscraft_food_creative_tab"))
                     .build());
