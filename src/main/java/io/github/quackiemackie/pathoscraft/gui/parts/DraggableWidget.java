@@ -1,18 +1,22 @@
 package io.github.quackiemackie.pathoscraft.gui.parts;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.quackiemackie.pathoscraft.gui.parts.worker.WorkerMapRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.level.saveddata.maps.MapId;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
 public class DraggableWidget {
     private int x, y, width, height;
     private boolean isDragging = false;
     private int dragOffsetX, dragOffsetY;
-    private final int gradientTopColor;
-    private final int gradientBottomColor;
 
     private static final String displayText = "+";
     private static final int textColor = 0xFFFFFFFF;
 
+    private final WorkerMapRenderer workerMapRenderer;
 
     /**
      * Creates a draggable widget within the specified draggable area, initializing its size, position,
@@ -22,16 +26,19 @@ public class DraggableWidget {
      * @param draggableArea     The area within which the widget can be dragged.
      * @param width             The width of the draggable widget.
      * @param height            The height of the draggable widget.
-     * @param gradientTopColor  The top gradient color of the widget.
-     * @param gradientBottomColor The bottom gradient color of the widget.
      */
-    public DraggableWidget(DraggableArea draggableArea, int width, int height, int gradientTopColor, int gradientBottomColor) {
+    public DraggableWidget(DraggableArea draggableArea, int width, int height) {
         this.width = width;
         this.height = height;
-        this.gradientTopColor = gradientTopColor;
-        this.gradientBottomColor = gradientBottomColor;
         this.x = draggableArea.getX() + (draggableArea.getWidth() - this.width) / 2;
         this.y = draggableArea.getY() + (draggableArea.getHeight() - this.height) / 2;
+
+        Minecraft minecraft = Minecraft.getInstance();
+        this.workerMapRenderer = new WorkerMapRenderer(
+                minecraft.getTextureManager(),
+                minecraft.getMapDecorationTextures()
+        );
+
     }
 
     /**
@@ -48,15 +55,34 @@ public class DraggableWidget {
                 draggableArea.getX(),
                 draggableArea.getY(),
                 draggableArea.getX() + draggableArea.getWidth(),
-                draggableArea.getY() + draggableArea.getHeight());
+                draggableArea.getY() + draggableArea.getHeight()
+        );
 
-
-        guiGraphics.fillGradient(x, y, x + width, y + height, gradientTopColor, gradientBottomColor);
+        renderMapInWidget(guiGraphics, this.x, this.y, this.width, this.height, 2);
 
         int textWidth = font.width(displayText);
+        guiGraphics.pose().translate(0, 0, 50);
         guiGraphics.drawString(font, displayText, x + (width - textWidth) / 2, y + (height / 2) - 4, textColor);
 
         guiGraphics.disableScissor();
+        guiGraphics.pose().popPose();
+
+    }
+
+    public void renderMapInWidget(GuiGraphics guiGraphics, int widgetX, int widgetY, int widgetWidth, int widgetHeight, int mapId) {
+        Minecraft minecraft = Minecraft.getInstance();
+        MapItemSavedData mapState = minecraft.level.getMapData(new MapId(mapId));
+        if (mapState == null) {
+            return;
+        }
+
+        float scale = Math.min((float) widgetWidth / 128, (float) widgetHeight / 128);
+
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(widgetX, widgetY, 25);
+        guiGraphics.pose().scale(scale, scale, 1.0F);
+        workerMapRenderer.render(guiGraphics.pose(), guiGraphics.bufferSource(), new MapId(mapId), mapState, false, 0xf000f0);
         guiGraphics.pose().popPose();
     }
 

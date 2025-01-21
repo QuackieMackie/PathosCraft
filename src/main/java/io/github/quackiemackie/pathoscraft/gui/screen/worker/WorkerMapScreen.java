@@ -30,7 +30,7 @@ public class WorkerMapScreen extends Screen {
 
         // Initialize draggable area and widget
         draggableArea = new DraggableArea(startX, startY, maxX, maxY, 5, 0xFF000000, 0x77000000);
-        draggableWidget = new DraggableWidget(draggableArea, 320, 320, 0xFFAAAAAA, 0xFF555555);
+        draggableWidget = new DraggableWidget(draggableArea, 320, 320);
     }
 
     @Override

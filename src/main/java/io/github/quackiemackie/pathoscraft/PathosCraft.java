@@ -37,6 +37,18 @@ public class PathosCraft {
     //TODO:
     // - I want to add a toggle method for quests, so when the mod launches, I am able to toggle whether the quests from the mod load or only external data packs load.
 
+    //TODO: Workers
+    // The goal is to create some kind of method to generate passive resources using workers.
+    // Workers would be a random draw on their stats (possibly upgradable later...)
+    // -
+    // There would be a block called a worker Station, the work station would contain essentially the hub for the worker system,
+    // it would have a crafting table like area (3x3 slots) where you can place filled maps.
+    // when a map is added, it would get added to the worker map, each map filled map would have structures generated randomly on them. (I think between 0 - 3 would be the best bet.)
+    // the filled maps would be used to generate the rendered map widgets.
+    // -
+    // The player would be able to send workers to go to these structures and return with resources at the cost of some kind of food item.
+    // The different stats on the worker would affect how each worker performs on the generated jobs.
+
     public static final String MOD_ID = "pathoscraft";
     public static final Logger LOGGER = LogUtils.getLogger();
 
