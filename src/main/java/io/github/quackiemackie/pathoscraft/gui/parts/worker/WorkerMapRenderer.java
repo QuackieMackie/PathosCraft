@@ -2,23 +2,19 @@ package io.github.quackiemackie.pathoscraft.gui.parts.worker;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.MapDecorationTextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.gui.map.MapDecorationRendererManager;
 import org.joml.Matrix4f;
 
 import java.util.Objects;
@@ -104,40 +100,6 @@ public class WorkerMapRenderer implements AutoCloseable {
             vertexconsumer.addVertex(matrix4f, 128.0F, 128.0F, -0.01F).setColor(-1).setUv(1.0F, 1.0F).setLight(packedLight);
             vertexconsumer.addVertex(matrix4f, 128.0F, 0.0F, -0.01F).setColor(-1).setUv(1.0F, 0.0F).setLight(packedLight);
             vertexconsumer.addVertex(matrix4f, 0.0F, 0.0F, -0.01F).setColor(-1).setUv(0.0F, 0.0F).setLight(packedLight);
-            int k = 0;
-
-            for(MapDecoration mapdecoration : this.data.getDecorations()) {
-                ResourceLocation assetId = mapdecoration.type().value().assetId();
-
-                //Blocks the player being seen on the map.
-                if (assetId.toString().equals("minecraft:player_off_map") || assetId.toString().equals("minecraft:player")) {
-                    continue;
-                }
-
-                if (!active || mapdecoration.renderOnFrame()) {
-                    if (!MapDecorationRendererManager.render(mapdecoration, poseStack, bufferSource, this.data, WorkerMapRenderer.this.decorationTextures, active, packedLight, k)) {
-                        poseStack.pushPose();
-                        poseStack.translate(0.0F + (float) mapdecoration.x() / 2.0F + 64.0F, 0.0F + (float) mapdecoration.y() / 2.0F + 64.0F, -0.02F);
-                        poseStack.mulPose(Axis.ZP.rotationDegrees((float) (mapdecoration.rot() * 360) / 16.0F));
-                        poseStack.scale(4.0F, 4.0F, 3.0F);
-                        poseStack.translate(-0.125F, 0.125F, 0.0F);
-                        Matrix4f matrix4f1 = poseStack.last().pose();
-                        TextureAtlasSprite textureatlassprite = WorkerMapRenderer.this.decorationTextures.get(mapdecoration);
-                        float f2 = textureatlassprite.getU0();
-                        float f3 = textureatlassprite.getV0();
-                        float f4 = textureatlassprite.getU1();
-                        float f5 = textureatlassprite.getV1();
-                        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.text(textureatlassprite.atlasLocation()));
-                        vertexConsumer.addVertex(matrix4f1, -1.0F, 1.0F, (float) k * -0.001F).setColor(-1).setUv(f2, f3).setLight(packedLight);
-                        vertexConsumer.addVertex(matrix4f1, 1.0F, 1.0F, (float) k * -0.001F).setColor(-1).setUv(f4, f3).setLight(packedLight);
-                        vertexConsumer.addVertex(matrix4f1, 1.0F, -1.0F, (float) k * -0.001F).setColor(-1).setUv(f4, f5).setLight(packedLight);
-                        vertexConsumer.addVertex(matrix4f1, -1.0F, -1.0F, (float) k * -0.001F).setColor(-1).setUv(f2, f5).setLight(packedLight);
-                        poseStack.popPose();
-                    }
-                    ++k;
-                }
-            }
-
         }
 
         public void close() {

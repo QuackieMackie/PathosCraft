@@ -57,8 +57,7 @@ public class DraggableWidget {
                 draggableArea.getX() + draggableArea.getWidth(),
                 draggableArea.getY() + draggableArea.getHeight()
         );
-
-        renderMapInWidget(guiGraphics, this.x, this.y, this.width, this.height, 2);
+        renderMapInWidget(guiGraphics, this.x, this.y, this.width, this.height);
 
         int textWidth = font.width(displayText);
         guiGraphics.pose().translate(0, 0, 50);
@@ -69,21 +68,42 @@ public class DraggableWidget {
 
     }
 
-    public void renderMapInWidget(GuiGraphics guiGraphics, int widgetX, int widgetY, int widgetWidth, int widgetHeight, int mapId) {
+    public void renderMapInWidget(GuiGraphics guiGraphics, int widgetX, int widgetY, int widgetWidth, int widgetHeight) {
         Minecraft minecraft = Minecraft.getInstance();
-        MapItemSavedData mapState = minecraft.level.getMapData(new MapId(mapId));
-        if (mapState == null) {
-            return;
+
+        int[][] mapIds = {
+                {8, 7, 6}, // Row 1
+                {9, 14, 13}, // Row 2
+                {10, 11, 12}  // Row 3
+        };
+
+        int rows = 3;
+        int cols = 3;
+        int cellWidth = widgetWidth / cols;
+        int cellHeight = widgetHeight / rows;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                int mapId = mapIds[row][col];
+
+                int cellX = widgetX + col * cellWidth;
+                int cellY = widgetY + row * cellHeight;
+
+                MapItemSavedData mapState = minecraft.level.getMapData(new MapId(mapId));
+                if (mapState == null) {
+                    continue;
+                }
+
+                float scale = Math.min((float) cellWidth / 128, (float) cellHeight / 128);
+
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(cellX, cellY, 25);
+                guiGraphics.pose().scale(scale, scale, 1.0F);
+                workerMapRenderer.render(guiGraphics.pose(), guiGraphics.bufferSource(), new MapId(mapId), mapState, false, 0xf000f0);
+                guiGraphics.pose().popPose();
+            }
         }
-
-        float scale = Math.min((float) widgetWidth / 128, (float) widgetHeight / 128);
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(widgetX, widgetY, 25);
-        guiGraphics.pose().scale(scale, scale, 1.0F);
-        workerMapRenderer.render(guiGraphics.pose(), guiGraphics.bufferSource(), new MapId(mapId), mapState, false, 0xf000f0);
-        guiGraphics.pose().popPose();
     }
 
     /**
