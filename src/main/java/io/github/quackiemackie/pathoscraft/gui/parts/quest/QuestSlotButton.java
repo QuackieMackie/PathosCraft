@@ -13,7 +13,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.gui.screen.quest.QuestScreen;
@@ -86,13 +85,14 @@ public class QuestSlotButton extends Button {
     }
 
     /**
-     * Handles removing a quest from the active list upon right-click.
+     * Handles the logic for a right-click action on a quest button. This method removes the
+     * associated quest from the active quests list if it is present, updates the player's
+     * active quest data attachment, refreshes the quest UI in the current screen, and sends
+     * a packet to the server to update the server-side state.
      *
-     * @brief When a quest is right-clicked, it is removed from the player's
-     * active quest list, and both the client and server are updated
-     * to reflect this change.
-     * The UI is refreshed to display the
-     * updated list of active quests.
+     * @param activeQuests The list of quests currently marked as active.
+     * @param player       The player performing the right-click action.
+     * @param minecraft    The Minecraft instance, used for accessing the current screen.
      */
     private void handleRightClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         Quest quest = this.getQuest();
@@ -109,11 +109,13 @@ public class QuestSlotButton extends Button {
     }
 
     /**
-     * Handles accepting rewards from completed quests upon left-click.
+     * Handles the logic for a left-click action on a quest button. This method attempts to activate a quest
+     * by assigning it to an available active quest slot, updating the player's active quest data, refreshing
+     * the quest UI, and notifying the server of the change. If no slots are available, it logs a warning.
      *
-     * @brief This method processes the action of accepting rewards for quests that
-     * have been completed. It updates the completed quests data attachment and
-     * sends the necessary payload to the server to execute the associated logic.
+     * @param activeQuests The list of quests currently marked as active.
+     * @param player       The player performing the left-click action.
+     * @param minecraft    The Minecraft instance, used for accessing the current screen.
      */
     private void handleLeftClick(List<Quest> activeQuests, Player player, Minecraft minecraft) {
         Quest quest = this.getQuest();

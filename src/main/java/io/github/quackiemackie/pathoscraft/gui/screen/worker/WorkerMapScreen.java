@@ -5,6 +5,7 @@ import io.github.quackiemackie.pathoscraft.gui.parts.DraggableWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 
 public class WorkerMapScreen extends Screen {
     private DraggableArea draggableArea;
@@ -35,6 +36,11 @@ public class WorkerMapScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
+            draggableWidget.resetZoom(draggableArea);
+            return true;
+        }
+
         if (draggableWidget.mousePressed(mouseX, mouseY, button)) {
             return true;
         }
@@ -53,6 +59,14 @@ public class WorkerMapScreen extends Screen {
             return true;
         }
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (draggableWidget.mouseScrolled(scrollY, draggableArea)) {
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override

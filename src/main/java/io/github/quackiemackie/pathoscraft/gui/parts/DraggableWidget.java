@@ -13,6 +13,11 @@ public class DraggableWidget {
     private boolean isDragging = false;
     private int dragOffsetX, dragOffsetY;
 
+    private final int originalWidth;
+    private final int originalHeight;
+
+    private double zoom = 1.0;
+
     private static final String displayText = "+";
     private static final int textColor = 0xFFFFFFFF;
 
@@ -28,6 +33,8 @@ public class DraggableWidget {
      * @param height            The height of the draggable widget.
      */
     public DraggableWidget(DraggableArea draggableArea, int width, int height) {
+        this.originalWidth = width;
+        this.originalHeight = height;
         this.width = width;
         this.height = height;
         this.x = draggableArea.getX() + (draggableArea.getWidth() - this.width) / 2;
@@ -68,33 +75,44 @@ public class DraggableWidget {
 
     }
 
+    /**
+     * Renders a 3x3 grid of maps within the specified widget region.
+     * Each map is scaled and positioned
+     * inside the widget bounds using the provided dimensions and current zoom level.
+     *
+     * @param guiGraphics The graphics context used for rendering the widget and maps.
+     * @param widgetX The x-coordinate of the top-left corner of the widget.
+     * @param widgetY The y-coordinate of the top-left corner of the widget.
+     * @param widgetWidth The width of the widget.
+     * @param widgetHeight The height of the widget.
+     */
     public void renderMapInWidget(GuiGraphics guiGraphics, int widgetX, int widgetY, int widgetWidth, int widgetHeight) {
         Minecraft minecraft = Minecraft.getInstance();
 
         int[][] mapIds = {
-                {8, 7, 6}, // Row 1
-                {9, 14, 13}, // Row 2
-                {10, 11, 12}  // Row 3
+                {8, 7, 6},
+                {9, 14, 13},
+                {10, 11, 12}
         };
 
         int rows = 3;
         int cols = 3;
-        int cellWidth = widgetWidth / cols;
-        int cellHeight = widgetHeight / rows;
+        double cellWidth = (widgetWidth / (cols * zoom));
+        double cellHeight = (widgetHeight / (rows * zoom));
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 int mapId = mapIds[row][col];
 
-                int cellX = widgetX + col * cellWidth;
-                int cellY = widgetY + row * cellHeight;
+                double cellX = (widgetX + col * cellWidth * zoom);
+                double cellY = (widgetY + row * cellHeight * zoom);
 
                 MapItemSavedData mapState = minecraft.level.getMapData(new MapId(mapId));
                 if (mapState == null) {
                     continue;
                 }
 
-                float scale = Math.min((float) cellWidth / 128, (float) cellHeight / 128);
+                float scale = (float) (Math.min(cellWidth / 128, cellHeight / 128) * zoom);
 
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 guiGraphics.pose().pushPose();
@@ -147,17 +165,17 @@ public class DraggableWidget {
             int minX, maxX, minY, maxY;
 
             if (width > draggableWidth) {
-                // Widget is larger
-                minX = draggableX - width + (draggableWidth - 10);
-                maxX = draggableX + draggableWidth - (draggableWidth - 10);
-
-                minY = draggableY - height + (draggableHeight - 10);
-                maxY = draggableY + draggableHeight - (draggableHeight - 10);
+                minX = draggableX - width + (draggableWidth);
+                maxX = draggableX + draggableWidth - (draggableWidth);
             } else {
-                // Widget is smaller
                 minX = draggableX;
                 maxX = draggableX + draggableWidth - width;
+            }
 
+            if (height > draggableHeight) {
+                minY = draggableY - height + (draggableHeight);
+                maxY = draggableY + draggableHeight - (draggableHeight);
+            } else {
                 minY = draggableY;
                 maxY = draggableY + draggableHeight - height;
             }
@@ -169,6 +187,73 @@ public class DraggableWidget {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Handles mouse scroll events to adjust the zoom level of the widget and updates its dimensions.
+     * This method ensures the widget's zoom level remains within a specific range, recalculates
+     * its width and height based on the zoom level, and constrains its position within the
+     * boundaries of the specified draggable area.
+     *
+     * @param scrollY        The amount of vertical scrolling, where positive values signify upward
+     *                       scrolling and negative values signify downward scrolling.
+     * @param draggableArea  The area within which the widget is constrained, used to adjust
+     *                       the widget's position after resizing.
+     * @return true Always returns true as scrolling is a continuous event.
+     */
+    public boolean mouseScrolled(double scrollY, DraggableArea draggableArea) {
+        double zoomAmount = 0.1;
+        zoom += scrollY * zoomAmount;
+
+        zoom = Math.max(0.2, Math.min(zoom, 3.0));
+
+        width = (int) (this.originalWidth * zoom);
+        height = (int) (this.originalHeight * zoom);
+
+        constrainWithinBounds(draggableArea);
+
+        return true;
+    }
+
+    /**
+     * Resets the zoom level of the widget to its default value, restoring its original dimensions,
+     * and ensures that the widget remains constrained within the specified draggable area boundaries.
+     *
+     * @param draggableArea The area within which the widget is constrained and adjusted after resetting its zoom.
+     */
+    public void resetZoom(DraggableArea draggableArea) {
+        zoom = 1.0;
+
+        width = originalWidth;
+        height = originalHeight;
+
+        constrainWithinBounds(draggableArea);
+    }
+
+    /**
+     * Ensures that the widget's position remains within the bounds of the given draggable area.
+     * This method adjusts the widget's x and y coordinates as necessary to prevent it from
+     * overlapping or exiting the draggable area's limits while considering its size.
+     *
+     * @param draggableArea The area within which the widget can be dragged, including its borders.
+     */
+    private void constrainWithinBounds(DraggableArea draggableArea) {
+        int draggableX = draggableArea.getX() + draggableArea.getBorderSize();
+        int draggableY = draggableArea.getY() + draggableArea.getBorderSize();
+        int draggableWidth = draggableArea.getWidth() - 2 * draggableArea.getBorderSize();
+        int draggableHeight = draggableArea.getHeight() - 2 * draggableArea.getBorderSize();
+
+        if (width > draggableWidth) {
+            x = Math.max(draggableX - width + draggableWidth, Math.min(x, draggableX));
+        } else {
+            x = Math.max(draggableX, Math.min(x, draggableX + draggableWidth - width));
+        }
+
+        if (height > draggableHeight) {
+            y = Math.max(draggableY - height + draggableHeight, Math.min(y, draggableY));
+        } else {
+            y = Math.max(draggableY, Math.min(y, draggableY + draggableHeight - height));
+        }
     }
 
     /**
