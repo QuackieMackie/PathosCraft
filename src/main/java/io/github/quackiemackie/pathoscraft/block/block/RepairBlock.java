@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.block.advanced;
+package io.github.quackiemackie.pathoscraft.block.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;

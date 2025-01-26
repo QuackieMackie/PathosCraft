@@ -1,8 +1,8 @@
-package io.github.quackiemackie.pathoscraft.gui.parts;
+package io.github.quackiemackie.pathoscraft.gui.parts.worker.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 
-public class DraggableArea {
+public class WorkerDraggableArea {
     private final int x;
     private final int y;
     private final int width;
@@ -21,7 +21,7 @@ public class DraggableArea {
      * @param maxX   the x-coordinate of the bottom-right corner
      * @param maxY   the y-coordinate of the bottom-right corner
      */
-    public DraggableArea(int startX, int startY, int maxX, int maxY, int borderSize, int borderColor, int backgroundColor) {
+    public WorkerDraggableArea(int startX, int startY, int maxX, int maxY, int borderSize, int borderColor, int backgroundColor) {
         this.x = startX;
         this.y = startY;
         this.width = Math.max(0, maxX - startX);

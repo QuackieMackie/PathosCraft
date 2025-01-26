@@ -1,6 +1,8 @@
 package io.github.quackiemackie.pathoscraft.network;
 
 import io.github.quackiemackie.pathoscraft.network.payload.quest.active.*;
+import io.github.quackiemackie.pathoscraft.network.payload.worker.UpdateWorkerStationMapData;
+import io.github.quackiemackie.pathoscraft.network.payload.worker.UpdateWorkerStationSingleMap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.HandlerThread;
@@ -50,5 +52,9 @@ public class PayloadRegister {
 
         registrar.commonToServer(FinishedFishingMiniGame.TYPE, FinishedFishingMiniGame.STREAM_CODEC, ServerPayloadHandler::handleFinishedFishingMiniGame);
         registrar.commonToServer(FinishedExcavationMiniGame.TYPE, FinishedExcavationMiniGame.STREAM_CODEC, ServerPayloadHandler::handleFinishedExcavationMiniGame);
+
+        // Workers
+        registrar.commonToClient(UpdateWorkerStationMapData.TYPE, UpdateWorkerStationMapData.STREAM_CODEC, ClientPayloadHandler::handleWorkerStationMaps);
+        registrar.commonToClient(UpdateWorkerStationSingleMap.TYPE, UpdateWorkerStationSingleMap.STREAM_CODEC, ClientPayloadHandler::handleUpdateWorkerStationSingleMap);
     }
 }

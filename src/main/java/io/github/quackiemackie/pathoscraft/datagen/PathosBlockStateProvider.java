@@ -10,7 +10,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.block.PathosBlocks;
-import io.github.quackiemackie.pathoscraft.block.advanced.RepairBlock;
+import io.github.quackiemackie.pathoscraft.block.block.RepairBlock;
 
 public class PathosBlockStateProvider extends BlockStateProvider {
 

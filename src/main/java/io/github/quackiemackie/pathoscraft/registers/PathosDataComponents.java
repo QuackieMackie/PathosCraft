@@ -2,6 +2,7 @@ package io.github.quackiemackie.pathoscraft.registers;
 
 import com.mojang.serialization.Codec;
 import io.github.quackiemackie.pathoscraft.util.worker.Worker;
+import io.github.quackiemackie.pathoscraft.util.worker.WorkerNode;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -28,5 +29,6 @@ public class PathosDataComponents {
     ///A future data component, that will store entity data, so they can be captures in the [CreatureCrystal]
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> ENTITY_CAPTURED_DATA = register("captured_entity_data", builder -> builder.persistent(CompoundTag.CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<WorkerNode>> WORKER_NODE_DATA = register("worker_node_data", builder -> builder.persistent(WorkerNode.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Worker>> WORKER_ITEM_DATA = register("worker_item_data", builder -> builder.persistent(Worker.CODEC));
 }

@@ -17,6 +17,7 @@ public class PathosRegisters {
 
         registerSafe(modEventBus, "items", PathosItems.ITEMS::register);
         registerSafe(modEventBus, "blocks", PathosBlocks.BLOCKS::register);
+        registerSafe(modEventBus, "block entities", PathosBlocks.BLOCK_ENTITY::register);
         registerSafe(modEventBus, "creative mode tabs", bus -> {
             PathosCreativeModeTabs.CREATIVE_MODE_TAB.register(bus);
             bus.addListener(PathosCreativeModeTabs::addCreative);

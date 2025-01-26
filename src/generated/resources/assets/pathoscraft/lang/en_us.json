@@ -112,6 +112,7 @@
   "screen.title.pathoscraft.minigame.lumbering": "Lumbering Mini-Game",
   "screen.title.pathoscraft.quest_menu": "Quest Menu",
   "screen.title.pathoscraft.worker_hire_menu": "Worker Hiring",
+  "screen.title.pathoscraft.worker_main_menu": "Worker Menu",
   "screen.widget.pathoscraft.excavation_mini_game.amazing": "Amazing! You found %s veins of ore!",
   "screen.widget.pathoscraft.excavation_mini_game.better_luck": "Better luck next time! Total ores found: %s",
   "screen.widget.pathoscraft.excavation_mini_game.better_luck_next_time": "Better luck next time!",

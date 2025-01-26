@@ -1,27 +1,28 @@
-package io.github.quackiemackie.pathoscraft.gui.parts;
+package io.github.quackiemackie.pathoscraft.gui.parts.worker.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.quackiemackie.pathoscraft.gui.parts.worker.WorkerMapRenderer;
+import io.github.quackiemackie.pathoscraft.util.worker.FilledMap;
+import io.github.quackiemackie.pathoscraft.util.worker.WorkerStationMaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
-public class DraggableWidget {
+public class WorkerDraggableWidget {
     private int x, y, width, height;
     private boolean isDragging = false;
     private int dragOffsetX, dragOffsetY;
-
     private final int originalWidth;
     private final int originalHeight;
-
     private double zoom = 1.0;
+
+    private final WorkerStationMaps mapData;
+
+    private final WorkerMapRenderer workerMapRenderer;
 
     private static final String displayText = "+";
     private static final int textColor = 0xFFFFFFFF;
-
-    private final WorkerMapRenderer workerMapRenderer;
 
     /**
      * Creates a draggable widget within the specified draggable area, initializing its size, position,
@@ -32,13 +33,14 @@ public class DraggableWidget {
      * @param width             The width of the draggable widget.
      * @param height            The height of the draggable widget.
      */
-    public DraggableWidget(DraggableArea draggableArea, int width, int height) {
+    public WorkerDraggableWidget(WorkerDraggableArea draggableArea, int width, int height, WorkerStationMaps mapData) {
         this.originalWidth = width;
         this.originalHeight = height;
         this.width = width;
         this.height = height;
         this.x = draggableArea.getX() + (draggableArea.getWidth() - this.width) / 2;
         this.y = draggableArea.getY() + (draggableArea.getHeight() - this.height) / 2;
+        this.mapData = mapData;
 
         Minecraft minecraft = Minecraft.getInstance();
         this.workerMapRenderer = new WorkerMapRenderer(
@@ -55,7 +57,9 @@ public class DraggableWidget {
      * @param font          The font used for rendering the text inside the widget.
      * @param draggableArea The draggable area defining the widget's clipping bounds.
      */
-    public void render(GuiGraphics guiGraphics, Font font, DraggableArea draggableArea) {
+    public void render(GuiGraphics guiGraphics, Font font, WorkerDraggableArea draggableArea) {
+        renderBorder(guiGraphics);
+
         guiGraphics.pose().pushPose();
 
         guiGraphics.enableScissor(
@@ -64,7 +68,10 @@ public class DraggableWidget {
                 draggableArea.getX() + draggableArea.getWidth(),
                 draggableArea.getY() + draggableArea.getHeight()
         );
-        renderMapInWidget(guiGraphics, this.x, this.y, this.width, this.height);
+
+        if (this.mapData != null) {
+            renderMapInWidget(guiGraphics, this.x, this.y, this.width, this.height);
+        }
 
         int textWidth = font.width(displayText);
         guiGraphics.pose().translate(0, 0, 50);
@@ -72,7 +79,19 @@ public class DraggableWidget {
 
         guiGraphics.disableScissor();
         guiGraphics.pose().popPose();
+    }
 
+    protected void renderBorder(GuiGraphics guiGraphics) {
+        int borderColor = 0xFFFFFFFF;
+        int left = this.getX();
+        int top = this.getY();
+        int right = this.getX() + this.width;
+        int bottom = this.getY() + this.height;
+
+        guiGraphics.fill(left, top, right, top + 1, borderColor);
+        guiGraphics.fill(left, bottom - 1, right, bottom, borderColor);
+        guiGraphics.fill(left, top, left + 1, bottom, borderColor);
+        guiGraphics.fill(right - 1, top, right, bottom, borderColor);
     }
 
     /**
@@ -90,9 +109,9 @@ public class DraggableWidget {
         Minecraft minecraft = Minecraft.getInstance();
 
         int[][] mapIds = {
-                {8, 7, 6},
-                {9, 14, 13},
-                {10, 11, 12}
+                {getMapIdForSlot(0), getMapIdForSlot(1), getMapIdForSlot(2)},
+                {getMapIdForSlot(3), getMapIdForSlot(4), getMapIdForSlot(5)},
+                {getMapIdForSlot(6), getMapIdForSlot(7), getMapIdForSlot(8)}
         };
 
         int rows = 3;
@@ -125,6 +144,20 @@ public class DraggableWidget {
     }
 
     /**
+     * Retrieves the map ID associated with a given slot from the WorkerStationMaps.
+     *
+     * @param slot The slot number for which the map ID should be retrieved.
+     * @return The map ID if a matching slot is found, or -1 if no match exists.
+     */
+    public int getMapIdForSlot(int slot) {
+        return mapData.maps().stream()
+                .filter(filledMap -> filledMap.slot() == slot)
+                .map(FilledMap::mapId)
+                .findFirst()
+                .orElse(-1);
+    }
+
+    /**
      * Handles the mouse press event for the widget. Enables dragging mode if the left mouse button is pressed
      * while the mouse cursor is over the widget.
      *
@@ -152,7 +185,7 @@ public class DraggableWidget {
      * @param draggableArea The area within which the widget can be dragged.
      * @return true if the widget's position was updated, false otherwise.
      */
-    public boolean mouseDragged(double mouseX, double mouseY, int button, DraggableArea draggableArea) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, WorkerDraggableArea draggableArea) {
         if (isDragging && button == 0) {
             int newWidgetX = (int) (mouseX - dragOffsetX);
             int newWidgetY = (int) (mouseY - dragOffsetY);
@@ -201,7 +234,7 @@ public class DraggableWidget {
      *                       the widget's position after resizing.
      * @return true Always returns true as scrolling is a continuous event.
      */
-    public boolean mouseScrolled(double scrollY, DraggableArea draggableArea) {
+    public boolean mouseScrolled(double scrollY, WorkerDraggableArea draggableArea) {
         double zoomAmount = 0.1;
         zoom += scrollY * zoomAmount;
 
@@ -221,7 +254,7 @@ public class DraggableWidget {
      *
      * @param draggableArea The area within which the widget is constrained and adjusted after resetting its zoom.
      */
-    public void resetZoom(DraggableArea draggableArea) {
+    public void resetZoom(WorkerDraggableArea draggableArea) {
         zoom = 1.0;
 
         width = originalWidth;
@@ -237,7 +270,7 @@ public class DraggableWidget {
      *
      * @param draggableArea The area within which the widget can be dragged, including its borders.
      */
-    private void constrainWithinBounds(DraggableArea draggableArea) {
+    private void constrainWithinBounds(WorkerDraggableArea draggableArea) {
         int draggableX = draggableArea.getX() + draggableArea.getBorderSize();
         int draggableY = draggableArea.getY() + draggableArea.getBorderSize();
         int draggableWidth = draggableArea.getWidth() - 2 * draggableArea.getBorderSize();

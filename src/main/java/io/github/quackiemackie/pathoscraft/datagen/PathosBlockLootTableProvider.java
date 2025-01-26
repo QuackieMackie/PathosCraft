@@ -26,7 +26,7 @@ public class PathosBlockLootTableProvider extends BlockLootSubProvider {
         add(PathosBlocks.SADNESS_ORE.get(), block -> createOreDrop(PathosBlocks.SADNESS_ORE.get(), PathosItems.RAW_SADNESS.get()));
         add(PathosBlocks.DEEPSLATE_SUNNY_ORE.get(), block -> createOreDrop(PathosBlocks.DEEPSLATE_SUNNY_ORE.get(), PathosItems.RAW_SUNNY.get()));
         add(PathosBlocks.SUNNY_ORE.get(), block -> createOreDrop(PathosBlocks.SUNNY_ORE.get(), PathosItems.RAW_SUNNY.get()));
-
+        dropSelf(PathosBlocks.WORKER_STATION_BLOCK.get());
     }
 
     protected Iterable<Block> getKnownBlocks() {

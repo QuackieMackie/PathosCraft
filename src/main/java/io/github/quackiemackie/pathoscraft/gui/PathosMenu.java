@@ -1,6 +1,7 @@
 package io.github.quackiemackie.pathoscraft.gui;
 
 import io.github.quackiemackie.pathoscraft.gui.menu.WorkerHireMenu;
+import io.github.quackiemackie.pathoscraft.gui.menu.WorkerMainMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -14,4 +15,5 @@ public class PathosMenu {
 
     public static final DeferredHolder<MenuType<?>, MenuType<QuestMenu>> QUEST_MENU = REGISTRY.register("quest_menu", () -> IMenuTypeExtension.create(QuestMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<WorkerHireMenu>> WORKER_HIRE_MENU = REGISTRY.register("worker_hire_menu", () -> IMenuTypeExtension.create(WorkerHireMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<WorkerMainMenu>> WORKER_MAIN_MENU = REGISTRY.register("worker_main_menu", () -> IMenuTypeExtension.create(WorkerMainMenu::new));
 }

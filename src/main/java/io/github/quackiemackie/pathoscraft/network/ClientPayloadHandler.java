@@ -1,5 +1,9 @@
 package io.github.quackiemackie.pathoscraft.network;
 
+import io.github.quackiemackie.pathoscraft.gui.menu.WorkerMainMenu;
+import io.github.quackiemackie.pathoscraft.network.payload.worker.UpdateWorkerStationMapData;
+import io.github.quackiemackie.pathoscraft.network.payload.worker.UpdateWorkerStationSingleMap;
+import io.github.quackiemackie.pathoscraft.util.handlers.workers.WorkerPayloadHandler;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -27,7 +31,7 @@ import io.github.quackiemackie.pathoscraft.registers.PathosAttachments;
 public class ClientPayloadHandler {
     public static void handleAstralFormStatus(AstralFormStatus data, IPayloadContext context) {
         Player player = context.player();
-        ((IAttachmentHolder) player).setData(PathosAttachments.IN_ASTRAL_FORM.get(), data.status());
+        player.setData(PathosAttachments.IN_ASTRAL_FORM.get(), data.status());
     }
 
     /**
@@ -117,5 +121,22 @@ public class ClientPayloadHandler {
      */
     public static void handleStartLmberingMiniGame(StartLumberingMiniGame data, IPayloadContext context) {
         LumberingHandler.startMiniGame(context.player(), data.blockDrop());
+    }
+
+    public static void handleWorkerStationMaps(UpdateWorkerStationMapData data, IPayloadContext context) {
+        WorkerPayloadHandler.setWorkerMapData(data.mapData());
+        PathosCraft.LOGGER.info("Full Worker Station Map Data synchronized: {}", data.mapData().maps());
+    }
+
+    public static void handleUpdateWorkerStationSingleMap(UpdateWorkerStationSingleMap data, IPayloadContext context) {
+        Player player = context.player();
+
+        if (player == null || !(player.containerMenu instanceof WorkerMainMenu workerMenu)) {
+            PathosCraft.LOGGER.warn("Unable to update Worker Station slot. Invalid menu context.");
+            return;
+        }
+
+        WorkerPayloadHandler.updateSingleWorkerMap(data.filledMap());
+        PathosCraft.LOGGER.info("Single Worker Slot Updated: Slot={}, Map ID={}", data.filledMap().slot(), data.filledMap().mapId());
     }
 }

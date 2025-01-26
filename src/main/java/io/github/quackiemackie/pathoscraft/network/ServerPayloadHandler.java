@@ -1,7 +1,7 @@
 package io.github.quackiemackie.pathoscraft.network;
 
+import io.github.quackiemackie.pathoscraft.util.worker.WorkerStationMaps;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.network.payload.minigames.excavation.FinishedExcavationMiniGame;
@@ -19,7 +19,9 @@ import io.github.quackiemackie.pathoscraft.util.quest.Quest;
 import io.github.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The ServerPayloadHandler class contains static methods to handle various server payloads received from the client in the PathosCraft mod.
@@ -27,9 +29,11 @@ import java.util.List;
  * Each method corresponds to a specific type of payload and contains logic to handle and log the appropriate updates.
  */
 public class ServerPayloadHandler {
+    private static final Map<Player, WorkerStationMaps> workerStationMapsCache = new HashMap<>();
+
     public static void handleAstralFormKeyPress(AstralFormKeyPress data, IPayloadContext context) {
         Player player = context.player();
-        if (((IAttachmentHolder) player).getData(PathosAttachments.IN_ASTRAL_FORM.get())) {
+        if ((player).getData(PathosAttachments.IN_ASTRAL_FORM.get())) {
             AstralFormHandler.leaveAstralForm(player);
         }
     }
@@ -42,7 +46,7 @@ public class ServerPayloadHandler {
      */
     public static void handleAddActiveQuest(AddActiveQuest data, IPayloadContext context) {
         Player player = context.player();
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> activeQuests = new ArrayList<>((player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
 
         QuestPayloadHandler.addActiveQuest(activeQuests, data.quest(), player);
 
@@ -58,7 +62,7 @@ public class ServerPayloadHandler {
      */
     public static void handleRemoveActiveQuest(RemoveActiveQuest data, IPayloadContext context) {
         Player player = context.player();
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> activeQuests = new ArrayList<>((player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
 
         QuestPayloadHandler.removeActiveQuest(activeQuests, data.quest(), player);
 
@@ -76,7 +80,7 @@ public class ServerPayloadHandler {
      */
     public static void handleSwapActiveQuest(SwapActiveQuests data, IPayloadContext context) {
         Player player = context.player();
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> activeQuests = new ArrayList<>((player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
         List<Quest> swappableQuests = data.swappableQuests();
 
         QuestPayloadHandler.swapActiveQuest(activeQuests, swappableQuests, player);
@@ -93,8 +97,8 @@ public class ServerPayloadHandler {
      */
     public static void handleAddCompletedQuest(AddCompletedQuest data, IPayloadContext context) {
         Player player = context.player();
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
-        List<Quest> completedQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get()));
+        List<Quest> activeQuests = new ArrayList<>((player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> completedQuests = new ArrayList<>((player).getData(PathosAttachments.COMPLETED_QUESTS.get()));
 
         QuestPayloadHandler.addCompletedQuest(completedQuests, activeQuests, data.quest(), player);
 
