@@ -1,5 +1,6 @@
 package io.github.quackiemackie.pathoscraft.registers;
 
+import io.github.quackiemackie.pathoscraft.block.PathosBlockEntities;
 import net.neoforged.bus.api.IEventBus;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.block.PathosBlocks;
@@ -17,7 +18,7 @@ public class PathosRegisters {
 
         registerSafe(modEventBus, "items", PathosItems.ITEMS::register);
         registerSafe(modEventBus, "blocks", PathosBlocks.BLOCKS::register);
-        registerSafe(modEventBus, "block entities", PathosBlocks.BLOCK_ENTITY::register);
+        registerSafe(modEventBus, "block entities", PathosBlockEntities.BLOCK_ENTITY::register);
         registerSafe(modEventBus, "creative mode tabs", bus -> {
             PathosCreativeModeTabs.CREATIVE_MODE_TAB.register(bus);
             bus.addListener(PathosCreativeModeTabs::addCreative);

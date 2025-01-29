@@ -1,68 +1,48 @@
 package io.github.quackiemackie.pathoscraft.gui.menu;
 
-import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.block.entity.WorkerStationEntity;
+import io.github.quackiemackie.pathoscraft.block.PathosBlocks;
+import io.github.quackiemackie.pathoscraft.block.entity.WorkerStationBlockEntity;
 import io.github.quackiemackie.pathoscraft.gui.PathosMenu;
-import io.github.quackiemackie.pathoscraft.gui.parts.worker.menu.WorkerMapSlots;
-import io.github.quackiemackie.pathoscraft.network.payload.worker.UpdateWorkerStationMapData;
-import io.github.quackiemackie.pathoscraft.util.handlers.workers.WorkerPayloadHandler;
-import io.github.quackiemackie.pathoscraft.util.worker.WorkerStationMaps;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class WorkerMainMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
-    private final Map<Integer, Slot> mapSlots = new HashMap<>();
+public class WorkerMainMenu extends AbstractContainerMenu {
+    public final WorkerStationBlockEntity blockEntity;
+    private final Level level;
 
-    public WorkerMainMenu(int id, Inventory inventory, FriendlyByteBuf extraData) {
-        super(PathosMenu.WORKER_MAIN_MENU.get(), id);
-        IItemHandler internal = new ItemStackHandler(9);
-
-        if (extraData != null) {
-            BlockPos blockPos = extraData.readBlockPos();
-            BlockEntity blockEntity = inventory.player.level().getBlockEntity(blockPos);
-            if (blockEntity instanceof WorkerStationEntity workerStationEntity) {
-                internal = workerStationEntity.getItemHandler();
-            }
-        }
-
-        addMapSlots(internal, inventory.player);
-        addPlayerInventory(inventory, 8, 140);
-
-        if (inventory.player instanceof ServerPlayer serverPlayer) {
-            WorkerStationMaps currentMapData = WorkerPayloadHandler.getWorkerMapData();
-            if (currentMapData != null) {
-                PacketDistributor.sendToPlayer(serverPlayer, new UpdateWorkerStationMapData(currentMapData));
-                PathosCraft.LOGGER.info("Sent full Worker Station Map data to client on menu close.");
-            }
-        }
+    public WorkerMainMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
-    private void addMapSlots(IItemHandler inventory, Player player) {
-        this.mapSlots.put(0, this.addSlot(new WorkerMapSlots(inventory, 0, 62, 36, player)));
-        this.mapSlots.put(1, this.addSlot(new WorkerMapSlots(inventory, 1, 80, 36, player)));
-        this.mapSlots.put(2, this.addSlot(new WorkerMapSlots(inventory, 2, 98, 36, player)));
+    public WorkerMainMenu(int pContainerId, Inventory inv, BlockEntity blockEntity) {
+        super(PathosMenu.WORKER_MAIN_MENU.get(), pContainerId);
+        this.blockEntity = ((WorkerStationBlockEntity) blockEntity);
+        this.level = inv.player.level();
 
-        this.mapSlots.put(3, this.addSlot(new WorkerMapSlots(inventory, 3, 62, 54, player)));
-        this.mapSlots.put(4, this.addSlot(new WorkerMapSlots(inventory, 4, 80, 54, player)));
-        this.mapSlots.put(5, this.addSlot(new WorkerMapSlots(inventory, 5, 98, 54, player)));
+        addPlayerInventory(inv, 8, 140);
 
-        this.mapSlots.put(6, this.addSlot(new WorkerMapSlots(inventory, 6, 62, 72, player)));
-        this.mapSlots.put(7, this.addSlot(new WorkerMapSlots(inventory, 7, 80, 72, player)));
-        this.mapSlots.put(8, this.addSlot(new WorkerMapSlots(inventory, 8, 98, 72, player)));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 62, 36));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, 80, 36));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, 98, 36));
+
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, 62, 54));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 4, 80, 54));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 5, 98, 54));
+
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 6, 62, 72));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 7, 80, 72));
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 8, 98, 72));
+        
     }
 
     private void addPlayerInventory(Inventory playerInventory, int x, int y) {
@@ -78,29 +58,45 @@ public class WorkerMainMenu extends AbstractContainerMenu implements Supplier<Ma
     }
 
     @Override
-    public boolean stillValid(Player player) {
-        return true;
-    }
-
-    @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        return ItemStack.EMPTY;
+        Slot sourceSlot = this.slots.get(index);
+        if (sourceSlot == null || !sourceSlot.hasItem()) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack sourceStack = sourceSlot.getItem();
+        ItemStack copyOfSourceStack = sourceStack.copy();
+
+        int blockInventorySize = this.blockEntity.inventory.getSlots();
+        int playerInventoryStart = blockInventorySize;
+        int playerInventoryEnd = playerInventoryStart + 36;
+
+        if (index < blockInventorySize) {
+            if (!this.moveItemStackTo(sourceStack, playerInventoryStart, playerInventoryEnd, true)) {
+                return ItemStack.EMPTY;
+            }
+        } else {
+            if (!this.moveItemStackTo(sourceStack, 0, blockInventorySize, false)) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        if (sourceStack.isEmpty()) {
+            sourceSlot.set(ItemStack.EMPTY);
+        } else {
+            sourceSlot.setChanged();
+        }
+
+        sourceSlot.onTake(player, sourceStack);
+        return copyOfSourceStack;
     }
 
     @Override
-    protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
-        return false;
+    public boolean stillValid(Player pPlayer) {
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, PathosBlocks.WORKER_STATION_BLOCK.get());
     }
 
-    @Override
-    public void removed(Player player) {
-        super.removed(player);
+    public Map<Integer, Integer> getSlotMapData() {
+        return blockEntity.getSlotMapData();
     }
-
-    @Override
-    public Map<Integer, Slot> get() {
-        return mapSlots;
-    }
-
-
 }

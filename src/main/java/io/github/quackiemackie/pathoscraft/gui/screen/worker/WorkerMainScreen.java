@@ -10,12 +10,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.util.Map;
+
 public class WorkerMainScreen extends AbstractContainerScreen<WorkerMainMenu> {
+    private final WorkerMainMenu menu;
+    private Map<Integer, Integer> slotMapData;
 
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/screen/worker_main_menu.png");
 
     public WorkerMainScreen(WorkerMainMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
+        this.menu = menu;
 
         this.imageWidth = 176;
         this.imageHeight = 256;
@@ -29,7 +34,8 @@ public class WorkerMainScreen extends AbstractContainerScreen<WorkerMainMenu> {
         int buttonY = (this.height - this.imageHeight) / 2 + 220;
 
         Button mapButton = Button.builder(Component.literal("Open Map"), button -> {
-            this.minecraft.setScreen(new WorkerMapScreen(this));
+            this.slotMapData = menu.getSlotMapData();
+            this.minecraft.setScreen(new WorkerMapScreen(this, slotMapData));
         }).bounds(buttonX, buttonY, 90, 20).build();
 
         this.addRenderableWidget(mapButton);

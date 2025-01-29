@@ -1,6 +1,5 @@
 package io.github.quackiemackie.pathoscraft.network;
 
-import io.github.quackiemackie.pathoscraft.util.worker.WorkerStationMaps;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
@@ -19,9 +18,7 @@ import io.github.quackiemackie.pathoscraft.util.quest.Quest;
 import io.github.quackiemackie.pathoscraft.registers.PathosAttachments;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The ServerPayloadHandler class contains static methods to handle various server payloads received from the client in the PathosCraft mod.
@@ -29,8 +26,6 @@ import java.util.Map;
  * Each method corresponds to a specific type of payload and contains logic to handle and log the appropriate updates.
  */
 public class ServerPayloadHandler {
-    private static final Map<Player, WorkerStationMaps> workerStationMapsCache = new HashMap<>();
-
     public static void handleAstralFormKeyPress(AstralFormKeyPress data, IPayloadContext context) {
         Player player = context.player();
         if ((player).getData(PathosAttachments.IN_ASTRAL_FORM.get())) {

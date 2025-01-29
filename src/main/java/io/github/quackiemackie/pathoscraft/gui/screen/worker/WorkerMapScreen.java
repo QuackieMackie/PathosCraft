@@ -3,26 +3,29 @@ package io.github.quackiemackie.pathoscraft.gui.screen.worker;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.gui.parts.worker.screen.WorkerDraggableArea;
 import io.github.quackiemackie.pathoscraft.gui.parts.worker.screen.WorkerDraggableWidget;
-import io.github.quackiemackie.pathoscraft.util.handlers.workers.WorkerPayloadHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Map;
+
 public class WorkerMapScreen extends Screen {
     private WorkerDraggableArea draggableArea;
     private WorkerDraggableWidget draggableWidget;
-
     private final WorkerMainScreen parentScreen;
+    private final Map<Integer, Integer> slotMapData;
 
-    public WorkerMapScreen(WorkerMainScreen parentScreen) {
+    public WorkerMapScreen(WorkerMainScreen parentScreen, Map<Integer, Integer> slotMapData) {
         super(Component.literal("Worker Map"));
         this.parentScreen = parentScreen;
+        this.slotMapData = slotMapData;
     }
 
     @Override
     protected void init() {
         super.init();
+
         int screenWidth = this.width;
         int screenHeight = this.height;
 
@@ -34,9 +37,9 @@ public class WorkerMapScreen extends Screen {
         int maxY = startY + areaHeight;
 
         draggableArea = new WorkerDraggableArea(startX, startY, maxX, maxY, 5, 0xFF000000, 0x77000000);
-        draggableWidget = new WorkerDraggableWidget(draggableArea, 750, 750, WorkerPayloadHandler.getWorkerMapData());
+        draggableWidget = new WorkerDraggableWidget(draggableArea, 750, 750, slotMapData);
 
-        PathosCraft.LOGGER.info(WorkerPayloadHandler.getWorkerMapData().toString());
+        PathosCraft.LOGGER.info("Slot Map Data Passed to WorkerMapScreen: " + slotMapData);
     }
 
     @Override

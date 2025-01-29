@@ -1,13 +1,13 @@
 package io.github.quackiemackie.pathoscraft.gui.parts.worker.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.quackiemackie.pathoscraft.util.worker.FilledMap;
-import io.github.quackiemackie.pathoscraft.util.worker.WorkerStationMaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+
+import java.util.Map;
 
 public class WorkerDraggableWidget {
     private int x, y, width, height;
@@ -17,7 +17,7 @@ public class WorkerDraggableWidget {
     private final int originalHeight;
     private double zoom = 1.0;
 
-    private final WorkerStationMaps mapData;
+    private final Map<Integer, Integer> slotMapData;
 
     private final WorkerMapRenderer workerMapRenderer;
 
@@ -25,22 +25,22 @@ public class WorkerDraggableWidget {
     private static final int textColor = 0xFFFFFFFF;
 
     /**
-     * Creates a draggable widget within the specified draggable area, initializing its size, position,
-     * and gradient color properties.
-     * The widget is centered within the provided draggable area based on its width and height.
+     * Constructs a WorkerDraggableWidget instance with the given dimensions, slot data, and attached to a draggable area.
+     * The widget is initialized to be centered within the specified draggable area, and its map rendering is set up.
      *
-     * @param draggableArea     The area within which the widget can be dragged.
-     * @param width             The width of the draggable widget.
-     * @param height            The height of the draggable widget.
+     * @param draggableArea The draggable area within which the widget is constrained and initialized.
+     * @param width         The width of the widget in its default state.
+     * @param height        The height of the widget in its default state.
+     * @param slotMapData   A map of slot indices to their associated data, used for rendering or interaction purposes.
      */
-    public WorkerDraggableWidget(WorkerDraggableArea draggableArea, int width, int height, WorkerStationMaps mapData) {
+    public WorkerDraggableWidget(WorkerDraggableArea draggableArea, int width, int height, Map<Integer, Integer> slotMapData) {
         this.originalWidth = width;
         this.originalHeight = height;
         this.width = width;
         this.height = height;
         this.x = draggableArea.getX() + (draggableArea.getWidth() - this.width) / 2;
         this.y = draggableArea.getY() + (draggableArea.getHeight() - this.height) / 2;
-        this.mapData = mapData;
+        this.slotMapData = slotMapData;
 
         Minecraft minecraft = Minecraft.getInstance();
         this.workerMapRenderer = new WorkerMapRenderer(
@@ -69,7 +69,7 @@ public class WorkerDraggableWidget {
                 draggableArea.getY() + draggableArea.getHeight()
         );
 
-        if (this.mapData != null) {
+        if (this.slotMapData != null) {
             renderMapInWidget(guiGraphics, this.x, this.y, this.width, this.height);
         }
 
@@ -144,17 +144,14 @@ public class WorkerDraggableWidget {
     }
 
     /**
-     * Retrieves the map ID associated with a given slot from the WorkerStationMaps.
+     * Retrieves the map ID associated with the specified slot.
+     * If the slot does not have an associated map ID, it returns -1 by default.
      *
-     * @param slot The slot number for which the map ID should be retrieved.
-     * @return The map ID if a matching slot is found, or -1 if no match exists.
+     * @param slot The slot index whose associated map ID is to be retrieved.
+     * @return The map ID associated with the slot, or -1 if no map ID is found.
      */
     public int getMapIdForSlot(int slot) {
-        return mapData.maps().stream()
-                .filter(filledMap -> filledMap.slot() == slot)
-                .map(FilledMap::mapId)
-                .findFirst()
-                .orElse(-1);
+        return slotMapData.getOrDefault(slot, -1);
     }
 
     /**
