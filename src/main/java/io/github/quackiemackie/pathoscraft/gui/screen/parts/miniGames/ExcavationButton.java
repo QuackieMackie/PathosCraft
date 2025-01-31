@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.parts.miniGames;
+package io.github.quackiemackie.pathoscraft.gui.screen.parts.miniGames;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;

@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.parts.quest;
+package io.github.quackiemackie.pathoscraft.gui.screen.parts.quest;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

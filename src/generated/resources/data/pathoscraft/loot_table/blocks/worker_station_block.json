@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "pathoscraft:worker_station"
+          "name": "pathoscraft:worker_station_block"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "pathoscraft:blocks/worker_station"
+  "random_sequence": "pathoscraft:blocks/worker_station_block"
 }

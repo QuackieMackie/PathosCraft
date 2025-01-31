@@ -6,8 +6,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.gui.parts.miniGames.InformationButton;
-import io.github.quackiemackie.pathoscraft.gui.parts.miniGames.FishingSequenceButton;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.InformationButton;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.miniGames.FishingSequenceButton;
 import io.github.quackiemackie.pathoscraft.network.payload.minigames.fishing.FinishedFishingMiniGame;
 import org.lwjgl.glfw.GLFW;
 

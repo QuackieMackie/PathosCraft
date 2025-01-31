@@ -1,7 +1,7 @@
 package io.github.quackiemackie.pathoscraft.gui.menu;
 
 import io.github.quackiemackie.pathoscraft.gui.PathosMenu;
-import io.github.quackiemackie.pathoscraft.gui.parts.worker.menu.WorkerHireSlot;
+import io.github.quackiemackie.pathoscraft.gui.menu.parts.WorkerHireSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

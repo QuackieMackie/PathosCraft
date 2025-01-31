@@ -1,7 +1,8 @@
 package io.github.quackiemackie.pathoscraft.gui.screen.quest;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.quackiemackie.pathoscraft.gui.parts.quest.*;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.InformationButton;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.quest.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -125,7 +126,9 @@ public class QuestScreen extends AbstractContainerScreen<QuestMenu> {
      * Initialize and adds the tab buttons to the screen.
      */
     private void initInfoButtons() {
-        QuestInformationButton infoButton = new QuestInformationButton(10, 10);
+        InformationButton infoButton = new InformationButton(10, 10);
+        String[] instructions = Component.translatable("screen.widget.pathoscraft.quest_menu.information_button.tooltip").getString().split("\n");
+        infoButton.setHoverInfo(instructions);
         this.addRenderableWidget(infoButton);
     }
 

@@ -1,14 +1,14 @@
 package io.github.quackiemackie.pathoscraft.gui.screen.worker;
 
-import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.gui.parts.worker.screen.WorkerDraggableArea;
-import io.github.quackiemackie.pathoscraft.gui.parts.worker.screen.WorkerDraggableWidget;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.worker.WorkerDraggableArea;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.worker.WorkerDraggableWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class WorkerMapScreen extends Screen {
     private WorkerDraggableArea draggableArea;
@@ -26,20 +26,26 @@ public class WorkerMapScreen extends Screen {
     protected void init() {
         super.init();
 
-        int screenWidth = this.width;
-        int screenHeight = this.height;
+        int areaWidth = (int) (this.width * 0.7);
+        int areaHeight = (int) (this.height * 0.7);
+        int startX = (this.width - areaWidth) / 2;
+        int startY = (this.height - areaHeight) / 2;
 
-        int areaWidth = (int) (screenWidth * 0.7);
-        int areaHeight = (int) (screenHeight * 0.7);
-        int startX = (screenWidth - areaWidth) / 2;
-        int startY = (screenHeight - areaHeight) / 2;
-        int maxX = startX + areaWidth;
-        int maxY = startY + areaHeight;
-
-        draggableArea = new WorkerDraggableArea(startX, startY, maxX, maxY, 5, 0xFF000000, 0x77000000);
+        draggableArea = new WorkerDraggableArea(startX, startY, startX + areaWidth, startY + areaHeight, 5, 0xFF000000, 0x77000000);
         draggableWidget = new WorkerDraggableWidget(draggableArea, 750, 750, slotMapData);
+    }
 
-        PathosCraft.LOGGER.info("Slot Map Data Passed to WorkerMapScreen: " + slotMapData);
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        if (draggableArea == null || draggableWidget == null) {
+            guiGraphics.drawCenteredString(this.font, "Loading...", this.width / 2, this.height / 2, 0xFFFFFF);
+            return;
+        }
+
+        draggableArea.render(guiGraphics);
+        draggableWidget.render(guiGraphics, this.font, draggableArea);
     }
 
     @Override
@@ -87,20 +93,6 @@ public class WorkerMapScreen extends Screen {
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(parentScreen);
+        Objects.requireNonNull(this.minecraft).setScreen(parentScreen);
     }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-
-        if (draggableArea == null || draggableWidget == null) {
-            guiGraphics.drawCenteredString(this.font, "Loading...", this.width / 2, this.height / 2, 0xFFFFFF);
-            return;
-        }
-
-        draggableArea.render(guiGraphics);
-        draggableWidget.render(guiGraphics, this.font, draggableArea);
-    }
-
 }

@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.parts.worker.screen;
+package io.github.quackiemackie.pathoscraft.gui.screen.parts.worker;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

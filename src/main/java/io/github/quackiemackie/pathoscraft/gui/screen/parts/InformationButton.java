@@ -1,8 +1,8 @@
-package io.github.quackiemackie.pathoscraft.gui.parts.quest;
+package io.github.quackiemackie.pathoscraft.gui.screen.parts;
 
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -11,18 +11,18 @@ import net.minecraft.util.Mth;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestInformationButton extends Button {
+public class InformationButton extends Button {
 
     private final List<Component> hoverInfo;
     private boolean isInfoVisible = false;
 
     /**
-     * Constructs a new QuestSlotButton.
+     * Constructs a new InformationButton.
      *
      * @param x The x-coordinate of the button.
      * @param y The y-coordinate of the button.
      */
-    public QuestInformationButton(int x, int y) {
+    public InformationButton(int x, int y) {
         super(x, y, 16, 16, Component.literal("I"), button -> {}, DEFAULT_NARRATION);
         this.hoverInfo = new ArrayList<>();
     }
@@ -30,6 +30,18 @@ public class QuestInformationButton extends Button {
     @Override
     public void onPress() {
         toggleInfoVisibility();
+    }
+
+    /**
+     * Adds hover information directly from an array of strings.
+     *
+     * @param lines The hover information provided as strings.
+     */
+    public void setHoverInfo(String[] lines) {
+        this.hoverInfo.clear();
+        for (String line : lines) {
+            this.hoverInfo.add(Component.literal(line));
+        }
     }
 
     /**
@@ -43,8 +55,8 @@ public class QuestInformationButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         Minecraft minecraft = Minecraft.getInstance();
         boolean shouldHighlight = this.isHovered() || isInfoVisible;
-        ResourceLocation sprite = shouldHighlight ? SPRITES.get(true, true) : SPRITES.enabled();
 
+        ResourceLocation sprite = shouldHighlight ? SPRITES.get(true, true) : SPRITES.enabled();
         guiGraphics.blitSprite(sprite, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
         int textColor = getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24;
@@ -52,11 +64,8 @@ public class QuestInformationButton extends Button {
 
         if (shouldHighlight) {
             List<FormattedCharSequence> tooltip = new ArrayList<>();
-
-            String[] lines = Component.translatable("screen.widget.pathoscraft.quest_menu.information_button.tooltip").getString().split("\n");
-
-            for (String line : lines) {
-                tooltip.add(Component.literal(line).getVisualOrderText());
+            for (Component component : hoverInfo) {
+                tooltip.add(component.getVisualOrderText());
             }
 
             int tooltipX = this.getX() + this.getWidth();

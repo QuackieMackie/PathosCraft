@@ -3,6 +3,7 @@ package io.github.quackiemackie.pathoscraft.gui.menu;
 import io.github.quackiemackie.pathoscraft.block.PathosBlocks;
 import io.github.quackiemackie.pathoscraft.block.entity.WorkerStationBlockEntity;
 import io.github.quackiemackie.pathoscraft.gui.PathosMenu;
+import io.github.quackiemackie.pathoscraft.gui.menu.parts.FilledMapSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +13,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.SlotItemHandler;
 
 import java.util.Map;
 
@@ -31,17 +31,17 @@ public class WorkerMainMenu extends AbstractContainerMenu {
 
         addPlayerInventory(inv, 8, 140);
 
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 62, 36));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, 80, 36));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, 98, 36));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 0, 62, 36));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 1, 80, 36));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 2, 98, 36));
 
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, 62, 54));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 4, 80, 54));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 5, 98, 54));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 3, 62, 54));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 4, 80, 54));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 5, 98, 54));
 
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 6, 62, 72));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 7, 80, 72));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 8, 98, 72));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 6, 62, 72));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 7, 80, 72));
+        this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 8, 98, 72));
         
     }
 
@@ -60,7 +60,7 @@ public class WorkerMainMenu extends AbstractContainerMenu {
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         Slot sourceSlot = this.slots.get(index);
-        if (sourceSlot == null || !sourceSlot.hasItem()) {
+        if (!sourceSlot.hasItem()) {
             return ItemStack.EMPTY;
         }
 
@@ -68,11 +68,10 @@ public class WorkerMainMenu extends AbstractContainerMenu {
         ItemStack copyOfSourceStack = sourceStack.copy();
 
         int blockInventorySize = this.blockEntity.inventory.getSlots();
-        int playerInventoryStart = blockInventorySize;
-        int playerInventoryEnd = playerInventoryStart + 36;
+        int playerInventoryEnd = blockInventorySize + 36;
 
         if (index < blockInventorySize) {
-            if (!this.moveItemStackTo(sourceStack, playerInventoryStart, playerInventoryEnd, true)) {
+            if (!this.moveItemStackTo(sourceStack, blockInventorySize, playerInventoryEnd, true)) {
                 return ItemStack.EMPTY;
             }
         } else {

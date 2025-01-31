@@ -3,14 +3,15 @@ package io.github.quackiemackie.pathoscraft.gui.screen.worker;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.gui.menu.WorkerMainMenu;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.worker.WorkerTabButton;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class WorkerMainScreen extends AbstractContainerScreen<WorkerMainMenu> {
     private final WorkerMainMenu menu;
@@ -30,15 +31,13 @@ public class WorkerMainScreen extends AbstractContainerScreen<WorkerMainMenu> {
     protected void init() {
         super.init();
 
-        int buttonX = (this.width - this.imageWidth) / 2 + 10;
-        int buttonY = (this.height - this.imageHeight) / 2 + 220;
-
-        Button mapButton = Button.builder(Component.literal("Open Map"), button -> {
+        int buttonX = (this.width - this.imageWidth) / 2 - 29;
+        int buttonY = (this.height - this.imageHeight) / 2 + 10;
+        WorkerTabButton mapTab = new WorkerTabButton(buttonX, buttonY, button -> {
             this.slotMapData = menu.getSlotMapData();
-            this.minecraft.setScreen(new WorkerMapScreen(this, slotMapData));
-        }).bounds(buttonX, buttonY, 90, 20).build();
-
-        this.addRenderableWidget(mapButton);
+            Objects.requireNonNull(this.minecraft).setScreen(new WorkerMapScreen(this, slotMapData));
+        });
+        this.addRenderableWidget(mapTab);
     }
 
 
@@ -47,7 +46,11 @@ public class WorkerMainScreen extends AbstractContainerScreen<WorkerMainMenu> {
         RenderSystem.setShaderTexture(0, TEXTURE);
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 5);
         guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.pose().popPose();
     }
 
     @Override

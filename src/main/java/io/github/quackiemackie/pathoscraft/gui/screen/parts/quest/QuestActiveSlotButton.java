@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.parts.quest;
+package io.github.quackiemackie.pathoscraft.gui.screen.parts.quest;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.gui.screen.quest.QuestScreen;
@@ -63,8 +62,8 @@ public class QuestActiveSlotButton extends QuestSlotButton {
 
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-        List<Quest> activeQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.ACTIVE_QUESTS.get()));
-        List<Quest> completedQuests = new ArrayList<>(((IAttachmentHolder) player).getData(PathosAttachments.COMPLETED_QUESTS.get()));
+        List<Quest> activeQuests = new ArrayList<>(player.getData(PathosAttachments.ACTIVE_QUESTS.get()));
+        List<Quest> completedQuests = new ArrayList<>(player.getData(PathosAttachments.COMPLETED_QUESTS.get()));
         Quest quest = this.getQuest();
 
         return switch (button) {

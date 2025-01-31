@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.parts.worker.menu;
+package io.github.quackiemackie.pathoscraft.gui.menu.parts;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

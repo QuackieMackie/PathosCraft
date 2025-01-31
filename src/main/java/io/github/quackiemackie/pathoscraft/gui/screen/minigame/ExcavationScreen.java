@@ -8,8 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
-import io.github.quackiemackie.pathoscraft.gui.parts.miniGames.ExcavationButton;
-import io.github.quackiemackie.pathoscraft.gui.parts.miniGames.InformationButton;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.miniGames.ExcavationButton;
+import io.github.quackiemackie.pathoscraft.gui.screen.parts.InformationButton;
 import io.github.quackiemackie.pathoscraft.network.payload.minigames.excavation.FinishedExcavationMiniGame;
 import org.lwjgl.glfw.GLFW;
 

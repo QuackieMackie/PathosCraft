@@ -1,4 +1,4 @@
-package io.github.quackiemackie.pathoscraft.gui.parts.worker.screen;
+package io.github.quackiemackie.pathoscraft.gui.screen.parts.worker;
 
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -47,7 +47,7 @@ public class WorkerDraggableArea {
      * @param guiGraphics the graphics context used for rendering the background
      */
     private void drawBackground(GuiGraphics guiGraphics) {
-        guiGraphics.fill(x, y, x + width, y + height, backgroundColor);
+        guiGraphics.fill(getInnerX(), getInnerY(), getInnerX() + getInnerWidth(), getInnerY() + getInnerHeight(), backgroundColor);
     }
 
     /**
@@ -71,7 +71,6 @@ public class WorkerDraggableArea {
         guiGraphics.pose().popPose();
     }
 
-
     public int getX() {
         return x;
     }
@@ -88,7 +87,19 @@ public class WorkerDraggableArea {
         return height;
     }
 
-    public int getBorderSize() {
-        return borderSize;
+    private int getInnerX() {
+        return x + borderSize;
+    }
+
+    private int getInnerY() {
+        return y + borderSize;
+    }
+
+    private int getInnerWidth() {
+        return width - 2 * borderSize;
+    }
+
+    private int getInnerHeight() {
+        return height - 2 * borderSize;
     }
 }
