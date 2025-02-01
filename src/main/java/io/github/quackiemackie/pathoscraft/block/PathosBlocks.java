@@ -1,6 +1,6 @@
 package io.github.quackiemackie.pathoscraft.block;
 
-import io.github.quackiemackie.pathoscraft.block.block.WorkerStationBlock;
+import io.github.quackiemackie.pathoscraft.block.block.WorkerStation;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
@@ -24,7 +24,7 @@ public class PathosBlocks {
     public static final DeferredBlock<Block> SUNNY_ORE = registerBlock("sunny_ore", () -> new DropExperienceBlock(UniformInt.of(2, 4), BlockBehaviour.Properties.of().strength(1f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
     public static final DeferredBlock<Block> DEEPSLATE_SUNNY_ORE = registerBlock("deepslate_sunny_ore", () -> new DropExperienceBlock(UniformInt.of(3, 4), BlockBehaviour.Properties.of().strength(1f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
     public static final DeferredBlock<Block> REPAIR_BLOCK = registerBlock("repair_block", () -> new RepairBlock(BlockBehaviour.Properties.of().strength(2f).requiresCorrectToolForDrops().sound(SoundType.AMETHYST_CLUSTER)));
-    public static final DeferredBlock<Block> WORKER_STATION_BLOCK = registerBlock("worker_station_block", () -> new WorkerStationBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<Block> WORKER_STATION = registerBlock("worker_station", () -> new WorkerStation(BlockBehaviour.Properties.of()));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

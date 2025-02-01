@@ -1,5 +1,7 @@
 package io.github.quackiemackie.pathoscraft;
 
+import io.github.quackiemackie.pathoscraft.block.PathosBlockEntities;
+import io.github.quackiemackie.pathoscraft.block.entity.renderer.WorkerStationBER;
 import io.github.quackiemackie.pathoscraft.registers.PathosItemProperties;
 import io.github.quackiemackie.pathoscraft.registers.PathosKeybinding;
 import io.github.quackiemackie.pathoscraft.registers.PathosRegisters;
@@ -88,7 +90,8 @@ public class PathosCraft {
         }
 
         @SubscribeEvent
-        public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerBlockEntityRenderer(PathosBlockEntities.WORKER_STATION_BE.get(), WorkerStationBER::new);
         }
     }
 }

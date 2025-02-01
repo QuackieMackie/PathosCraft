@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorkerStationBlockEntity extends BlockEntity implements MenuProvider {
+public class WorkerStationBE extends BlockEntity implements MenuProvider {
     private final static int SIZE = 9;
     public final ItemStackHandler inventory = new ItemStackHandler(SIZE) {
         @Override
@@ -43,8 +43,8 @@ public class WorkerStationBlockEntity extends BlockEntity implements MenuProvide
         }
     };
 
-    public WorkerStationBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(PathosBlockEntities.WORKER_STATION_ENTITY.get(), pPos, pBlockState);
+    public WorkerStationBE(BlockPos pPos, BlockState pBlockState) {
+        super(PathosBlockEntities.WORKER_STATION_BE.get(), pPos, pBlockState);
     }
 
     public void drops() {

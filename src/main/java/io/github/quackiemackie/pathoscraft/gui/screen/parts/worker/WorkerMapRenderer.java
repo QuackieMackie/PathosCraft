@@ -2,14 +2,19 @@ package io.github.quackiemackie.pathoscraft.gui.screen.parts.worker;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import io.github.quackiemackie.pathoscraft.block.entity.WorkerStationBE;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.MapDecorationTextureManager;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -105,5 +110,56 @@ public class WorkerMapRenderer implements AutoCloseable {
         public void close() {
             this.texture.close();
         }
+    }
+
+    public static void renderMapOnBlockEntity(WorkerMapRenderer workerMapRenderer, PoseStack poseStack, MultiBufferSource bufferSource,
+                                              WorkerStationBE blockEntity, float scaleFactor, int packedLight) {
+        Minecraft minecraft = Minecraft.getInstance();
+
+        // Extract map IDs into a grid
+        Integer[][] mapIds = extractMapIds(blockEntity);
+
+        float mapSize = 128 * scaleFactor;
+
+        // Iterate over the grid and render maps
+        for (int row = 0; row < mapIds.length; row++) {
+            for (int col = 0; col < mapIds[row].length; col++) {
+                int mapId = mapIds[row][col];
+
+                if (mapId == -1) continue;
+
+                // Fetch map data
+                MapItemSavedData mapData = minecraft.level.getMapData(new MapId(mapId));
+                if (mapData == null) continue;
+
+                // Push pose, translate and render
+                poseStack.pushPose();
+                positionForMap(poseStack, row, col, mapSize);
+                workerMapRenderer.render(poseStack, bufferSource, new MapId(mapId), mapData, false, packedLight);
+                poseStack.popPose();
+            }
+        }
+    }
+
+
+    private static Integer[][] extractMapIds(WorkerStationBE blockEntity) {
+        Integer[][] mapIds = new Integer[3][3];
+
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = blockEntity.inventory.getStackInSlot(i);
+            MapId mapIdComponent = (stack.isEmpty() || stack.get(DataComponents.MAP_ID) == null) ? null : stack.get(DataComponents.MAP_ID);
+            mapIds[i / 3][i % 3] = (mapIdComponent != null) ? mapIdComponent.id() : -1;
+        }
+
+        return mapIds;
+    }
+
+    private static void positionForMap(PoseStack poseStack, int row, int col, float mapSize) {
+        float offsetX = (col - 1) * mapSize;
+        float offsetZ = (row - 1) * mapSize;
+
+        poseStack.translate(0.34 + offsetX, 1.01, 0.34 + offsetZ);
+        poseStack.mulPose(Axis.XP.rotationDegrees(270));
+        poseStack.scale(0.0025f, -0.0025f, 0.0025f);
     }
 }

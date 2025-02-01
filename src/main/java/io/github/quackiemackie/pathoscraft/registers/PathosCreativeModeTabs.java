@@ -28,7 +28,7 @@ public class PathosCreativeModeTabs {
                         output.accept(PathosBlocks.DEEPSLATE_SUNNY_ORE.get());
                         output.accept(PathosBlocks.SADNESS_BLOCK.get());
                         output.accept(PathosBlocks.REPAIR_BLOCK.get());
-                        output.accept(PathosBlocks.WORKER_STATION_BLOCK.get());
+                        output.accept(PathosBlocks.WORKER_STATION.get());
                     })
                     .build());
 

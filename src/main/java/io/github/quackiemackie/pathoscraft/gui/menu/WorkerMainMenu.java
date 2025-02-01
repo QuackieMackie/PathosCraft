@@ -1,7 +1,7 @@
 package io.github.quackiemackie.pathoscraft.gui.menu;
 
 import io.github.quackiemackie.pathoscraft.block.PathosBlocks;
-import io.github.quackiemackie.pathoscraft.block.entity.WorkerStationBlockEntity;
+import io.github.quackiemackie.pathoscraft.block.entity.WorkerStationBE;
 import io.github.quackiemackie.pathoscraft.gui.PathosMenu;
 import io.github.quackiemackie.pathoscraft.gui.menu.parts.FilledMapSlot;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.Map;
 
 public class WorkerMainMenu extends AbstractContainerMenu {
-    public final WorkerStationBlockEntity blockEntity;
+    public final WorkerStationBE blockEntity;
     private final Level level;
 
     public WorkerMainMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
@@ -26,7 +26,7 @@ public class WorkerMainMenu extends AbstractContainerMenu {
 
     public WorkerMainMenu(int pContainerId, Inventory inv, BlockEntity blockEntity) {
         super(PathosMenu.WORKER_MAIN_MENU.get(), pContainerId);
-        this.blockEntity = ((WorkerStationBlockEntity) blockEntity);
+        this.blockEntity = ((WorkerStationBE) blockEntity);
         this.level = inv.player.level();
 
         addPlayerInventory(inv, 8, 140);
@@ -92,7 +92,7 @@ public class WorkerMainMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, PathosBlocks.WORKER_STATION_BLOCK.get());
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, PathosBlocks.WORKER_STATION.get());
     }
 
     public Map<Integer, Integer> getSlotMapData() {
