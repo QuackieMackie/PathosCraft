@@ -128,8 +128,25 @@ public class WorkerStationBE extends BlockEntity implements MenuProvider {
         List<WorkerNodeList.WorkerNode> generatedNodes = new ArrayList<>(nodeCount);
 
         for (int i = 0; i < nodeCount; i++) {
-            int x = RANDOM.nextInt(750);
-            int y = RANDOM.nextInt(750);
+            int x;
+            int y;
+            boolean valid;
+
+            do {
+                x = RANDOM.nextInt(740 - 40 + 1) + 40;
+                y = RANDOM.nextInt(740 - 40 + 1) + 40;
+                valid = true;
+
+                for (WorkerNodeList.WorkerNode node : generatedNodes) {
+                    int deltaX = x - node.x();
+                    int deltaY = y - node.y();
+                    if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 50) {
+                        valid = false;
+                        break;
+                    }
+                }
+            } while (!valid);
+
             generatedNodes.add(new WorkerNodeList.WorkerNode(x, y));
         }
 

@@ -1,14 +1,11 @@
 package io.github.quackiemackie.pathoscraft.gui.screen.parts.worker;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.quackiemackie.pathoscraft.util.worker.WorkerNodeList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.saveddata.maps.MapId;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,81 +93,26 @@ public class WorkerDraggableWidget {
 
         renderWidgetComponents(guiGraphics, font);
 
+        renderWorkerNodes(guiGraphics);
+
         guiGraphics.disableScissor();
         guiGraphics.pose().popPose();
-
-        renderWorkerNodes(guiGraphics, draggableArea);
     }
 
-    public void renderWorkerNodes(GuiGraphics guiGraphics, WorkerDraggableArea draggableArea) {
-        guiGraphics.pose().pushPose();
+    public void renderWorkerNodes(GuiGraphics guiGraphics) {
         guiGraphics.pose().translate(0, 0, 50);
-        guiGraphics.enableScissor(
-                draggableArea.getX(),
-                draggableArea.getY(),
-                draggableArea.getX() + draggableArea.getWidth(),
-                draggableArea.getY() + draggableArea.getHeight()
-        );
         for (WorkerNodeButton node : workerNodes) {
             node.render(guiGraphics);
         }
-        guiGraphics.disableScissor();
-        guiGraphics.pose().popPose();
     }
 
     public void renderWidgetComponents(GuiGraphics guiGraphics, Font font) {
-        int textWidth = font.width("+");
         guiGraphics.pose().translate(0, 0, 75);
-        guiGraphics.drawString(font, "+", x + (width - textWidth) / 2, y + (height / 2) - 4, 0xFFFFFFFF);
+        guiGraphics.drawString(font, "+", x + (width - font.width("+")) / 2, y + (height / 2) - 4, 0xFFFFFFFF);
     }
 
-    /**
-     * Renders a 3x3 grid of maps within the specified widget region.
-     * Each map is scaled and positioned
-     * inside the widget bounds using the provided dimensions and current currentScale level.
-     *
-     * @param guiGraphics The graphics context used for rendering the widget and maps.
-     * @param widgetX The x-coordinate of the top-left corner of the widget.
-     * @param widgetY The y-coordinate of the top-left corner of the widget.
-     * @param widgetWidth The width of the widget.
-     * @param widgetHeight The height of the widget.
-     */
     public void renderMapInWidget(GuiGraphics guiGraphics, int widgetX, int widgetY, int widgetWidth, int widgetHeight) {
-        Minecraft minecraft = Minecraft.getInstance();
-
-        int[][] mapIds = {
-                {getMapIdForSlot(0), getMapIdForSlot(1), getMapIdForSlot(2)},
-                {getMapIdForSlot(3), getMapIdForSlot(4), getMapIdForSlot(5)},
-                {getMapIdForSlot(6), getMapIdForSlot(7), getMapIdForSlot(8)}
-        };
-
-        int rows = 3;
-        int cols = 3;
-        double cellWidth = (widgetWidth / (cols * currentScale));
-        double cellHeight = (widgetHeight / (rows * currentScale));
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                int mapId = mapIds[row][col];
-
-                double cellX = (widgetX + col * cellWidth * currentScale);
-                double cellY = (widgetY + row * cellHeight * currentScale);
-
-                MapItemSavedData mapState = minecraft.level.getMapData(new MapId(mapId));
-                if (mapState == null) {
-                    continue;
-                }
-
-                float scale = (float) (Math.min(cellWidth / 128, cellHeight / 128) * currentScale);
-
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(cellX, cellY, 25);
-                guiGraphics.pose().scale(scale, scale, 1.0F);
-                workerMapRenderer.render(guiGraphics.pose(), guiGraphics.bufferSource(), new MapId(mapId), mapState, false, 0xf000f0);
-                guiGraphics.pose().popPose();
-            }
-        }
+        workerMapRenderer.renderWidgetMapGrid(guiGraphics, widgetX, widgetY, widgetWidth, widgetHeight, this.slotMapData, this.currentScale);
     }
 
     protected void renderBorder(GuiGraphics guiGraphics) {
@@ -411,10 +353,6 @@ public class WorkerDraggableWidget {
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public int getMapIdForSlot(int slot) {
-        return slotMapData.getOrDefault(slot, -1);
     }
 
     public float getCurrentScale() {

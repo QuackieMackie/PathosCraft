@@ -22,7 +22,7 @@ These are a few things I plan on adding into this mod.
 - **Bosses**: Challenging bosses that force you to bring your full might to battle it. 
 - **Mini-Games**: Fun mini-games tied to core and custom gameplay mechanics:
   - **Fishing**: A sequence-based challenge where players follow a series of prompts on-screen in the correct order to reel in their catch, and possibly bonus rewards. The sequence grows longer and more complex as the game progresses, rewarding players who can react quickly and accurately under pressure.
-  - **Lumbering**: *(N/A – Undecided)*
+  - **Lumbering**: A timing-based challenge where players have to chop the trunk at the correct position to chop down the tree.
   - **Excavation**: The Mining Mini-Game turns basic mining into a fun and engaging challenge! Players are presented with a 5x5 grid filled randomly with ores and stones. Using a pickaxe, players have to excavate tiles, hunting for ores while trying to avoid running out of lives. Unique rewards are given based on performance, with better rewards for finding more ores. Every move counts, so strategize carefully!
   - **Farming**: *(N/A – Undecided)*
   - **And More...**
