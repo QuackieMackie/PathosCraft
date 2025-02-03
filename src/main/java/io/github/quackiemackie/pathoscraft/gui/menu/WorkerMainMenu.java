@@ -4,6 +4,7 @@ import io.github.quackiemackie.pathoscraft.block.PathosBlocks;
 import io.github.quackiemackie.pathoscraft.block.entity.WorkerStationBE;
 import io.github.quackiemackie.pathoscraft.gui.PathosMenu;
 import io.github.quackiemackie.pathoscraft.gui.menu.parts.FilledMapSlot;
+import io.github.quackiemackie.pathoscraft.util.worker.WorkerNodeList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +43,6 @@ public class WorkerMainMenu extends AbstractContainerMenu {
         this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 6, 62, 72));
         this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 7, 80, 72));
         this.addSlot(new FilledMapSlot(this.blockEntity.inventory, 8, 98, 72));
-        
     }
 
     private void addPlayerInventory(Inventory playerInventory, int x, int y) {
@@ -97,5 +97,9 @@ public class WorkerMainMenu extends AbstractContainerMenu {
 
     public Map<Integer, Integer> getSlotMapData() {
         return blockEntity.getSlotMapData();
+    }
+
+    public WorkerNodeList getNodeList() {
+        return blockEntity.getWorkerNodes();
     }
 }

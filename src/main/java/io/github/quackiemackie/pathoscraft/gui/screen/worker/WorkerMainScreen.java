@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.quackiemackie.pathoscraft.PathosCraft;
 import io.github.quackiemackie.pathoscraft.gui.menu.WorkerMainMenu;
 import io.github.quackiemackie.pathoscraft.gui.screen.parts.worker.WorkerTabButton;
+import io.github.quackiemackie.pathoscraft.util.worker.WorkerNodeList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -16,6 +17,7 @@ import java.util.Objects;
 public class WorkerMainScreen extends AbstractContainerScreen<WorkerMainMenu> {
     private final WorkerMainMenu menu;
     private Map<Integer, Integer> slotMapData;
+    private WorkerNodeList workerNodes;
 
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(PathosCraft.MOD_ID, "textures/screen/worker_main_menu.png");
 
@@ -35,7 +37,8 @@ public class WorkerMainScreen extends AbstractContainerScreen<WorkerMainMenu> {
         int buttonY = (this.height - this.imageHeight) / 2 + 10;
         WorkerTabButton mapTab = new WorkerTabButton(buttonX, buttonY, button -> {
             this.slotMapData = menu.getSlotMapData();
-            Objects.requireNonNull(this.minecraft).setScreen(new WorkerMapScreen(this, slotMapData));
+            this.workerNodes = menu.getNodeList();
+            Objects.requireNonNull(this.minecraft).setScreen(new WorkerMapScreen(this, slotMapData, workerNodes));
         });
         this.addRenderableWidget(mapTab);
     }

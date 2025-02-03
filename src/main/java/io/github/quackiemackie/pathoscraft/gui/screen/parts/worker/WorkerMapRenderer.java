@@ -112,35 +112,34 @@ public class WorkerMapRenderer implements AutoCloseable {
         }
     }
 
-    public static void renderMapOnBlockEntity(WorkerMapRenderer workerMapRenderer, PoseStack poseStack, MultiBufferSource bufferSource,
-                                              WorkerStationBE blockEntity, float scaleFactor, int packedLight) {
+    public static void renderMapOnBE(WorkerMapRenderer workerMapRenderer, PoseStack poseStack, MultiBufferSource bufferSource, WorkerStationBE blockEntity, float scaleFactor, int packedLight) {
         Minecraft minecraft = Minecraft.getInstance();
-
-        // Extract map IDs into a grid
         Integer[][] mapIds = extractMapIds(blockEntity);
 
         float mapSize = 128 * scaleFactor;
+        float gridHalfSize = 1.5f * mapSize;
 
-        // Iterate over the grid and render maps
+        poseStack.pushPose();
+        poseStack.translate(-gridHalfSize, 0, -gridHalfSize);
+
         for (int row = 0; row < mapIds.length; row++) {
             for (int col = 0; col < mapIds[row].length; col++) {
                 int mapId = mapIds[row][col];
 
                 if (mapId == -1) continue;
 
-                // Fetch map data
                 MapItemSavedData mapData = minecraft.level.getMapData(new MapId(mapId));
                 if (mapData == null) continue;
 
-                // Push pose, translate and render
                 poseStack.pushPose();
                 positionForMap(poseStack, row, col, mapSize);
                 workerMapRenderer.render(poseStack, bufferSource, new MapId(mapId), mapData, false, packedLight);
                 poseStack.popPose();
             }
         }
-    }
 
+        poseStack.popPose();
+    }
 
     private static Integer[][] extractMapIds(WorkerStationBE blockEntity) {
         Integer[][] mapIds = new Integer[3][3];
@@ -155,10 +154,10 @@ public class WorkerMapRenderer implements AutoCloseable {
     }
 
     private static void positionForMap(PoseStack poseStack, int row, int col, float mapSize) {
-        float offsetX = (col - 1) * mapSize;
-        float offsetZ = (row - 1) * mapSize;
+        float offsetX = col * mapSize;
+        float offsetZ = row * mapSize;
 
-        poseStack.translate(0.34 + offsetX, 1.01, 0.34 + offsetZ);
+        poseStack.translate(offsetX + 0.5, 1.01, offsetZ + 0.5);
         poseStack.mulPose(Axis.XP.rotationDegrees(270));
         poseStack.scale(0.0025f, -0.0025f, 0.0025f);
     }

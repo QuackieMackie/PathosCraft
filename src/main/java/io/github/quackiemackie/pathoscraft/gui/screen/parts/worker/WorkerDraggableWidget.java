@@ -1,12 +1,17 @@
 package io.github.quackiemackie.pathoscraft.gui.screen.parts.worker;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.quackiemackie.pathoscraft.util.worker.WorkerNodeList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class WorkerDraggableWidget {
@@ -24,7 +29,10 @@ public class WorkerDraggableWidget {
     private final Map<Integer, Integer> slotMapData;
     private final WorkerMapRenderer workerMapRenderer;
 
-    public WorkerDraggableWidget(WorkerDraggableArea draggableArea, int width, int height, Map<Integer, Integer> slotMapData) {
+    private final List<WorkerNodeButton> workerNodes = new ArrayList<>();
+    private final WorkerNodeList workerNodeList;
+
+    public WorkerDraggableWidget(WorkerDraggableArea draggableArea, int width, int height, Map<Integer, Integer> slotMapData, WorkerNodeList workerNodeList) {
         this.originalWidth = width;
         this.originalHeight = height;
         this.width = width;
@@ -32,6 +40,7 @@ public class WorkerDraggableWidget {
         this.x = draggableArea.getX() + (draggableArea.getWidth() - this.width) / 2;
         this.y = draggableArea.getY() + (draggableArea.getHeight() - this.height) / 2;
         this.slotMapData = slotMapData;
+        this.workerNodeList = workerNodeList;
 
         Minecraft minecraft = Minecraft.getInstance();
         this.workerMapRenderer = new WorkerMapRenderer(
@@ -39,6 +48,26 @@ public class WorkerDraggableWidget {
                 minecraft.getMapDecorationTextures()
         );
 
+        initializeWorkerNodes();
+    }
+
+    private void initializeWorkerNodes() {
+        if (workerNodes.isEmpty() && workerNodeList != null) {
+            int nodeSize = 16;
+            for (WorkerNodeList.WorkerNode workerNode : workerNodeList.nodes()) {
+                workerNodes.add(new WorkerNodeButton(this, x + workerNode.x() - (float) nodeSize / 2, y + workerNode.y() - (float) nodeSize / 2));
+            }
+        }
+    }
+
+    private void updateWorkerNodes() {
+        if (workerNodeList != null && workerNodes.size() == workerNodeList.nodes().size()) {
+            float nodeSize = (16 * currentScale);
+            for (int i = 0; i < workerNodes.size(); i++) {
+                WorkerNodeList.WorkerNode workerNode = workerNodeList.nodes().get(i);
+                workerNodes.get(i).setPosition((workerNode.x() - nodeSize / 2), (workerNode.y() - nodeSize / 2));
+            }
+        }
     }
 
     /**
@@ -49,13 +78,11 @@ public class WorkerDraggableWidget {
      * @param draggableArea The draggable area defining the widget's clipping bounds.
      */
     public void render(GuiGraphics guiGraphics, Font font, WorkerDraggableArea draggableArea) {
-        /* For testing purposes. */
-        //renderBorder(guiGraphics);
+        renderBorder(guiGraphics);
 
         updateZoom(draggableArea);
 
         guiGraphics.pose().pushPose();
-
         guiGraphics.enableScissor(
                 draggableArea.getX(),
                 draggableArea.getY(),
@@ -67,12 +94,34 @@ public class WorkerDraggableWidget {
             renderMapInWidget(guiGraphics, this.x, this.y, this.width, this.height);
         }
 
-        int textWidth = font.width("+");
-        guiGraphics.pose().translate(0, 0, 50);
-        guiGraphics.drawString(font, "+", x + (width - textWidth) / 2, y + (height / 2) - 4, 0xFFFFFFFF);
+        renderWidgetComponents(guiGraphics, font);
 
         guiGraphics.disableScissor();
         guiGraphics.pose().popPose();
+
+        renderWorkerNodes(guiGraphics, draggableArea);
+    }
+
+    public void renderWorkerNodes(GuiGraphics guiGraphics, WorkerDraggableArea draggableArea) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 50);
+        guiGraphics.enableScissor(
+                draggableArea.getX(),
+                draggableArea.getY(),
+                draggableArea.getX() + draggableArea.getWidth(),
+                draggableArea.getY() + draggableArea.getHeight()
+        );
+        for (WorkerNodeButton node : workerNodes) {
+            node.render(guiGraphics);
+        }
+        guiGraphics.disableScissor();
+        guiGraphics.pose().popPose();
+    }
+
+    public void renderWidgetComponents(GuiGraphics guiGraphics, Font font) {
+        int textWidth = font.width("+");
+        guiGraphics.pose().translate(0, 0, 75);
+        guiGraphics.drawString(font, "+", x + (width - textWidth) / 2, y + (height / 2) - 4, 0xFFFFFFFF);
     }
 
     /**
@@ -191,10 +240,9 @@ public class WorkerDraggableWidget {
      * @param mouseX        The current x-coordinate of the mouse.
      * @param mouseY        The current y-coordinate of the mouse.
      * @param button        The mouse button being used, where 0 typically represents the left button.
-     * @param draggableArea The area within which the widget can be dragged.
      * @return true if the widget's position was updated, false otherwise.
      */
-    public boolean mouseDragged(double mouseX, double mouseY, int button, WorkerDraggableArea draggableArea) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button) {
         if (isDragging && button == 0) {
             int newWidgetX = (int) (mouseX - dragOffsetX);
             int newWidgetY = (int) (mouseY - dragOffsetY);
@@ -202,7 +250,7 @@ public class WorkerDraggableWidget {
             x = newWidgetX;
             y = newWidgetY;
 
-            constrainWithinBounds(draggableArea);
+            updateWorkerNodes();
 
             return true;
         }
@@ -235,9 +283,10 @@ public class WorkerDraggableWidget {
      *
      * @param button The mouse button being released, where 0 typically represents the left button.
      */
-    public void mouseReleased(int button) {
+    public void mouseReleased(int button, WorkerDraggableArea draggableArea) {
         if (button == 0) {
             isDragging = false;
+            constrainWithinBounds(draggableArea);
         }
     }
 
@@ -268,6 +317,8 @@ public class WorkerDraggableWidget {
         height = originalHeight;
 
         constrainWithinBounds(draggableArea);
+        updateWorkerNodes();
+
     }
 
     /**
@@ -296,6 +347,7 @@ public class WorkerDraggableWidget {
         this.y = centerY - this.height / 2;
 
         constrainWithinBounds(draggableArea);
+        updateWorkerNodes();
     }
 
     /**
@@ -312,8 +364,21 @@ public class WorkerDraggableWidget {
      * @return The interpolated value between the start and end values based on
      *         the given interpolation factor.
      */
-    private static float lerp(float start, float end, float factoredSpeed) {
-        return start + (end - start) * factoredSpeed;
+    private float lerp(float start, float end, float factoredSpeed) {
+        float difference = Math.abs(start - end);
+        if (difference < 0.015f) {
+            return end;
+        }
+        return start + (end - start) * Math.min(factoredSpeed, 1.0f);
+    }
+
+    public List<ClientTooltipComponent> getTooltip(double mouseX, double mouseY) {
+        for (WorkerNodeButton node : workerNodes) {
+            if (node.isMouseOver(mouseX, mouseY)) {
+                return List.of(ClientTooltipComponent.create(Component.literal("tool tip").getVisualOrderText()));
+            }
+        }
+        return null;
     }
 
     public int getX() {
@@ -348,14 +413,11 @@ public class WorkerDraggableWidget {
         this.height = height;
     }
 
-    /**
-     * Retrieves the map ID associated with the specified slot.
-     * If the slot does not have an associated map ID, it returns -1 by default.
-     *
-     * @param slot The slot index whose associated map ID is to be retrieved.
-     * @return The map ID associated with the slot, or -1 if no map ID is found.
-     */
     public int getMapIdForSlot(int slot) {
         return slotMapData.getOrDefault(slot, -1);
+    }
+
+    public float getCurrentScale() {
+        return currentScale;
     }
 }

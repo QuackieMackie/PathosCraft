@@ -21,8 +21,6 @@ public class WorkerStationBER implements BlockEntityRenderer<WorkerStationBE> {
 
     @Override
     public void render(WorkerStationBE blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        poseStack.pushPose();
-        WorkerMapRenderer.renderMapOnBlockEntity(workerMapRenderer, poseStack, bufferSource, blockEntity, 0.0025f, 0xF000F0);
-        poseStack.popPose();
+        WorkerMapRenderer.renderMapOnBE(workerMapRenderer, poseStack, bufferSource, blockEntity, 0.0025f, 0xF000F0);
     }
 }

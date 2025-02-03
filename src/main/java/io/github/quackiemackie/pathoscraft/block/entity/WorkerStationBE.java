@@ -2,8 +2,11 @@ package io.github.quackiemackie.pathoscraft.block.entity;
 
 import io.github.quackiemackie.pathoscraft.block.PathosBlockEntities;
 import io.github.quackiemackie.pathoscraft.gui.menu.WorkerMainMenu;
+import io.github.quackiemackie.pathoscraft.registers.PathosDataComponents;
+import io.github.quackiemackie.pathoscraft.util.worker.WorkerNodeList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -23,10 +26,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class WorkerStationBE extends BlockEntity implements MenuProvider {
+    private static final Random RANDOM = new Random();
+    private static final int MIN_WORKER_NODES = 3;
+    private static final int MAX_WORKER_NODES = 5;
+
     private final static int SIZE = 9;
     public final ItemStackHandler inventory = new ItemStackHandler(SIZE) {
         @Override
@@ -43,8 +49,14 @@ public class WorkerStationBE extends BlockEntity implements MenuProvider {
         }
     };
 
-    public WorkerStationBE(BlockPos pPos, BlockState pBlockState) {
-        super(PathosBlockEntities.WORKER_STATION_BE.get(), pPos, pBlockState);
+    public WorkerStationBE(BlockPos blockPos, BlockState blockState) {
+        super(PathosBlockEntities.WORKER_STATION_BE.get(), blockPos, blockState);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        addWorkerNodes();
     }
 
     public void drops() {
@@ -56,16 +68,15 @@ public class WorkerStationBE extends BlockEntity implements MenuProvider {
         Containers.dropContents(this.level, this.worldPosition, inv);
     }
 
-    @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.saveAdditional(pTag, pRegistries);
-        pTag.put("inventory", inventory.serializeNBT(pRegistries));
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.put("inventory", inventory.serializeNBT(provider));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        inventory.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        inventory.deserializeNBT(provider, tag.getCompound("inventory"));
     }
 
     @Override
@@ -75,8 +86,8 @@ public class WorkerStationBE extends BlockEntity implements MenuProvider {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new WorkerMainMenu(pContainerId, pPlayerInventory, this);
+    public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
+        return new WorkerMainMenu(id, playerInventory, this);
     }
 
     @Nullable
@@ -86,8 +97,8 @@ public class WorkerStationBE extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        return saveWithoutMetadata(provider);
     }
 
     public Map<Integer, Integer> getSlotMapData() {
@@ -102,5 +113,37 @@ public class WorkerStationBE extends BlockEntity implements MenuProvider {
             }
         }
         return slotData;
+    }
+
+    public void addWorkerNodes() {
+        if (this.level == null || this.level.isClientSide()) {
+            return;
+        }
+
+        if (this.components().has(PathosDataComponents.WORKER_NODE_DATA.get())) {
+            return;
+        }
+
+        int nodeCount = RANDOM.nextInt(MAX_WORKER_NODES - MIN_WORKER_NODES + 1) + MIN_WORKER_NODES;
+        List<WorkerNodeList.WorkerNode> generatedNodes = new ArrayList<>(nodeCount);
+
+        for (int i = 0; i < nodeCount; i++) {
+            int x = RANDOM.nextInt(750);
+            int y = RANDOM.nextInt(750);
+            generatedNodes.add(new WorkerNodeList.WorkerNode(x, y));
+        }
+
+        WorkerNodeList workerNodeList = new WorkerNodeList(generatedNodes);
+
+        DataComponentMap dataComponents = DataComponentMap.builder().set(PathosDataComponents.WORKER_NODE_DATA.get(), workerNodeList).build();
+        this.setComponents(dataComponents);
+    }
+
+    public WorkerNodeList getWorkerNodes() {
+        if (this.components().has(PathosDataComponents.WORKER_NODE_DATA.get())) {
+            return this.components().get(PathosDataComponents.WORKER_NODE_DATA.get());
+        } else {
+            return new WorkerNodeList(Collections.emptyList());
+        }
     }
 }
